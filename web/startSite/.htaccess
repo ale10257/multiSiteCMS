@@ -1,0 +1,17 @@
+Options -Indexes
+
+RewriteEngine   on
+#RewriteBase    /
+
+# Rewrite www.domain.com -> domain.com
+# RewriteCond %{HTTP_HOST} .
+# RewriteCond %{HTTP_HOST} !^test\.ru$ [NC]
+# RewriteRule (.*) http://test.ru/$1 [R=301,L]
+
+# if a directory or a file exists, use it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# otherwise forward it to index.php
+RewriteRule . index.php
+

@@ -1,0 +1,16 @@
+.item-gallery-admin-wrap {
+    display: inline-block;
+    padding-right: 20px;
+    padding-bottom: 20px;
+}
+
+.item-gallery-admin {
+    position: relative;
+}
+
+.item-gallery-admin-wrap .alert {
+    position: absolute;
+    width: 100%;
+    padding: 5px;
+    bottom: 30px;
+}

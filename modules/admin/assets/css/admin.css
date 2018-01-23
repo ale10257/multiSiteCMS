@@ -1,0 +1,69 @@
+.main-header .logo {
+    text-align: left;
+    font-size: 16px;
+    overflow: inherit;
+    height: auto;
+    padding: 5px 15px;
+}
+
+table, td, th {
+    border-collapse: collapse;
+    border: 1px solid #cecece;
+}
+
+td, th {
+    padding: 7px 5px;
+}
+
+.content-header>.breadcrumb {
+    float: none;;
+    font-size: inherit;
+    top: 0;
+    right: inherit;
+}
+
+.content-header {
+    position: relative;
+    padding: 15px 15px 5px;
+}
+
+.sidebar {
+    padding: 10px 0 10px 3px;
+}
+
+.img-wrap-del-img {
+    position: relative;
+    display: inline-block;
+}
+
+.img-wrap-del-img .fa.fa-times {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #ff250f;
+}
+
+.img-wrap-del-img .fa.fa-times:hover {
+    color: #262626;
+}
+
+.view-img-category-admin {
+    position: relative;
+}
+
+.form-group.required label:after {
+    content: '*';
+    color: #f00;
+    display: inline-block;
+    margin-left: 3px;
+}
+
+.hide-btn {
+    display: none;
+}
+
+.sortable-table {
+    width: 100%;
+}
