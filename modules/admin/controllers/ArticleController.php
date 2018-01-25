@@ -35,7 +35,6 @@ class ArticleController extends BaseAdminController
      */
     private $_gallery;
 
-
     /**
      * ArticleController constructor.
      * @param string $id
@@ -181,8 +180,8 @@ class ArticleController extends BaseAdminController
 
         if ($formModel->load(yii::$app->request->post()) && $formModel->validate()) {
             try {
-                $image = $this->_gallery->updateImage($formModel, $id);
-                return $this->render('_form_image', ['image' => $image]);
+                $this->_gallery->updateImage($formModel, $id);
+                return $this->renderPartial('_form_image', ['image' => $this->_gallery->getForm($id)]);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());
                 return $this->redirect(yii::$app->request->referrer);

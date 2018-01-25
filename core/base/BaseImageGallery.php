@@ -20,14 +20,13 @@ abstract class BaseImageGallery
     /**
      * @param $form
      * @param $id
-     * @return $this|\app\core\products\repositories\ProductImagesRepository|null
+     * @return void
      * @throws \yii\web\NotFoundHttpException
      */
     public function updateImage($form, $id) {
         $this->_repository = $this->_repository->getItem($id);
         $this->_repository->insertValues($form);
         $this->_repository->saveItem();
-        return $this->_repository;
     }
 
     /**

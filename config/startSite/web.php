@@ -6,7 +6,7 @@ require __DIR__ . '/../web.php';
 $new_config = [
     'components' => [
         'assetManager' => [
-            'linkAssets' => true,
+            'linkAssets' => DIRECTORY_SEPARATOR == '/' ? true : false,
             'appendTimestamp' => true,
         ],
         'request' => [

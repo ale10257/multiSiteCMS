@@ -112,13 +112,11 @@ AdminSortableAsset::register($this);
 <?php if (!$new) : ?>
     <div class="box">
         <div class="box-body">
-
             <div class="box-header with-border">
                 <h2 class="box-title">Загруженные картинки для галереи в конце статьи</h2>
             </div>
-
             <?php if ($formModel->uploaded_images) : ?>
-                <div class="gallery-admin" data-sort=<?= \yii\helpers\Url::to(['sort-image']) ?>>
+                <div class="gallery-admin" data-sort=<?= Url::to(['sort-image']) ?>>
                     <?php foreach ($formModel->uploaded_images as $image) : ?>
                         <?php
                         /** @var  $image \app\core\articles\forms\ArticleImageForm */
@@ -130,7 +128,9 @@ AdminSortableAsset::register($this);
                         <div data-id="<?= $image->id ?>" class="item-gallery-admin-wrap">
                             <div class="item-gallery-admin">
                                 <?= $img ?>
+
                                 <?= $this->render('_form_image', ['image' => $image]) ?>
+
                             </div>
                         </div>
                     <? endforeach ?>

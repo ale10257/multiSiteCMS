@@ -12,21 +12,19 @@ use yii\widgets\Pjax;
 
 <?php Pjax::begin([
     'enablePushState' => false,
-    'timeout' => 1500
 ]) ?>
 <?php $formImg = ActiveForm::begin([
     'action' => Url::to(['/admin/article/update-image', 'id' => $image->id]),
     'options' => [
-        'data-pjax' => ''
+        'data' => [
+            'pjax' => ''
+        ]
     ]
 ]); ?>
-
 <?= $formImg->field($image, 'alt') ?>
-
 <?= $formImg->field($image, 'title_link') ?>
-
-<div class="form-group">
-    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
-</div>
+    <div class="form-group">
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+    </div>
 <?php ActiveForm::end(); ?>
-<?php Pjax::end() ?>
+<? Pjax::end() ?>

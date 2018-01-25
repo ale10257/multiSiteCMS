@@ -17,7 +17,6 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\core\products\ProductSearch;
-use app\core\products\forms\ProductImageForm;
 
 class ProductController extends BaseAdminController
 {
@@ -173,8 +172,8 @@ class ProductController extends BaseAdminController
 
         if ($formModel->load(yii::$app->request->post()) && $formModel->validate()) {
             try {
-                $image = $this->_gallery->updateImage($formModel, $id);
-                return $this->renderPartial('_form_image', ['image' => $image]);
+                $this->_gallery->updateImage($formModel, $id);
+                return $this->renderPartial('_form_image', ['image' => $this->_gallery->getForm($id)]);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());
                 return $this->redirect(yii::$app->request->referrer);
