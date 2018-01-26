@@ -51,8 +51,6 @@ $config = [
                 'admin' => 'admin/default',
                 'login' => 'login/index',
                 'logout' => 'login/logout',
-                'article/<alias:[\w\d\-_]+>' => 'article/one-article',
-                'articles/<alias:[\w\d\-_]+>' => 'article/any-articles'
             ],
         ],
         'authManager' => [

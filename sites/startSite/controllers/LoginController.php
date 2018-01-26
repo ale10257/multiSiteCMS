@@ -9,6 +9,7 @@
 namespace app\sites\startSite\controllers;
 
 use app\components\helpers\FirstErrors;
+use app\core\cart\OrderCheckService;
 use app\core\categories\CacheCategory;
 use app\core\user\auth\AuthService;
 use app\core\user\auth\LoginEmailForm;
@@ -39,12 +40,19 @@ class LoginController extends BaseController
      * @param string $id
      * @param $module
      * @param CacheCategory $cacheCategory
+     * @param OrderCheckService $orderCheckService
      * @param AuthService $service
      * @param UserRegService $regService
      */
-    public function __construct(string $id, $module, CacheCategory $cacheCategory, AuthService $service, UserRegService $regService)
+    public function __construct(
+        $id,
+        $module,
+        CacheCategory $cacheCategory,
+        OrderCheckService $orderCheckService,
+        AuthService $service,
+        UserRegService $regService)
     {
-        parent::__construct($id, $module, $cacheCategory);
+        parent::__construct($id, $module, $cacheCategory, $orderCheckService);
         $this->_service = $service;
         $this->_regService = $regService;
     }

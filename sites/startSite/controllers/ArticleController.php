@@ -11,6 +11,7 @@ namespace app\sites\startSite\controllers;
 
 use app\core\articles\getArticles\ArticleGetService;
 use app\core\articles\getArticles\ArticleSearchActive;
+use app\core\cart\OrderCheckService;
 use app\core\categories\CacheCategory;
 use app\sites\startSite\BaseController;
 
@@ -33,10 +34,16 @@ class ArticleController extends BaseController
      * @param ArticleGetService $service
      * @param ArticleSearchActive $searchArticles
      */
-    public function __construct(string $id, $module, CacheCategory $cacheCategory, ArticleGetService $service, ArticleSearchActive $searchArticles)
+    public function __construct(
+        $id,
+        $module,
+        CacheCategory $cacheCategory,
+        OrderCheckService $orderCheckService,
+        ArticleGetService $service,
+        ArticleSearchActive $searchArticles)
     {
         $this->_service = $service;
-        parent::__construct($id, $module, $cacheCategory);
+        parent::__construct($id, $module, $cacheCategory, $orderCheckService);
         $this->_searchArticles = $searchArticles;
     }
 

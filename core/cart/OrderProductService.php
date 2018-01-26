@@ -15,17 +15,11 @@ use app\core\products\repositories\ProductRepository;
 
 class OrderProductService
 {
-    /**
-     * @var OrderService
-     */
+    /** @var OrderService */
     private $_orderService;
-
     /** @var OrderProductRepository */
     private $_productOrderRepository;
-
-    /**
-     * @var OrderProductForm
-     */
+    /** @var OrderProductForm */
     private $_form;
 
     /**
@@ -161,28 +155,41 @@ class OrderProductService
 
     /**
      * @param int $id
-     * @param OrderProductRepository|null $productRepository
+     * @param OrderProductRepository|null $orderProductRepository
      * @throws \Exception
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      * @throws \yii\web\NotFoundHttpException
      */
-    public function deleteOneProduct(int $id, OrderProductRepository $productRepository = null)
+    public function deleteOneProduct(int $id, OrderProductRepository $orderProductRepository = null)
     {
-        if ($productRepository === null) {
-            $productRepository = $this->_productOrderRepository->getItem($id);
+        if ($orderProductRepository === null) {
+            $orderProductRepository = $this->_productOrderRepository->getItem($id);
         }
 
-        if (!$product = ProductRepository::findOne($productRepository->product_id)) {
+        if (!$product = ProductRepository::findOne($orderProductRepository->product_id)) {
             throw new NotFoundException('Product not found!');
         }
 
-        $product->count += $productRepository->count;
+        $product->count += $orderProductRepository->count;
         $product->saveItem();
 
-        $productRepository->deleteItem();
-        $count = $productRepository->count * -1;
-        $this->setAll($productRepository->order_id, $count, $product->price);
+        $orderProductRepository->deleteItem();
+        $count = $orderProductRepository->count * -1;
+        $this->setAll($orderProductRepository->order_id, $count, $product->price);
+    }
+
+
+    /**
+     * @param int $product_id
+     * @return bool|int
+     */
+    public function checkOrderedProduct(int $product_id)
+    {
+        if ($order_id = $this->_orderService->checkOrder()) {
+            return $this->_productOrderRepository::find()->where(['order_id' => $order_id, 'product_id' => $product_id])->count();
+        }
+        return false;
     }
 
     /**

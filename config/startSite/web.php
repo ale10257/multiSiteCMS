@@ -14,6 +14,9 @@ $new_config = [
         ],
         'urlManager' => [
             'rules' => [
+                'category/<alias:[\w\d\-_]+>' => 'product/category',
+                'article/<alias:[\w\d\-_]+>' => 'article/one-article',
+                'articles/<alias:[\w\d\-_]+>' => 'article/any-articles',
             ],
         ],
         'mailer' => [

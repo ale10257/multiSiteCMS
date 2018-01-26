@@ -1,4 +1,9 @@
 <?php
+/* @var $this yii\web\View */
+/* @var $formModel \app\core\articles\forms\ArticleForm */
+/* @var $form yii\widgets\ActiveForm */
+/* @var $categories_id array|object */
+/* @var $new boolean */
 
 use app\modules\admin\assets\AdminSortableAsset;
 use yii\helpers\Html;
@@ -8,16 +13,10 @@ use vova07\imperavi\Widget;
 use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 use app\components\helpers\RemoveImgAdminHelper;
+use app\assets\FancyBoxAsset;
 
 AdminSortableAsset::register($this);
-
-/* @var $this yii\web\View */
-/* @var $formModel \app\core\articles\forms\ArticleForm */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $categories_id array|object */
-/* @var $new boolean */
-//* @var $galleries \app\modules\admin\models\GalleryModel|array */
-
+FancyBoxAsset::register($this);
 ?>
 <div class="row">
     <?php if (!$new) : ?>

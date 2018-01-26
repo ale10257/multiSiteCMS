@@ -49,8 +49,8 @@ class ProductRepository extends BaseRepository
     /** @var OrderProductForm */
     public $form;
 
-    /** @var DataPathImage[]  */
-    public $images_array = [];
+    /** @var DataPathImage[]|DataPathImage  */
+    public $imagesGallery;
 
     /**
      * @inheritdoc

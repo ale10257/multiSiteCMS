@@ -15,7 +15,7 @@ use app\assets\FancyBoxAsset;
 AdminSortableAsset::register($this);
 FancyBoxAsset::register($this);
 
-$link = Html::a('Посмотреть продукт на сайте', ['/product/view/' . $formModel->alias],
+$link = Html::a('Посмотреть продукт на сайте', ['/product/view/', 'id_alias' => $formModel->alias],
     ['target' => '_blank', 'class' => 'show-on-site']);
 ?>
 

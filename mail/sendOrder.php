@@ -20,7 +20,6 @@ $cart_data = yii::$app->view->params['cart_data'];
 <p>Емайл: <?= $user_data->email ?></p>
 <p>Телефон: <?= $user_data->phone ?></p>
 <p>Адрес: <?= $user_data->address ?></p>
-<p>Доставка: <?= $user_data->delivery ?></p>
 
 <p>Комментарий:</p>
 <p><?= nl2br($user_data->comment) ?></p>

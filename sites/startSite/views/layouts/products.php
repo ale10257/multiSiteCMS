@@ -7,13 +7,10 @@
 use yii\helpers\Html;
 
 if ($categories = $this->params['products']) {
-
     $level_start = 1;
     $level = 2;
     $menu = null;
-
     foreach ($categories as $key => $category) {
-
         switch ($category->depth) {
             case ($category->depth == $level):
                 $menu .= Html::endTag('li') . PHP_EOL;
@@ -30,7 +27,6 @@ if ($categories = $this->params['products']) {
                 }
                 break;
         };
-
         if (isset($categories[$key + 1]) && $categories[$key + 1]->depth > $category->depth) {
             $menu .= Html::beginTag('li', ['class' => 'dropdown']);
             $menu .= Html::a($category->name . '<span class="caret"></span>', '#', [
@@ -39,12 +35,11 @@ if ($categories = $this->params['products']) {
             ]);
         } else {
             $menu .= Html::beginTag('li');
-            $menu .= Html::a($category->name, ['/product/' . $category->alias]);
+            $menu .= Html::a($category->name, ['/category/' . $category->alias]);
         }
 
         $level = $category->depth;
     }
-
     for ($i = $level; $i > $level_start; $i--) {
         $menu .= Html::endTag('li') . PHP_EOL;
         $menu .= Html::endTag('ul') . PHP_EOL;

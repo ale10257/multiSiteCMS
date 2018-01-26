@@ -24,18 +24,6 @@ class OrderForm extends Model
     public $address;
     /** @var string */
     public $comment;
-    /** @var int */
-    public $delivery;
-    /** @var bool */
-    public $rigid_packing = 1;
-
-    public $delivery_array = [
-        'ПЭK' =>'ПЭK',
-        'Деловые Линии' =>'Деловые Линии',
-        'ЖелДорЭкспедиция' =>'ЖелДорЭкспедиция',
-        'Прочие транспортные компании' =>'Прочие транспортные компании',
-        'Самовывоз(Москва, "Вернисаж в Измайлово")' =>'Самовывоз(Москва, "Вернисаж в Измайлово")'
-    ];
 
     /**
      * @inheritdoc
@@ -43,9 +31,8 @@ class OrderForm extends Model
     public function rules()
     {
         return [
-            [['email', 'phone', 'last_name', 'first_name'], 'required'],
-            [['email', 'phone', 'last_name', 'first_name', 'delivery', 'comment', 'address'], 'string'],
-            ['rigid_packing', 'boolean'],
+            [['email', 'phone', 'last_name', 'first_name', 'address'], 'required'],
+            [['email', 'phone', 'last_name', 'first_name', 'comment', 'address'], 'string'],
             ['email', 'email'],
         ];
     }
@@ -63,7 +50,6 @@ class OrderForm extends Model
             'delivery' => 'Доставка',
             'comment' => 'Комментарий к заказу',
             'address' => 'Адрес доставки',
-            'rigid_packing' => 'Использовать твердую упаковку? (рекомендуется)',
         ];
     }
 

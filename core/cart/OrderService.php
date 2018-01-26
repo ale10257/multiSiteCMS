@@ -10,10 +10,8 @@ namespace app\core\cart;
 
 use app\components\user\User;
 use app\core\cart\repositories\OrderRepository;
-use app\core\discounts\DiscountService;
 use app\core\NotFoundException;
 use Throwable;
-use yii\helpers\ArrayHelper;
 use yii\web\Session;
 use app\core\user\repositories\UserReadRepository;
 

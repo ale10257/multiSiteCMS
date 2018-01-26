@@ -2,6 +2,7 @@
 
 namespace app\sites\startSite\controllers;
 
+use app\core\cart\OrderCheckService;
 use app\core\categories\CacheCategory;
 use app\sites\startSite\BaseController;
 use Yii;
@@ -17,17 +18,24 @@ class SiteController extends BaseController
      */
     private $_feedbackService;
 
+
     /**
      * SiteController constructor.
-     * @param string $id
+     * @param $id
      * @param $module
      * @param CacheCategory $cacheCategory
+     * @param OrderCheckService $orderCheckService
      * @param FeedbackService $feedbackService
      */
-    public function __construct(string $id, $module, CacheCategory $cacheCategory, FeedbackService $feedbackService)
+    public function __construct(
+        $id,
+        $module,
+        CacheCategory $cacheCategory,
+        OrderCheckService $orderCheckService,
+        FeedbackService $feedbackService)
     {
         $this->_feedbackService = $feedbackService;
-        parent::__construct($id, $module, $cacheCategory);
+        parent::__construct($id, $module, $cacheCategory, $orderCheckService);
     }
 
     /**

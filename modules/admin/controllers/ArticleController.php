@@ -82,6 +82,7 @@ class ArticleController extends BaseAdminController
                 'delete-image' => ['post'],
                 'delete-main-image' => ['post'],
                 'change-status' => ['post'],
+                'update-image' => ['post'],
             ],
         ];
         return $arr;

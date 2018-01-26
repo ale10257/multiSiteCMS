@@ -34,7 +34,7 @@ class CategoryController extends BaseAdminController
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public function behaviors()
     {

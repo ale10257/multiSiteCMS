@@ -16,17 +16,11 @@ use app\core\cart\repositories\OrderRepository;
 
 class SendOrder
 {
-    /**
-     * @var MailerInterface
-     */
+    /** @var MailerInterface */
     private $_mailer;
-    /**
-     * @var Session
-     */
+    /** @var Session */
     private $_session;
-    /**
-     * @var OrderService
-     */
+    /** @var OrderService */
     private $_order;
 
     /**
