@@ -77,6 +77,48 @@ class ReservedSettings
                 ]
 
             ],
-        ]
+        ],
+        'size-category-product' => [
+            'name' => 'Размер картинок на страницах категорий продуктов',
+            'alias' => 'size-category-product',
+            'value' => 'no-value',
+            'active' => 1,
+            'childs' => [
+                [
+                    'name' => 'Ширина',
+                    'alias' => 'width',
+                    'value' => '400',
+                    'active' => 1,
+                ],
+                [
+                    'name' => 'Высота',
+                    'alias' => 'height',
+                    'value' => '300',
+                    'active' => 1,
+                ]
+
+            ],
+        ],
+        'product-image' => [
+            'name' => 'Размеры картинок в карточке товара',
+            'alias' => 'product-image',
+            'value' => 'no-value',
+            'active' => 1,
+            'childs' => [
+                [
+                    'name' => 'Ширина',
+                    'alias' => 'width',
+                    'value' => '1024',
+                    'active' => 1,
+                ],
+                [
+                    'name' => 'Высота',
+                    'alias' => 'height',
+                    'value' => '768',
+                    'active' => 1,
+                ]
+
+            ],
+        ],
     ];
 }

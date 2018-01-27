@@ -17,13 +17,9 @@ use yii\web\NotFoundHttpException;
 
 class ArticleGetService
 {
-    /**
-     * @var CacheCategory
-     */
+    /** @var CacheCategory */
     private $_cacheCategory;
-    /**
-     * @var ThumbSettingImg
-     */
+    /** @var ThumbSettingImg */
     private $_settingImg;
 
     /**
@@ -41,7 +37,6 @@ class ArticleGetService
      * @param $alias
      * @return DataArticle
      * @throws NotFoundHttpException
-     * @throws \ImagickException
      * @throws \yii\base\Exception
      */
     public function getOneArticle($alias)
@@ -57,7 +52,7 @@ class ArticleGetService
             $query->where(['alias' => $alias]);
         }
 
-        $article = $query->with([
+        $article = $query->andWhere(['active' => 1])->with([
             'images' => function ($q) {
                 /** @var \yii\db\ActiveQuery $q */
                 $q->orderBy(['sort' => SORT_ASC]);
@@ -85,7 +80,6 @@ class ArticleGetService
         if ($article->images) {
             $imgThumb = $this->_settingImg->createImgThumb('preview-gallery', 'thumb-gallery');
             $imgThumb->web_dir = $article->getWebDir();
-
             foreach ($article->images as $image) {
                 if ($img = $imgThumb->checkFile($image->name)) {
                     $images[] = $img;
