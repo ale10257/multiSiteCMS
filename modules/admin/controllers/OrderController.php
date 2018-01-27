@@ -21,17 +21,11 @@ use yii\web\Response;
 
 class OrderController extends BaseAdminController
 {
-    /**
-     * @var OrderService
-     */
+    /** @var OrderService */
     private $_service;
-    /**
-     * @var OrderProductService
-     */
+    /** @var OrderProductService */
     private $_productService;
-    /**
-     * @var OrderCheckService
-     */
+    /** @var OrderCheckService */
     private $_checkService;
 
     /**
@@ -187,4 +181,3 @@ class OrderController extends BaseAdminController
     }
 
 }
-
