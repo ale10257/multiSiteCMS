@@ -51,12 +51,12 @@ $this->params['breadcrumbs'][] = $product->name;
         <?= $product->description ?>
         <p>Цена: <?= $product->price ?>р.</p>
         <p>Артикул: <?= $product->code ?></p>
-        <p>В наличии: <?= $product->count ?> шт.</p>
         <?php if (!$checkProduct) : ?>
             <?php
             Pjax::begin([
                 'enablePushState' => false
             ]);
+            echo '<p>В наличии:' . $product->count . 'шт.</p>';
             $form = ActiveForm::begin([
                 'action' => Url::to(['product/add']),
                 'options' => [
@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $product->name;
             ActiveForm::end();
             Pjax::end() ?>
         <?php else : ?>
-            <?= $this->render('_ordered_form') ?>
+            <?= $this->render('_ordered_form', ['count' => $product->count]) ?>
         <?php endif ?>
     </div>
 </div>

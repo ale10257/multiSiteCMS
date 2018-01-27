@@ -62,6 +62,7 @@ AppAsset::register($this);
                     Html::a('Edit personal data', ['/login/update']) .
                     '</li>'
                 ),
+                ['label' => 'Cart', 'url' => ['/order']],
                 $products
             ],
         ]);

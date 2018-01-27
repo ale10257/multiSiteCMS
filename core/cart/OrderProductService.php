@@ -35,7 +35,7 @@ class OrderProductService
 
     /**
      * @param OrderProductForm $form
-     * @return void
+     * @return int
      * @throws \yii\web\NotFoundHttpException
      */
     public function create(OrderProductForm $form)
@@ -47,16 +47,13 @@ class OrderProductService
         if (!$form->order_id) {
             $form->order_id = $this->_orderService->getOrderId();
         }
-
         $product = ProductRepository::findOne($form->product_id);
-
+        $this->checkCount($form->count, $product->count);
         $this->setCount($form, $product);
-
         $this->_productOrderRepository->insertValues($form);
         $this->_productOrderRepository->saveItem();
-
         $this->setAll($form->order_id, $form->count, $product->price);
-
+        return $product->count;
     }
 
     /**
@@ -69,7 +66,8 @@ class OrderProductService
         $this->_productOrderRepository = $this->_productOrderRepository->getItem($id);
         $product = new ProductRepository();
         $product = $product->getItem($this->_productOrderRepository->product_id);
-        $count = $form->count - ($this->_productOrderRepository->count);
+        $this->checkCount($form->count, $product->count + $this->_productOrderRepository->count);
+        $count = $form->count - $this->_productOrderRepository->count;
         $product->count += $this->_productOrderRepository->count;
         $this->setCount($form, $product);
         $this->_productOrderRepository->count = $form->count;
@@ -187,7 +185,10 @@ class OrderProductService
     public function checkOrderedProduct(int $product_id)
     {
         if ($order_id = $this->_orderService->checkOrder()) {
-            return $this->_productOrderRepository::find()->where(['order_id' => $order_id, 'product_id' => $product_id])->count();
+            return $this->_productOrderRepository::find()->where([
+                'order_id' => $order_id,
+                'product_id' => $product_id
+            ])->count();
         }
         return false;
     }
@@ -199,11 +200,18 @@ class OrderProductService
      */
     private function setCount(OrderProductForm $form, ProductRepository $product)
     {
-        if ($form->count > $product->count) {
-            throw new \DomainException('Нельзя заказать больше, чем ' . $product->count . ' шт.');
-        } else {
-            $product->count -= $form->count;
-            $product->saveItem();
+        $product->count -= $form->count;
+        $product->saveItem();
+    }
+
+    /**
+     * @param int $count
+     * @param int $productCount
+     */
+    private function checkCount(int $count, int $productCount)
+    {
+        if ($count > $productCount) {
+            throw new \DomainException('Нельзя заказать больше, чем ' . $productCount . ' шт.');
         }
     }
 

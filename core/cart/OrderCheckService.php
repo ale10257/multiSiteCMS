@@ -11,7 +11,6 @@ namespace app\core\cart;
 use app\components\user\User;
 use app\core\cart\repositories\OrderRepository;
 use app\core\discounts\GetDiscount;
-use yii\helpers\ArrayHelper;
 use yii\web\Session;
 
 class OrderCheckService
@@ -98,7 +97,6 @@ class OrderCheckService
                 $data->percent = $discount = $this->_discount->getDiscountPercent($data->sum);
                 $data->discount = round(($data->sum / 100) * $data->percent, 0);
                 $data->total = $data->sum - $data->discount;
-                $data->product_ids = ArrayHelper::map($order->orderProducts, 'product_id', 'product_id');
             }
         }
 

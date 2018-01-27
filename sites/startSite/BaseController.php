@@ -12,11 +12,11 @@ class BaseController extends Controller
     /**
      * @var CacheCategory
      */
-    protected $_cacheCategory;
+    protected $cacheCategory;
     /**
      * @var OrderCheckService
      */
-    private $_orderCheckService;
+    protected $orderCheckService;
 
     /**
      * BaseController constructor.
@@ -27,8 +27,8 @@ class BaseController extends Controller
      */
     public function __construct(string $id, $module, CacheCategory $cacheCategory, OrderCheckService $orderCheckService)
     {
-        $this->_cacheCategory = $cacheCategory;
-        $this->_orderCheckService = $orderCheckService;
+        $this->cacheCategory = $cacheCategory;
+        $this->orderCheckService = $orderCheckService;
         parent::__construct($id, $module);
     }
 
@@ -39,10 +39,10 @@ class BaseController extends Controller
     {
         $this->viewPath = '@app/sites/startSite/views/' . $this->id;
         $this->layout = '@app/sites/startSite/views/layouts/main';
-        $this->view->params['products'] = $this->_cacheCategory->getTreeCategoryActive('product');
-        $this->_orderCheckService->checkOrderRegUser();
-        $this->_orderCheckService->checkTimeout();
-        $this->_orderCheckService->checkEmptyOrder();
+        $this->view->params['products'] = $this->cacheCategory->getTreeCategoryActive('product');
+        $this->orderCheckService->checkOrderRegUser();
+        $this->orderCheckService->checkTimeout();
+        $this->orderCheckService->checkEmptyOrder();
         parent::init();
     }
 }

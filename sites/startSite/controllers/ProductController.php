@@ -52,15 +52,14 @@ class ProductController extends BaseController
      */
     public function behaviors()
     {
-        $arr = parent::behaviors();
-        $arr['verbs'] = [
-            'class' => VerbFilter::class,
-            'actions' => [
-                'add' => ['post'],
-            ],
+        return [
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'add' => ['post'],
+                ],
+            ]
         ];
-
-        return $arr;
     }
 
     /**
@@ -104,8 +103,8 @@ class ProductController extends BaseController
 
         if ($formProduct->load(yii::$app->request->post()) && $formProduct->validate()) {
             try {
-                $this->_productService->create($formProduct);
-                return $this->renderPartial('_ordered_form');
+                $count = $this->_productService->create($formProduct);
+                return $this->renderPartial('_ordered_form', ['count' => $count]);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());
                 return $this->redirect(yii::$app->request->referrer);
