@@ -9,28 +9,20 @@ use app\core\articles\repositories\ArticleRepository as Article;
 use app\core\categories\CategoryRepository as Category;
 use yii\helpers\ArrayHelper;
 
-/**
- * ArticleSearch represents the model behind the search form of `app\tmp\Article`.
- */
 class ArticleSearch extends Model
 {
     /** @var string */
     public $categories_id;
-
     /** @var boolean */
     public $active;
-
     /** @var string */
     public $name;
-    /**
-     * @var CacheCategory
-     */
+    /** @var CacheCategory */
     private $_cacheCategory;
 
     /**
      * @inheritdoc
      */
-
     public function __construct(array $config = [], CacheCategory $cacheCategory)
     {
         parent::__construct($config);

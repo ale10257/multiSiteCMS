@@ -10,7 +10,9 @@ namespace app\core\accessSites;
 
 class AccessService
 {
+    /** @var AccessRepository  */
     private $_repository;
+    /** @var AccessForm  */
     private $_form;
 
     public function __construct(AccessRepository $repository, AccessForm $form)

@@ -20,9 +20,7 @@ class ArticleSearchActive extends Model
 {
     /** @var CacheCategory  */
     private $_cacheCategory;
-    /**
-     * @var ThumbSettingImg
-     */
+    /** @var ThumbSettingImg */
     private $_settingImg;
 
     /**
@@ -58,7 +56,6 @@ class ArticleSearchActive extends Model
     /**
      * @param int $category_id
      * @return ActiveDataProvider
-     * @throws \ImagickException
      * @throws \yii\base\Exception
      */
     public function search(int $category_id)

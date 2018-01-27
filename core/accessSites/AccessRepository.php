@@ -22,7 +22,7 @@ use app\core\user\entities\user\User;
 class AccessRepository extends BaseRepository
 {
     /**
-     * @inheritdoc
+     *@inheritdoc
      */
     public static function tableName()
     {

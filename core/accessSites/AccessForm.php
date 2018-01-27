@@ -16,10 +16,8 @@ class AccessForm extends Model
 {
     /** @var int */
     public $users_id;
-
     /** @var string */
     public $site_constant;
-
     /** @var array  */
     public $users_array = [];
 

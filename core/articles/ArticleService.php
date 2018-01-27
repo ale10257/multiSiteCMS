@@ -23,29 +23,41 @@ use app\core\workWithFiles\helpers\RemoveDirectory;
 
 class ArticleService
 {
+    /** @var ArticleForm  */
     private $_articleForm;
+    /** @var ArticleImageForm  */
     private $_imageForm;
-    private $_articleRepositary;
+    /** @var ArticleRepository  */
+    private $_articleRepository;
+    /** @var ArticleImagesRepository  */
     private $_imageRepositary;
+    /** @var CacheCategory  */
     private $_cacheCategory;
 
-
+    /**
+     * ArticleService constructor.
+     * @param CacheCategory $cacheCategory
+     */
     public function __construct(CacheCategory $cacheCategory)
     {
         $this->_articleForm = new ArticleForm();
         $this->_imageForm = new ArticleImageForm();
-        $this->_articleRepositary = new ArticleRepository();
+        $this->_articleRepository = new ArticleRepository();
         $this->_imageRepositary = new ArticleImagesRepository();
         $this->_cacheCategory = $cacheCategory;
     }
 
-    public function create($form)
+    /**
+     * @param ArticleForm $form
+     * @return int
+     */
+    public function create(ArticleForm $form)
     {
         $form->alias = Inflector::slug($form->name);
-        $this->_articleRepositary->insertValues($form, true);
-        $this->_articleRepositary->saveItem();
+        $this->_articleRepository->insertValues($form, true);
+        $this->_articleRepository->saveItem();
 
-        return $this->_articleRepositary->id;
+        return $this->_articleRepository->id;
     }
 
     /**
@@ -53,11 +65,10 @@ class ArticleService
      * @param int $id
      * @throws \yii\base\Exception
      * @throws \yii\web\NotFoundHttpException
-     * @throws \ImagickException
      */
     public function update($form, int $id)
     {
-        $article = $this->_articleRepositary->getItem($id);
+        $article = $this->_articleRepository->getItem($id);
         $web_dir = $article->getWebDir();
 
         if ($article->image) {
@@ -101,7 +112,7 @@ class ArticleService
      */
     public function getUpdateForm(int $id)
     {
-        if (!$article = $this->_articleRepositary::find()
+        if (!$article = $this->_articleRepository::find()
             ->where(['id' => $id])
             ->with('category')
             ->with([
@@ -136,9 +147,9 @@ class ArticleService
      */
     public function delete($id)
     {
-        $this->_articleRepositary = $this->_articleRepositary->getItem($id);
-        $this->_articleRepositary->deleteItem();
-        RemoveDirectory::removeDirectory($this->_articleRepositary->getWebDir());
+        $this->_articleRepository = $this->_articleRepository->getItem($id);
+        $this->_articleRepository->deleteItem();
+        RemoveDirectory::removeDirectory($this->_articleRepository->getWebDir());
     }
 
     /**
@@ -147,7 +158,7 @@ class ArticleService
      */
     public function changeActive(int $id, int $status = null)
     {
-        $this->_articleRepositary->changeActive($id, $status);
+        $this->_articleRepository->changeActive($id, $status);
     }
 
     /**
@@ -158,7 +169,7 @@ class ArticleService
      */
     public function deleteMainImage($id): bool
     {
-        $article = $this->_articleRepositary->getItem($id);
+        $article = $this->_articleRepository->getItem($id);
         if ($image = $article->image) {
             $article->image = '';
             $article->updateField('image');
@@ -167,6 +178,9 @@ class ArticleService
         return true;
     }
 
+    /**
+     * @return CategoryRepository[]
+     */
     public function getLeavesCategories()
     {
         return $this->_cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_ARTICLE);

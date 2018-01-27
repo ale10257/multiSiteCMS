@@ -16,19 +16,14 @@ class ArticleImageForm extends Model
 {
     /** @var int */
     public $id;
-
     /** @var string */
     public $name;
-
     /** @var int */
     public $articles_id;
-
     /** @var string */
     public $alt;
-
     /** @var string */
     public $title_link;
-
     /** @var int */
     public $sort;
 

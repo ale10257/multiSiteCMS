@@ -14,8 +14,6 @@ use app\core\other\traits\Sort;
 use app\core\workWithFiles\DataPathImage;
 
 /**
- * This is the model class for table "article_images".
- *
  * @property int $id
  * @property string $name
  * @property int $articles_id
@@ -31,7 +29,6 @@ class ArticleImagesRepository extends BaseRepository
 
     /** @var DataPathImage */
     public $imgThumb;
-
 
     /**
      * @inheritdoc

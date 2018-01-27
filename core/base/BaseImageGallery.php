@@ -12,9 +12,7 @@ use app\core\workWithFiles\helpers\DeleteImages;
 
 abstract class BaseImageGallery
 {
-    /**
-     * @var \app\core\products\repositories\ProductImagesRepository|\app\core\articles\repositories\ArticleImagesRepository
-     */
+    /** @var \app\core\products\repositories\ProductImagesRepository|\app\core\articles\repositories\ArticleImagesRepository */
     protected $_repository;
 
     /**

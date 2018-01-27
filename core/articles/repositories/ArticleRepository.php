@@ -19,8 +19,6 @@ use app\core\workWithFiles\helpers\GetWebDir;
 use yii\behaviors\TimestampBehavior;
 
 /**
- * This is the model class for table "articles".
- *
  * @property int $id
  * @property string $name
  * @property string $alias

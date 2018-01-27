@@ -16,27 +16,15 @@ use app\core\user\entities\user\User;
 
 class MenuAdminService
 {
-    /**
-     * @var MenuAdminRepository
-     */
+    /** @var MenuAdminRepository */
     private $_repository;
-
-    /**
-     * @var MenuAdminForm
-     */
+    /** @var MenuAdminForm */
     private $_menuAdminForm;
-
     /** @var MenuAdminRepository */
     private $_parent;
-
-    /**
-     * @var ManagerInterface
-     */
+    /** @var ManagerInterface */
     private $_authManager;
-
-    /**
-     * @var \ale10257\ext\ChangeTreeBehavior
-     */
+    /** @var \ale10257\ext\ChangeTreeBehavior */
     private $_tree;
 
     /**

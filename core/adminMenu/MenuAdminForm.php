@@ -16,27 +16,21 @@ class MenuAdminForm extends Model implements Form
 {
     /** @var string */
     public $name;
-
     /** @var string */
     public $title;
-
     /** @var string */
     public $icon;
-
     /** @var string */
     public $parent;
-
     /** @var string */
     public $description;
-
     /** @var boolean */
     public $show_in_sidebar;
-
     /** @var array */
     public $roles = [];
-
     /** @var array */
     public $selectedRoles = [];
+
     /**
      * @inheritdoc
      */
