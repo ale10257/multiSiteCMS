@@ -14,22 +14,25 @@ use yii\base\Model;
 
 class FeedBackForm extends Model
 {
+    /** @var string  */
     private $_secret_key = 'key';
+    /** @var GetOneSetting  */
+    private $_setting;
+    /** @var string */
     public $site_key;
-
+    /** @var string */
     public $title;
+    /** @var string */
     public $email;
+    /** @var string */
     public $text;
+    /** @var ReCaptchaValidator */
     public $reCaptcha;
+    /** @var string */
     public $name;
+    /** @var string */
     public $phone;
     public $file;
-    public $presentation;
-
-    /**
-     * @var GetOneSetting
-     */
-    private $_setting;
 
     /**
      * FeedBackForm constructor.
@@ -57,7 +60,6 @@ class FeedBackForm extends Model
             [['name', 'email', 'phone', 'title', 'text'], 'trim'],
             ['title', 'string', 'max' => 128],
             ['email', 'email'],
-            ['presentation', 'boolean'],
             [
                 ['file'],
                 'file',
@@ -66,7 +68,7 @@ class FeedBackForm extends Model
                 'maxSize' => 1024 * 1024 * 2,
                 'tooBig' => 'Размер файла не может превышать 2-ух мегабайт'
             ],
-            [['reCaptcha'], ReCaptchaValidator::className(), 'when' => function () {
+            [['reCaptcha'], ReCaptchaValidator::class, 'when' => function () {
                 return $this->site_key;
             }, 'secret' => $this->_secret_key,]
         ];
@@ -80,7 +82,6 @@ class FeedBackForm extends Model
             'text' => 'Комментарий',
             'phone' => 'Телефон',
             'reCaptcha' => '',
-            'presentation' => 'Заказать презентацию',
             'file' => 'Загрузить файлы (ваши образцы в форматах jpg, png, tiff, pdf)'
         ];
     }
