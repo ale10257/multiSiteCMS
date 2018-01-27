@@ -112,8 +112,7 @@ class OrderService
      */
     public function getOrderForSend(int $id)
     {
-        $this->_repository = $this->_repository::find()->where(['id' => $id])->with('orderProducts.product')->one();
-        return $this->_repository;
+        return $this->_repository::find()->where(['id' => $id])->with('orderProducts.product')->one();
     }
 
 
