@@ -8,19 +8,14 @@
 
 namespace app\core\feedback;
 
-use app\core\settings\GetOneSetting;
 use yii\mail\MailerInterface;
 use yii\web\UploadedFile;
 
 class FeedbackService
 {
-    /**
-     * @var FeedBackForm
-     */
+    /** @var FeedBackForm */
     private $_form;
-    /**
-     * @var MailerInterface
-     */
+    /** @var MailerInterface */
     private $_mailer;
 
     /**
