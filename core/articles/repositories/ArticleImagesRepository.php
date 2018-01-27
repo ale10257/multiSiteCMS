@@ -63,6 +63,9 @@ class ArticleImagesRepository extends BaseRepository
         return $this->hasOne(ArticleRepository::className(), ['id' => 'articles_id']);
     }
 
+    /**
+     * @return string
+     */
     public function getWebDir()
     {
         return $this->article->getWebDir();
