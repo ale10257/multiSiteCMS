@@ -64,13 +64,8 @@ class ArticleSearchActive extends Model
             ->where(['categories_id' => $category_id, 'active' => 1])
             ->with('category')
             ->orderBy(['updated_at' => SORT_DESC,]);
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
-
+        $dataProvider = new ActiveDataProvider(['query' => $query]);
         $imgThumb = $this->_settingImg->createImgThumb('preview-gallery', 'thumb-gallery');
-
         foreach ($dataProvider->getModels() as $model) {
             /** @var ArticleRepository $model */
             if ($model->image) {
