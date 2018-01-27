@@ -12,13 +12,6 @@
         Телефон: <?= $data->phone ?>
     </p>
 <?php endif ?>
-
-<?php if (!empty($data->presentation)) : ?>
-    <p>
-        Заказать презентацию: Да
-    </p>
-<?php endif ?>
-
 <h3>
     Текст сообщения:
 </h3>

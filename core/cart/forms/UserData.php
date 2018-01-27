@@ -20,8 +20,6 @@ class UserData
     /** @var string */
     public $phone;
     /** @var string */
-    public $delivery;
-    /** @var string */
     public $comment;
     /** @var string */
     public $address;
@@ -43,7 +41,6 @@ class UserData
         $this->email = $this->_form->email;
         $this->phone = $this->_form->phone;
         $this->address = $this->_form->address;
-        $this->delivery = $this->_form->delivery;
         $this->comment = $this->_form->comment;
     }
 

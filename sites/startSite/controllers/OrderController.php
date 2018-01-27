@@ -29,6 +29,7 @@ class OrderController extends BaseController
     private $_sendOrder;
     /** @var FeedbackService */
     private $_feedbackService;
+    /** @var \yii\web\Session  */
     private $_session;
 
     /**
@@ -115,6 +116,31 @@ class OrderController extends BaseController
         }
 
         return $this->goHome();
+    }
+
+    /**
+     * @return \yii\web\Response
+     */
+    public function actionSendOrder()
+    {
+        $formModel = $this->_formService->getForm();
+
+        if ($formModel->load(yii::$app->request->post())) {
+            if (!$formModel->validate()) {
+                $this->_session->setFlash('error', FirstErrors::get($formModel));
+                return $this->redirect(yii::$app->request->referrer);
+            }
+            try {
+                $this->_sendOrder->sendEmail($formModel, yii::$app->params['adminEmail'], yii::$app->name);
+                $this->_session->setFlash('success', 'Спасибо за заказ. Мы свяжемся с вами в ближайшее время.');
+                return $this->goHome();
+            } catch (\Exception $e) {
+                $this->_session->setFlash('error', $e->getMessage());
+                return $this->redirect(yii::$app->request->referrer);
+            }
+        }
+
+        throw new \DomainException();
     }
 
     /**

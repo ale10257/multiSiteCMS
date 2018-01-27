@@ -1,21 +1,16 @@
 <?php
-
 /**
  * @var \app\core\cart\forms\UserData $user_data
  * @var \app\core\cart\repositories\OrderProductRepository[] $order_products
  * @var int $order_id
  * @var \app\core\cart\ProductCount $cart_data
  */
-
-$cart_data = yii::$app->view->params['cart_data'];
 ?>
 
 <h2>Здравствуйте, <?= $user_data->firstName . ' ' . $user_data->lastName ?>!</h2>
 
 <p>Вы успешно разместили заказ на сайте <?= yii::$app->name ?></p>
-
 <p>ID заказа: <?= $order_id ?></p>
-
 <h3>Ваши данные</h3>
 <p>Емайл: <?= $user_data->email ?></p>
 <p>Телефон: <?= $user_data->phone ?></p>
@@ -61,16 +56,13 @@ $cart_data = yii::$app->view->params['cart_data'];
                 <?= $product->product->name ?>
             </td>
             <td style="border: 1px solid #cecece; border-collapse: collapse; padding: 5px; vertical-align: middle">
-                Со склада: <?= $product->from_stocke ?>
-                <br>На заказ: <?= $product->to_order ?>
-                <?php $all = $product->from_stocke + $product->to_order ?>
-                <br>Всего: <?= $all ?>
+                <br>Заказано: <?= $product->count ?>
             </td>
             <td style="border: 1px solid #cecece; border-collapse: collapse; padding: 5px; vertical-align: middle">
                 <?= yii::$app->formatter->asInteger($product->product->price) ?>
             </td>
             <td style="border: 1px solid #cecece; border-collapse: collapse; padding: 5px; vertical-align: middle">
-                <?= yii::$app->formatter->asInteger($product->product->price * $all) ?>
+                <?= yii::$app->formatter->asInteger($product->product->price * $product->count) ?>
             </td>
         </tr>
     <? endforeach ?>

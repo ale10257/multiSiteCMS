@@ -8,6 +8,7 @@
 
 namespace app\core\cart\forms;
 
+use app\core\cart\OrderCheckService;
 use app\core\cart\OrderService;
 use app\core\NotFoundException;
 use yii\mail\MailerInterface;
@@ -22,19 +23,22 @@ class SendOrder
     private $_session;
     /** @var OrderService */
     private $_order;
+    /** @var OrderCheckService */
+    private $_orderCheckService;
 
     /**
      * SendOrder constructor.
      * @param MailerInterface $mailer
      * @param Session $session
      * @param OrderService $order
+     * @param OrderCheckService $orderCheckService
      */
-    public function __construct(MailerInterface $mailer, Session $session, OrderService $order)
+    public function __construct(MailerInterface $mailer, Session $session, OrderService $order, OrderCheckService $orderCheckService)
     {
-
         $this->_mailer = $mailer;
         $this->_session = $session;
         $this->_order = $order;
+        $this->_orderCheckService = $orderCheckService;
     }
 
     /**
@@ -58,7 +62,12 @@ class SendOrder
         $admin_mail = $this->_mailer
             ->compose(
                 ['html' => 'sendOrder'],
-                ['user_data' => $user_data, 'order_products' => $order->orderProducts, 'order_id' => $order_id]
+                [
+                    'user_data' => $user_data,
+                    'order_products' => $order->orderProducts,
+                    'order_id' => $order_id,
+                    'cart_data' => $this->_orderCheckService->productsCount($order->id)
+                ]
             )
             ->setFrom($adminEmail)
             ->setSubject('Заказ на сайте ' . $appName . ' #' . $order_id);
