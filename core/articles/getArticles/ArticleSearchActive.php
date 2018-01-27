@@ -45,7 +45,6 @@ class ArticleSearchActive extends Model
     {
         /** @var \app\core\categories\CategoryRepository[] $categories */
         $categories = ArrayHelper::index($this->_cacheCategory->getLeavesCategoryActive('article'), 'alias');
-
         if (empty($categories[$alias])) {
             throw new NotFoundHttpException();
         }
