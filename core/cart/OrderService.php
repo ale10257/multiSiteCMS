@@ -115,7 +115,6 @@ class OrderService
         return $this->_repository::find()->where(['id' => $id])->with('orderProducts.product')->one();
     }
 
-
     /**
      * @param OrderRepository $repository
      * @param string $data
