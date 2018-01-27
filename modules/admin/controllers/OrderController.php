@@ -12,7 +12,6 @@ use app\components\helpers\FirstErrors;
 use app\core\cart\OrderCheckService;
 use app\core\cart\OrderProductService;
 use app\core\cart\OrderService;
-use app\core\cart\repositories\OrderRepository;
 use app\core\user\services\CheckCan;
 use app\core\cart\OrderSearch;
 use yii\filters\VerbFilter;
@@ -116,9 +115,8 @@ class OrderController extends BaseAdminController
     {
         $cart_data = $this->_checkService->productsCount($id);
         $model = $this->_productService->getOrderWithForms($id);
-        $formModel = $this->_productService->getNewForm();
 
-        return $this->render('view', ['cart_data' => $cart_data, 'model' => $model, 'formModel' => $formModel]);
+        return $this->render('view', ['cart_data' => $cart_data, 'model' => $model]);
     }
 
     /**
@@ -163,29 +161,6 @@ class OrderController extends BaseAdminController
             }
             try {
                 $this->_productService->update($formModel, $id);
-                return $this->redirect(yii::$app->request->referrer);
-            } catch (\Exception $e) {
-                yii::$app->session->setFlash('error', $e->getMessage());
-                return $this->redirect(yii::$app->request->referrer);
-            }
-        }
-        return false;
-    }
-
-    /**
-     * @return bool|Response
-     */
-    public function actionAddProduct()
-    {
-        $formModel = $this->_productService->getNewForm();
-
-        if ($formModel->load(yii::$app->request->post())) {
-            if (!$formModel->validate()) {
-                $this->session->setFlash('error', FirstErrors::get($formModel));
-                return $this->redirect(yii::$app->request->referrer);
-            }
-            try {
-                $this->_productService->createByCode($formModel);
                 return $this->redirect(yii::$app->request->referrer);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());

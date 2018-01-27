@@ -25,34 +25,17 @@ use yii\helpers\FileHelper;
 
 class ImgThumb
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     private $width = 200;
-
-    /**
-     * @var int
-     */
+    /** @var int */
     private $height = 150;
-
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $crop = false;
-
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $orientation = false;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $thumb_dir = 'thumb';
-
-    /**
-     * @var string
-     */
+    /** @var string */
     private $web_dir;
 
     /**
@@ -82,7 +65,6 @@ class ImgThumb
     /**
      * @param string $file
      * @return DataPathImage|bool
-     * @throws \ImagickException
      * @throws yii\base\Exception
      */
     public function checkFile(string $file)

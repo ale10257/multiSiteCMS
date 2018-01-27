@@ -80,7 +80,6 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 <?php endforeach; ?>
         ];
     }
-<?php foreach ($relations as $name => $relation): ?>
 
     /**
     * @inheritdoc
@@ -91,6 +90,8 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
             self::SCENARIO_DEFAULT => self::OP_ALL,
         ];
     }
+
+<?php foreach ($relations as $name => $relation): ?>
 
     /**
      * @return \yii\db\ActiveQuery

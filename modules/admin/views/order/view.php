@@ -77,16 +77,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?= $orderProduct->product->name ?>
                                 </td>
                                 <td>
-                                    Со склада: <?= $orderProduct->from_stocke ?>
-                                    <br>На заказ: <?= $orderProduct->to_order ?>
-                                    <?php $all = $orderProduct->from_stocke + $orderProduct->to_order ?>
-                                    <br>Всего: <?= $all ?>
+                                    Заказано: <?= $orderProduct->count ?>
                                 </td>
                                 <td>
                                     <?= yii::$app->formatter->asInteger($orderProduct->product->price) ?>
                                 </td>
                                 <td>
-                                    <?= yii::$app->formatter->asInteger($orderProduct->product->price * $all) ?>
+                                    <?= yii::$app->formatter->asInteger($orderProduct->product->price * $orderProduct->count) ?>
                                 </td>
                                 <td>
                                     <?php
@@ -114,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ]);
                                         ?>
                                         <?= $form->field($orderProduct->form,
-                                            'num')->textInput(['placeholder' => 'кол-во'])->label(false) ?>
+                                            'count')->textInput(['placeholder' => 'кол-во'])->label(false) ?>
                                         <?= $form->field($orderProduct->form,
                                             'product_id')->hiddenInput()->label(false) ?>
                                         <div class="form-group">
@@ -140,33 +137,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td></td>
                         </tr>
                     </table>
-
-                    <?php if ($model->status != $model::STATUS_ORDER_CLOSED) : ?>
-                        <div class="row">
-                            <div class="col-md-2">
-
-                                <h4>Добавить продукт в заказ по артикулу</h4>
-
-                                <?php $form = ActiveForm::begin([
-                                    'action' => Url::to(['add-product'])
-                                ]);
-                                ?>
-
-                                <?= $form->field($formModel, 'code') ?>
-                                <?= $form->field($formModel, 'num') ?>
-                                <?= $form->field($formModel,
-                                    'order_id')->hiddenInput(['value' => $model->id])->label(false) ?>
-
-                                <div class="form-group">
-                                    <?= Html::submitButton('Добавить', ['class' => 'btn btn-success']) ?>
-                                </div>
-
-                                <?php ActiveForm::end() ?>
-                            </div>
-                        </div>
-                    <?php endif ?>
-
-
                 </div>
             </div>
         </div>

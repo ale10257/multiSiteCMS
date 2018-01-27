@@ -136,12 +136,14 @@ class OrderService
     public function delete(int $id)
     {
         $order = $this->_repository::find()->where(['id' => $id])->with('orderProducts')->one();
-        if ($order->orderProducts) {
-            $orderService = new OrderProductService($this);
-            foreach ($order->orderProducts as $orderProduct) {
-                $orderService->deleteOneProduct($orderProduct->id, $orderProduct);
+        if ($order->status != $this->_repository::STATUS_ORDER_CLOSED) {
+            if ($orderService = new OrderProductService($this)) {
+                foreach ($order->orderProducts as $orderProduct) {
+                    $orderService->deleteOneProduct($orderProduct->id, $orderProduct);
+                }
             }
         }
+
         $order->deleteItem();
     }
 

@@ -33,7 +33,6 @@ use yii\behaviors\TimestampBehavior;
  */
 class OrderRepository extends BaseRepository
 {
-
     const STATUS_ORDER_ERROR_TIMEOUT = -1;
     const STATUS_ORDER_CREATION = 0;
     const STATUS_ORDER_NOT_VERIFED = 10;
