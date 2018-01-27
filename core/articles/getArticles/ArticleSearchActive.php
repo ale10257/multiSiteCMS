@@ -61,7 +61,7 @@ class ArticleSearchActive extends Model
     public function search(int $category_id)
     {
         $query = ArticleRepository::find()
-            ->where(['categories_id' => $category_id])
+            ->where(['categories_id' => $category_id, 'active' => 1])
             ->with('category')
             ->orderBy(['updated_at' => SORT_DESC,]);
 
