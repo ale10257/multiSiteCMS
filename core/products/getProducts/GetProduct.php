@@ -37,7 +37,6 @@ class GetProduct
      * @param $alias
      * @return DataCategory
      * @throws NotFoundHttpException
-     * @throws \ImagickException
      * @throws \yii\base\Exception
      */
     public function getCategory($alias)
@@ -52,12 +51,12 @@ class GetProduct
         /** @var CategoryRepository $category */
         $category = $categories[$alias];
 
-        if (!ProductRepository::find()->where(['categories_id' => $category->id])->count()) {
+        if (!ProductRepository::find()->where(['categories_id' => $category->id, 'active' => 1])->count()) {
             throw new NotFoundHttpException();
         }
 
         $products = ProductRepository::find()
-            ->where(['categories_id' => $category->id])
+            ->where(['categories_id' => $category->id, 'active' => 1])
             ->with([
                 'images' => function ($q) {
                     /** @var \yii\db\ActiveQuery $q */
@@ -89,21 +88,21 @@ class GetProduct
     }
 
     /**
-     * @param $id
+     * @param $id_alias
      * @return ProductRepository
      * @throws NotFoundHttpException
-     * @throws \ImagickException
      * @throws \yii\base\Exception
      */
     public function getProduct($id_alias)
     {
-        if (!ProductRepository::find()->where(['id' => $id_alias])->orWhere(['alias' => $id_alias])->count()) {
+        if (!ProductRepository::find()->where(['id' => $id_alias])->orWhere(['alias' => $id_alias])->andWhere(['active' => 1])->count()) {
             throw new NotFoundHttpException();
         }
 
         $product = ProductRepository::find()
             ->where(['id' => $id_alias])
             ->orWhere(['alias' => $id_alias])
+            ->andWhere(['active' => 1])
             ->with([
                 'images' => function ($q) {
                     /** @var \yii\db\ActiveQuery $q */
