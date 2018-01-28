@@ -125,7 +125,8 @@ class ProductService implements Service
         $category = $this->getCategory($category_id);
         $form = $this->_productForm;
         $form->categories_id = $category->id;
-        $form->categories = $category->name;
+        $categories = $this->_cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_PRODUCT);
+        $form->categories = ArrayHelper::map($categories, 'id', 'name');
 
         return $form;
     }

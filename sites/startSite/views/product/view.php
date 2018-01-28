@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $product->name;
             Pjax::begin([
                 'enablePushState' => false
             ]);
-            echo '<p>В наличии:' . $product->count . 'шт.</p>';
+            echo '<p>В наличии: ' . $product->count . 'шт.</p>';
             $form = ActiveForm::begin([
                 'action' => Url::to(['product/add']),
                 'options' => [
