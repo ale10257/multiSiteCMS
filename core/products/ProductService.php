@@ -15,6 +15,8 @@ use app\core\products\forms\ProductForm;
 use app\core\products\forms\ProductImageForm;
 use app\core\products\repositories\ProductImagesRepository;
 use app\core\products\repositories\ProductRepository;
+use app\core\workWithFiles\helpers\ChangeDirectory;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\web\NotFoundHttpException;
 use app\core\workWithFiles\helpers\RemoveDirectory;
@@ -83,15 +85,18 @@ class ProductService implements Service
      * @param ProductForm $form
      * @param int $id
      * @throws NotFoundHttpException
+     * @throws \yii\base\ErrorException
      * @throws \yii\base\Exception
      */
     public function update($form, int $id)
     {
         $product = $this->_repository->getItem($id);
+        $webDir = $product->getWebDir();
+        $oldCategory = $product->categories_id;
         $product->insertValues($form);
         $product->saveItem();
 
-        if ($images = $form->uploadAnyFile($product->getWebDir(), 'any_images')) {
+        if ($images = $form->uploadAnyFile($webDir, 'any_images')) {
             $sort = $this->_imagesRepository->getNumLastElement(['products_id' => $product->id], 'sort');
             foreach ($images as $image) {
                 $img = new ProductImagesRepository();
@@ -101,6 +106,12 @@ class ProductService implements Service
                 $img->saveItem();
                 $sort++;
             }
+        }
+
+        $newCategory = $product->categories_id;
+
+        if ($oldCategory != $newCategory) {
+            ChangeDirectory::changeDirectory($webDir, $product);
         }
     }
 
@@ -114,7 +125,7 @@ class ProductService implements Service
         $category = $this->getCategory($category_id);
         $form = $this->_productForm;
         $form->categories_id = $category->id;
-        $form->category_name = $category->name;
+        $form->categories = $category->name;
 
         return $form;
     }
@@ -141,7 +152,8 @@ class ProductService implements Service
 
         $this->_productForm->createUpdateForm($product);
 
-        $this->_productForm->category_name = $product->category->name;
+        $categories = $this->_cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_PRODUCT);
+        $this->_productForm->categories = ArrayHelper::map($categories, 'id', 'name');
 
         if ($product->images) {
             $this->_productForm->webDir = $product->getWebDir();

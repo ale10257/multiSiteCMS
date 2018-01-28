@@ -15,6 +15,7 @@ use app\core\articles\repositories\ArticleImagesRepository;
 use app\core\articles\repositories\ArticleRepository;
 use app\core\categories\CacheCategory;
 use app\core\categories\CategoryRepository;
+use app\core\workWithFiles\helpers\ChangeDirectory;
 use yii\helpers\Inflector;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
@@ -63,12 +64,14 @@ class ArticleService
     /**
      * @param ArticleForm $form
      * @param int $id
+     * @throws NotFoundHttpException
+     * @throws \yii\base\ErrorException
      * @throws \yii\base\Exception
-     * @throws \yii\web\NotFoundHttpException
      */
     public function update($form, int $id)
     {
         $article = $this->_articleRepository->getItem($id);
+        $oldCategory = $article->categories_id;
         $web_dir = $article->getWebDir();
 
         if ($article->image) {
@@ -94,6 +97,12 @@ class ArticleService
                 $img->saveItem();
                 $sort++;
             }
+        }
+
+        $newCategory = $article->categories_id;
+
+        if ($oldCategory != $newCategory) {
+            ChangeDirectory::changeDirectory($web_dir, $article);
         }
     }
 

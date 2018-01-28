@@ -5,6 +5,7 @@
 /* @var $new boolean */
 
 use app\components\helpers\RemoveImgAdminHelper;
+use kartik\select2\Select2;
 use vova07\imperavi\Widget;
 use app\modules\admin\assets\AdminSortableAsset;
 use yii\helpers\Html;
@@ -37,8 +38,13 @@ $link = Html::a('Посмотреть продукт на сайте', ['/produc
         <div class="box">
             <div class="box-body">
                 <?= $form->field($formModel, 'name')->textInput(['maxlength' => true]) ?>
-                <?= $form->field($formModel, 'categories_id')->dropDownList([
-                    $formModel->categories_id => $formModel->category_name
+                <?= $form->field($formModel, 'categories_id')->widget(Select2::classname(), [
+                    'data' => $formModel->categories,
+                    'language' => 'ru',
+                    'options' => ['placeholder' => 'Родительская категория'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
                 ]) ?>
                 <?php if (!$new) : ?>
                     <?= $form->field($formModel, 'alias')->textInput(['maxlength' => true]) ?>

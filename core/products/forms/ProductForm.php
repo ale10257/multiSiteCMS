@@ -8,7 +8,6 @@
 
 namespace app\core\products\forms;
 
-use app\core\categories\CategoryRepository;
 use app\core\other\helpers\InsertValuesHelper;
 use app\core\other\validators\AliasValidator;
 use app\core\products\repositories\ProductRepository;
@@ -53,8 +52,8 @@ class ProductForm extends Model
     public $uploaded_images = [];
     /** @var string */
     public $webDir;
-    /** @var string */
-    public $category_name;
+    /** @var array */
+    public $categories;
 
     /**
      * @inheritdoc

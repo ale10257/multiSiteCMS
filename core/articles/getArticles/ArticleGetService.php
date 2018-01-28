@@ -86,8 +86,8 @@ class ArticleGetService
                 }
             }
         }
-
         $dataArticle->articleGallery = $images;
+
         return $dataArticle;
     }
 }
