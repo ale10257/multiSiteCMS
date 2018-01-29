@@ -190,8 +190,21 @@ class ProductService implements Service
         return $this->_cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_PRODUCT);
     }
 
+    /**
+     * @param int $id
+     * @param int|null $status
+     */
     public function changeActive(int $id, int $status = null)
     {
         $this->_repository->changeActive($id, $status);
+    }
+
+    /**
+     * @param $jsonData
+     * @throws \yii\db\Exception
+     */
+    public function sort($jsonData)
+    {
+        $this->_repository->changeSort(json_decode($jsonData), 'sort');
     }
 }

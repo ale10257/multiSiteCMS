@@ -18,7 +18,6 @@ class SiteController extends BaseController
      */
     private $_feedbackService;
 
-
     /**
      * SiteController constructor.
      * @param $id

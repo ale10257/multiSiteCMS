@@ -75,6 +75,7 @@ $link = Html::a('Посмотреть продукт на сайте', ['/produc
                         }
                         ?>
                     </div>
+                    <?= $form->field($formModel, 'sort')->hiddenInput()->label(false) ?>
                     <?= $form->field($formModel, 'any_images[]')->fileInput([
                         'multiple' => true,
                         'accept' => 'image/*'

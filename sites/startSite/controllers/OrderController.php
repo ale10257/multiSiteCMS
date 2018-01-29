@@ -14,7 +14,6 @@ use app\core\cart\forms\SendOrder;
 use app\core\cart\OrderCheckService;
 use app\core\cart\OrderProductService;
 use app\core\categories\CacheCategory;
-use app\core\feedback\FeedbackService;
 use app\sites\startSite\BaseController;
 use Yii;
 use yii\filters\VerbFilter;
@@ -27,9 +26,7 @@ class OrderController extends BaseController
     private $_formService;
     /** @var SendOrder */
     private $_sendOrder;
-    /** @var FeedbackService */
-    private $_feedbackService;
-    /** @var \yii\web\Session  */
+    /** @var \yii\web\Session */
     private $_session;
 
     /**
@@ -41,7 +38,6 @@ class OrderController extends BaseController
      * @param OrderProductService $service
      * @param OrderFormService $formService
      * @param SendOrder $sendOrder
-     * @param FeedbackService $feedbackService
      */
     public function __construct(
         $id,
@@ -50,14 +46,12 @@ class OrderController extends BaseController
         OrderCheckService $orderCheckService,
         OrderProductService $service,
         OrderFormService $formService,
-        SendOrder $sendOrder,
-        FeedbackService $feedbackService
+        SendOrder $sendOrder
     )
     {
         $this->_service = $service;
         $this->_formService = $formService;
         $this->_sendOrder = $sendOrder;
-        $this->_feedbackService = $feedbackService;
         $this->_session = yii::$app->session;
         parent::__construct($id, $module, $cacheCategory, $orderCheckService);
     }

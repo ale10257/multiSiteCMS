@@ -109,6 +109,7 @@ class ProductForm extends Model
             'code',
             'active',
             'new_prod',
+            'sort',
         ]);
     }
 }
