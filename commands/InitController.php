@@ -24,7 +24,7 @@ class InitController extends Controller
      */
     public function init()
     {
-        define('SITE_ROOT_NAME', 'startSite');
+        defined('SITE_ROOT_NAME') or define('SITE_ROOT_NAME', 'startSite');
     }
 
     /**
@@ -44,9 +44,9 @@ class InitController extends Controller
         $form->login = $this->prompt('Enter login for superuser root:', ['required' =>true]);
         $form->email = $this->prompt('Enter email for superuser root:', ['required' =>true]);
         $form->passwd = $this->prompt('Enter password for superuser root (at least 6 characters):', ['required' =>true]);
+        $form->first_name = $this->prompt('Enter first name for superuser root:', ['required' =>true]);
+        $form->last_name = $this->prompt('Enter last name for superuser root:', ['required' =>true]);
         $form->role = 'root';
-        $form->first_name = 'root';
-        $form->last_name = 'superUSer';
 
         if (!$form->validate()) {
             foreach ($form->firstErrors as $error) {

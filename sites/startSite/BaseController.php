@@ -6,7 +6,6 @@ use app\core\cart\OrderCheckService;
 use app\core\categories\CacheCategory;
 use yii\web\Controller;
 
-
 class BaseController extends Controller
 {
     /**

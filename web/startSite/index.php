@@ -3,8 +3,8 @@
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
-define('SITE_ROOT_NAME', 'startSite');
-define('UPLOAD_DIR', 'uploads');
+defined('SITE_ROOT_NAME') or define('SITE_ROOT_NAME', 'startSite');
+defined('UPLOAD_DIR') or define('UPLOAD_DIR', 'uploads');
 
 require __DIR__ . '/../../vendor/autoload.php';
 require __DIR__ . '/../../vendor/yiisoft/yii2/Yii.php';
