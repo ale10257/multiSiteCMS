@@ -35,12 +35,8 @@
 ------------
 Все web директории для сайтов расположены в каталоге web установленного приложения. Например, изначально в папке web есть директория startSite с демо данными. В каталоге web/startSite - единственная точка входа на сайт (и в админ панель, и на фронтэнд) - файл index.php. В данном файле объявлены две глобальные константы SITE_ROOT_NAME и UPLOAD_DIR: 
 
-<code>
-
-defined('SITE_ROOT_NAME') or define('SITE_ROOT_NAME', 'startSite');
-
-defined('UPLOAD_DIR') or define('UPLOAD_DIR', 'uploads');
-</code>
+<code>defined('SITE_ROOT_NAME') or define('SITE_ROOT_NAME', 'startSite');</code>  
+<code>defined('UPLOAD_DIR') or define('UPLOAD_DIR', 'uploads');</code>
 
 Для корректной работы приложения константа SITE_ROOT_NAME должна соответствовать каталогу с сайтом (доменом.). Т.е. если вы присвоили константе SITE_ROOT_NAME значение test, то и каталог должен называться test.
 
