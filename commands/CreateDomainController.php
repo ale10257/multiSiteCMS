@@ -22,9 +22,11 @@ class CreateDomainController extends Controller
         $site_constant = $this->prompt('Enter SITE CONSTANT', ['required' => true]);
         $app_name = $this->prompt('Enter Application Name', ['required' => true]);
 
-        $startFolder = yii::getAlias('@app/sites/startSite');
-        $startFolderConfig = yii::getAlias('@app/config/startSite');
-        $startFolderWeb = yii::getAlias('@app/web/startSite');
+        $app = FileHelper::normalizePath(yii::getAlias('@app'));
+
+        $startFolder = $app . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'startSite';
+        $startFolderConfig = str_replace('sites', 'config', $startFolder);
+        $startFolderWeb = str_replace('sites', 'web', $startFolder);
 
         $newFolder = str_replace('startSite', $site_constant, $startFolder);
         $newFolderConfig = str_replace('startSite', $site_constant, $startFolderConfig);
@@ -34,26 +36,28 @@ class CreateDomainController extends Controller
         FileHelper::copyDirectory($startFolderConfig, $newFolderConfig);
         FileHelper::copyDirectory($startFolderWeb, $newFolderWeb);
 
-        $indexFilePath = $newFolderWeb . '/index.php';
+        $indexFilePath = $newFolderWeb . DIRECTORY_SEPARATOR . 'index.php';
         $indexFile = str_replace('startSite', $site_constant, file_get_contents($indexFilePath));
         file_put_contents($indexFilePath, $indexFile);
 
-        $controllerFilePath = $newFolder . '/BaseController.php';
+        $controllerFilePath = $newFolder . DIRECTORY_SEPARATOR . 'BaseController.php';
         $controllerFile = str_replace('startSite', $site_constant, file_get_contents($controllerFilePath));
         file_put_contents($controllerFilePath, $controllerFile);
 
-        $controllerFilePath = $newFolder . '/controllers/SiteController.php';
-        $controllerFile = str_replace('startSite', $site_constant, file_get_contents($controllerFilePath));
-        file_put_contents($controllerFilePath, $controllerFile);
+        $controllers = FileHelper::findFiles($newFolder . DIRECTORY_SEPARATOR . 'controllers', ['only' => ['*.php',]]);
 
-        $configFilePath = $newFolderConfig . '/web.php';
+        foreach ($controllers as $controller) {
+            $controllerFile = str_replace('startSite', $site_constant, file_get_contents($controller));
+            file_put_contents($controller, $controllerFile);
+        }
+
+        $configFilePath = $newFolderConfig . DIRECTORY_SEPARATOR . 'web.php';
+
         $configFile = str_replace(['startSiteKey', 'startSite'], [yii::$app->security->generateRandomString(), $site_constant], file_get_contents($configFilePath));
         file_put_contents($configFilePath, $configFile);
 
-
-        $paramsFilePath = $newFolderConfig . '/params.php';
+        $paramsFilePath = $newFolderConfig . DIRECTORY_SEPARATOR . 'params.php';
         $paramsFile = str_replace('startSite', $app_name, file_get_contents($paramsFilePath));
         file_put_contents($paramsFilePath, $paramsFile);
-
     }
 }
