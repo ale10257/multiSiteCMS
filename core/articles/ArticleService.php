@@ -8,7 +8,7 @@
 
 namespace app\core\articles;
 
-//use app\components\helpers\phpjquery\PhpJqueryHelper;
+use app\components\helpers\phpjquery\PhpJqueryHelper;
 use app\core\articles\forms\ArticleForm;
 use app\core\articles\forms\ArticleImageForm;
 use app\core\articles\repositories\ArticleImagesRepository;
@@ -72,6 +72,7 @@ class ArticleService
     {
         $article = $this->_articleRepository->getItem($id);
         $oldCategory = $article->categories_id;
+        $oldText = $article->text;
         $web_dir = $article->getWebDir();
 
         if ($article->image) {
@@ -83,7 +84,8 @@ class ArticleService
             $form->image = $form->uploadOneFile($web_dir, 'one_image');
         }
 
-        //$form->text = PhpJqueryHelper::changeImages($form->text, $article->getWebDir());
+        $form->text = PhpJqueryHelper::changeImages($form->text, $article->getWebDir());
+        PhpJqueryHelper::deleteImagesFromFS($oldText, $form->text, $article->getWebDir());
         $article->insertValues($form);
         $article->saveItem();
 

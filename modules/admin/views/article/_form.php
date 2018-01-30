@@ -13,10 +13,10 @@ use vova07\imperavi\Widget;
 use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 use app\components\helpers\RemoveImgAdminHelper;
-use app\assets\FancyBoxAsset;
+//use app\assets\FancyBoxAsset;
 
 AdminSortableAsset::register($this);
-FancyBoxAsset::register($this);
+//FancyBoxAsset::register($this);
 ?>
 <div class="row">
     <?php if (!$new) : ?>
