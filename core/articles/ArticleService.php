@@ -186,6 +186,7 @@ class ArticleService
             $article->updateField('image');
             DeleteImages::deleteImages($article->getWebDir(), $image);
         }
+
         return true;
     }
 
