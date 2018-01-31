@@ -1,6 +1,6 @@
 <?php
 
-use app\components\widgets\redactor2\Redactor;
+use vova07\imperavi\Widget;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
@@ -24,8 +24,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($formModel, 'name') ?>
                 <?= $form->field($formModel, 'alias') ?>
                 <?= $form->field($formModel, 'description')->textarea() ?>
-                <?= $form->field($formModel, 'text')->widget(Redactor::className(), [
-                    'ctrl_save' => true,
+                <?= $form->field($formModel, 'text')->widget(Widget::className(), [
+                    'settings' => [
+                        'lang' => 'ru',
+                        'minHeight' => 350,
+                        'plugins' => [
+                            'table',
+                        ],
+                    ],
                 ]) ?>
                 <div class="form-group">
                     <p><?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?></p>

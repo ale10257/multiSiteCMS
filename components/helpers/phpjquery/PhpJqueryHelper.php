@@ -81,6 +81,11 @@ class PhpJqueryHelper
         return pq($dom)->html();
     }
 
+    /**
+     * @param $oldText
+     * @param $text
+     * @param $webDir
+     */
     public static function deleteImagesFromFS($oldText, $text, $webDir)
     {
         $domOld = \phpQuery::newDocumentHTML($oldText);
