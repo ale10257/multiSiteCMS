@@ -173,6 +173,12 @@ class OrderProductService
         $product->saveItem();
 
         $orderProductRepository->deleteItem();
+
+        if (!$orderProductRepository::find()->where(['order_id' => $orderProductRepository->order_id])->count()) {
+            $this->_orderService->deleteOnly($orderProductRepository->order_id);
+            return;
+        }
+
         $count = $orderProductRepository->count * -1;
         $this->setAll($orderProductRepository->order_id, $count, $product->price);
     }

@@ -22,17 +22,12 @@ use yii\filters\VerbFilter;
 class ArticleController extends BaseAdminController
 {
     use ControllerTrait;
-    /**
-     * @var ArticleService
-     */
+
+    /** @var ArticleService */
     private $_service;
-    /**
-     * @var ArticleSearch
-     */
+    /** @var ArticleSearch */
     private $_search;
-    /**
-     * @var ArticleImageGallery
-     */
+    /** @var ArticleImageGallery */
     private $_gallery;
 
     /**
@@ -54,7 +49,7 @@ class ArticleController extends BaseAdminController
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public function behaviors()
     {

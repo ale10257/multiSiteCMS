@@ -22,4 +22,16 @@ $(function () {
             $('#pre-insert').html(data['data']);
         });
     });
+
+    $(function () {
+        var form = $('form.form-ctrl-save');
+        if (form.length === 1) {
+            $(document).on('keydown', function (e) {
+                if (e.ctrlKey && e.which === 83) {
+                    form.submit();
+                    e.preventDefault();
+                }
+            });
+        }
+    });
 });

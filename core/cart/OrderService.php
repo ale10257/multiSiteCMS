@@ -146,6 +146,18 @@ class OrderService
     }
 
     /**
+     * @param int $id
+     * @throws Throwable
+     * @throws \Exception
+     * @throws \yii\db\StaleObjectException
+     */
+    public function deleteOnly(int $id)
+    {
+        $this->_repository = $this->_repository->getItem($id);
+        $this->_repository->deleteItem();
+    }
+
+    /**
      * @param $order_id
      * @param $status
      * @throws \yii\db\Exception

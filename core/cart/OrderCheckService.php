@@ -15,21 +15,13 @@ use yii\web\Session;
 
 class OrderCheckService
 {
-    /**
-     * @var Session
-     */
+    /** @var Session */
     private $_session;
-    /**
-     * @var User
-     */
+    /** @var User */
     private $_user;
-    /**
-     * @var OrderRepository
-     */
+    /** @var OrderRepository */
     private $_repository;
-    /**
-     * @var GetDiscount
-     */
+    /** @var GetDiscount */
     private $_discount;
 
     /**
@@ -46,7 +38,7 @@ class OrderCheckService
         $this->_discount = $discount;
     }
 
-    public function checkOrderRegUser()
+    public function checkOrderRegUser() : void
     {
         if (!$this->_session->has(OrderService::SESSION_KEY) && !$this->_user->isGuest) {
             $where = ['user_id' => $this->_user->id, 'status' => $this->_repository::STATUS_ORDER_CREATION];
@@ -57,7 +49,7 @@ class OrderCheckService
         }
     }
 
-    public function checkEmptyOrder()
+    public function checkEmptyOrder() : void
     {
         if ($id = $this->_session->get(OrderService::SESSION_KEY)) {
             if (!$this->_repository::find()->where(['id' => $id])->count()) {

@@ -33,7 +33,7 @@ $link = Html::a('Посмотреть продукт на сайте', ['/produc
 <?php endif ?>
 
 <div class="row">
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data',]]); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'form-ctrl-save']]); ?>
     <div class="col-md-7">
         <div class="box">
             <div class="box-body">

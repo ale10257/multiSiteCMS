@@ -4,6 +4,7 @@ namespace app\core\workWithFiles;
 
 use yii;
 use yii\base\Exception;
+use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
 trait UploadFiles
@@ -64,10 +65,10 @@ trait UploadFiles
      */
     private function createPath(string $web_dir)
     {
-        $path = yii\helpers\FileHelper::normalizePath(yii::getAlias('@webroot')) . $web_dir;
+        $path = FileHelper::normalizePath(yii::getAlias('@webroot')) . $web_dir;
 
         if (!is_dir($path)) {
-            yii\helpers\FileHelper::createDirectory($path);
+            FileHelper::createDirectory($path);
         }
 
         return $path;

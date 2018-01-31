@@ -25,7 +25,7 @@ if ($formModel->alias == Category::RESERVED_ALIAS_ARTICLE || $formModel->alias =
         <div class="box-body  target-block">
 
             <div class="menu-admin-form">
-                <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+                <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'form-ctrl-save']]); ?>
                 <?= $form->field($formModel, 'name')->textInput(['maxlength' => true]) ?>
                 <?= $form->field($formModel, 'alias')->textInput($options) ?>
                 <?= $form->field($formModel, 'parent')->textInput(['disabled' => true]) ?>

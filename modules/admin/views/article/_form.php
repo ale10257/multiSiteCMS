@@ -31,7 +31,7 @@ AdminSortableAsset::register($this);
     <?php endif ?>
 </div>
 <div class="row">
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'form-redactor']]); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'form-ctrl-save']]); ?>
     <div class="col-md-6">
         <div class="box">
             <div class="box-body">
