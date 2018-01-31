@@ -18,17 +18,11 @@ use yii\rbac\ManagerInterface;
 
 class UserAdminService
 {
-    /**
-     * @var User
-     */
+    /** @var User */
     private $_user;
-    /**
-     * @var ManagerInterface
-     */
+    /** @var ManagerInterface */
     private $_authManager;
-    /**
-     * @var UserRepository
-     */
+    /** @var UserRepository */
     private $_userRepository;
 
     /**
@@ -49,7 +43,6 @@ class UserAdminService
     public function createAdmin(UserFormInterface $userAdminForm)
     {
         /**@var $userAdminForm UserAdminEditForm */
-
         $user = $this->_user::create($userAdminForm);
         $this->_userRepository->save($user);
         $role = $this->_authManager->getRole($user->role);
