@@ -78,7 +78,7 @@
 
 http://kulagin-alex.ru
 
-Вход в админ панель управления сайтом: http://kulagin-alex.ru/login/admin
+Вход в админ панель управления сайтом: http://kulagin-alex.ru/admin/login
 
 Login: demo
 
