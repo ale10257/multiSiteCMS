@@ -115,7 +115,7 @@ class PhpJqueryHelper
         if ($arrOld) {
             $dir = FileHelper::normalizePath(yii::getAlias('@webroot'));
             $dir = $dir . FileHelper::normalizePath($webDir);
-            if ($dir) {
+            if (is_dir($dir)) {
                 foreach ($arrOld as $img) {
                     if ($images = FileHelper::findFiles($dir, ['only' => [$img]])) {
                         foreach ($images as $item) {
