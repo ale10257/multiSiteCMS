@@ -18,9 +18,9 @@ use yii\web\NotFoundHttpException;
 class ArticleGetService
 {
     /** @var CacheCategory */
-    private $_cacheCategory;
+    private $cacheCategory;
     /** @var ThumbSettingImg */
-    private $_settingImg;
+    private $settingImg;
 
     /**
      * ArticleGetService constructor.
@@ -29,8 +29,8 @@ class ArticleGetService
      */
     public function __construct(CacheCategory $cacheCategory, ThumbSettingImg $settingImg)
     {
-        $this->_cacheCategory = $cacheCategory;
-        $this->_settingImg = $settingImg;
+        $this->cacheCategory = $cacheCategory;
+        $this->settingImg = $settingImg;
     }
 
     /**
@@ -42,7 +42,7 @@ class ArticleGetService
     public function getOneArticle($alias)
     {
         /** @var CategoryRepository[] $categories */
-        $categories = ArrayHelper::index($this->_cacheCategory->getLeavesCategoryActive('article'), 'alias');
+        $categories = ArrayHelper::index($this->cacheCategory->getLeavesCategoryActive('article'), 'alias');
         $query = ArticleRepository::find()->with('category');
         $category = null;
         if (!empty($categories[$alias])) {
@@ -78,7 +78,7 @@ class ArticleGetService
         $images = [];
 
         if ($article->images) {
-            $imgThumb = $this->_settingImg->createImgThumb('preview-gallery', 'thumb-gallery');
+            $imgThumb = $this->settingImg->createImgThumb('preview-gallery', 'thumb-gallery');
             $imgThumb->web_dir = $article->getWebDir();
             foreach ($article->images as $image) {
                 if ($img = $imgThumb->checkFile($image->name)) {

@@ -11,14 +11,14 @@ namespace app\core\accessSites;
 class AccessService
 {
     /** @var AccessRepository  */
-    private $_repository;
+    private $repository;
     /** @var AccessForm  */
-    private $_form;
+    private $form;
 
     public function __construct(AccessRepository $repository, AccessForm $form)
     {
-        $this->_repository = $repository;
-        $this->_form = $form;
+        $this->repository = $repository;
+        $this->form = $form;
     }
 
     /**
@@ -27,10 +27,10 @@ class AccessService
      */
     public function create(AccessForm $form)
     {
-        $this->_repository->insertValues($form);
-        $this->_repository->saveItem();
+        $this->repository->insertValues($form);
+        $this->repository->saveItem();
 
-        return $this->_repository->id;
+        return $this->repository->id;
     }
 
     /**
@@ -40,9 +40,9 @@ class AccessService
      */
     public function update(AccessForm $form, int $id)
     {
-        $this->_repository = $this->_repository->getItem($id);
-        $this->_repository->insertValues($form);
-        $this->_repository->saveItem();
+        $this->repository = $this->repository->getItem($id);
+        $this->repository->insertValues($form);
+        $this->repository->saveItem();
     }
 
     /**
@@ -50,7 +50,7 @@ class AccessService
      */
     public function getNewForm()
     {
-        return $this->_form;
+        return $this->form;
     }
 
     /**
@@ -60,9 +60,9 @@ class AccessService
      */
     public function getUpdateForm(int $id)
     {
-        $this->_repository = $this->_repository->getItem($id);
-        $this->_form->createUpdateForm($this->_repository);
-        return $this->_form;
+        $this->repository = $this->repository->getItem($id);
+        $this->form->createUpdateForm($this->repository);
+        return $this->form;
     }
 
     /**
@@ -74,7 +74,7 @@ class AccessService
      */
     public function delete(int $id)
     {
-        $this->_repository = $this->_repository->getItem($id);
-        $this->_repository->deleteItem();
+        $this->repository = $this->repository->getItem($id);
+        $this->repository->deleteItem();
     }
 }

@@ -15,7 +15,7 @@ use app\modules\admin\controllers\BaseAdminController;
 
 class PermitAdminController extends BaseAdminController
 {
-    private $_service;
+    private $service;
 
     /**
      * PermitAdminController constructor.
@@ -27,7 +27,7 @@ class PermitAdminController extends BaseAdminController
     public function __construct(string $id, $module, CheckCan $checkCan, PermissionsAndRoleService $service)
     {
         parent::__construct($id, $module, $checkCan);
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     public function actionIndex()
@@ -41,11 +41,11 @@ class PermitAdminController extends BaseAdminController
      */
     public function actionUpdate($role)
     {
-        $formModel = $this->_service->getForm($role);
+        $formModel = $this->service->getForm($role);
 
         if ($formModel->load(\yii::$app->request->post())) {
             try {
-                $this->_service->update($formModel);
+                $this->service->update($formModel);
                 $this->session->setFlash('success', 'Данные обновлены успешно!');
                 return $this->redirect(['index']);
             } catch (\Exception $e) {

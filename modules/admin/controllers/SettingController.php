@@ -20,7 +20,7 @@ class SettingController extends BaseAdminController
     /**
      * @var SettingService
      */
-    private $_service;
+    private $service;
     private $title_form_create = 'Создать настройку';
     private $title_form_update = 'Редактировать настройку ';
 
@@ -34,7 +34,7 @@ class SettingController extends BaseAdminController
     public function __construct(string $id, $module, CheckCan $checkCan, SettingService $setting)
     {
         parent::__construct($id, $module, $checkCan);
-        $this->_service = $setting;
+        $this->service = $setting;
     }
 
     public function behaviors()
@@ -53,7 +53,7 @@ class SettingController extends BaseAdminController
     public function actionIndex()
     {
         return $this->render('index', [
-            'data' => $this->_service->getTree(),
+            'data' => $this->service->getTree(),
             'form' => null,
         ]);
     }
@@ -65,7 +65,7 @@ class SettingController extends BaseAdminController
     public function actionCreate(int $parent_id = null)
     {
         try {
-            $formModel = $this->_service->getForm($parent_id);
+            $formModel = $this->service->getForm($parent_id);
         } catch (\Exception $e) {
             $this->session->setFlash('error', $e->getMessage());
             return $this->redirect(yii::$app->request->referrer);
@@ -77,7 +77,7 @@ class SettingController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_service->create($formModel, $parent_id);
+                $this->service->create($formModel, $parent_id);
                 $this->session->setFlash('success', 'Данные сохранены успешно!');
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
@@ -91,7 +91,7 @@ class SettingController extends BaseAdminController
             'title' => $this->title_form_create,
         ]);
 
-        return $this->render('index', ['data' => $this->_service->getTree(), 'form' => $form]);
+        return $this->render('index', ['data' => $this->service->getTree(), 'form' => $form]);
     }
 
     /**
@@ -101,7 +101,7 @@ class SettingController extends BaseAdminController
     public function actionUpdate($id)
     {
         try {
-            $formModel = $this->_service->getForm(-1, $id);
+            $formModel = $this->service->getForm(-1, $id);
         } catch (\Exception $e) {
             $this->session->setFlash('error', $e->getMessage());
             return $this->redirect(['index']);
@@ -113,7 +113,7 @@ class SettingController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_service->update($formModel, $id);
+                $this->service->update($formModel, $id);
                 $this->session->setFlash('success', 'Данные сохранены успешно!');
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
@@ -127,7 +127,7 @@ class SettingController extends BaseAdminController
             'title' => $this->title_form_update . $formModel->name,
         ]);
 
-        return $this->render('index', ['data' => $this->_service->getTree(), 'form' => $form]);
+        return $this->render('index', ['data' => $this->service->getTree(), 'form' => $form]);
     }
 
     /**
@@ -138,7 +138,7 @@ class SettingController extends BaseAdminController
     public function actionDelete($id)
     {
         try {
-            $this->_service->delete($id);
+            $this->service->delete($id);
         } catch (\Exception $e) {
             $this->session->setFlash('error', $e->getMessage());
         }
@@ -152,6 +152,6 @@ class SettingController extends BaseAdminController
     public function actionUpdateTree()
     {
         $post = yii::$app->request->post();
-        return $this->renderPartial('tree', ['data' => $this->_service->updateTree($post)]);
+        return $this->renderPartial('tree', ['data' => $this->service->updateTree($post)]);
     }
 }

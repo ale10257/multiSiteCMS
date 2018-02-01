@@ -19,9 +19,9 @@ use yii\filters\VerbFilter;
 class ProductController extends BaseController
 {
     /** @var GetProduct */
-    private $_product;
+    private $product;
     /** @var OrderProductService */
-    private $_productService;
+    private $productService;
 
 
     /**
@@ -41,8 +41,8 @@ class ProductController extends BaseController
         GetProduct $product,
         OrderProductService $productService)
     {
-        $this->_product = $product;
-        $this->_productService = $productService;
+        $this->product = $product;
+        $this->productService = $productService;
         parent::__construct($id, $module, $cacheCategory, $orderCheckService);
     }
 
@@ -71,7 +71,7 @@ class ProductController extends BaseController
      */
     public function actionCategory($alias)
     {
-        $dataCategory = $this->_product->getCategory($alias);
+        $dataCategory = $this->product->getCategory($alias);
         return $this->render('category', ['dataCategory' => $dataCategory]);
     }
 
@@ -84,12 +84,12 @@ class ProductController extends BaseController
      */
     public function actionView($id_alias)
     {
-        $product = $this->_product->getProduct($id_alias);
+        $product = $this->product->getProduct($id_alias);
 
         return $this->render('view', [
             'product' => $product,
-            'formProduct' => $this->_productService->getNewForm(),
-            'checkProduct' => $this->_productService->checkOrderedProduct($product->id)
+            'formProduct' => $this->productService->getNewForm(),
+            'checkProduct' => $this->productService->checkOrderedProduct($product->id)
         ]);
     }
 
@@ -99,11 +99,11 @@ class ProductController extends BaseController
      */
     public function actionAdd()
     {
-        $formProduct = $this->_productService->getNewForm();
+        $formProduct = $this->productService->getNewForm();
 
         if ($formProduct->load(yii::$app->request->post()) && $formProduct->validate()) {
             try {
-                $count = $this->_productService->create($formProduct);
+                $count = $this->productService->create($formProduct);
                 return $this->renderPartial('_ordered_form', ['count' => $count]);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());

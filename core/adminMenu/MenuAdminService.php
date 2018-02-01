@@ -17,26 +17,29 @@ use app\core\user\entities\user\User;
 class MenuAdminService
 {
     /** @var MenuAdminRepository */
-    private $_repository;
+    private $repository;
     /** @var MenuAdminForm */
-    private $_menuAdminForm;
+    private $menuAdminForm;
     /** @var MenuAdminRepository */
-    private $_parent;
+    private $parent;
     /** @var ManagerInterface */
-    private $_authManager;
+    private $authManager;
     /** @var \ale10257\ext\ChangeTreeBehavior */
-    private $_tree;
+    private $tree;
+
 
     /**
      * MenuAdminService constructor.
      * @param ManagerInterface $authManager
+     * @param MenuAdminForm $menuForm
+     * @param MenuAdminRepository $repository
      */
-    public function __construct(ManagerInterface $authManager)
+    public function __construct(ManagerInterface $authManager, MenuAdminForm $menuForm, MenuAdminRepository $repository)
     {
-        $this->_authManager = $authManager;
-        $this->_menuAdminForm = new MenuAdminForm();
-        $this->_repository = new MenuAdminRepository();
-        $this->_tree = $this->_repository->getTree();
+        $this->authManager = $authManager;
+        $this->menuAdminForm = $menuForm;
+        $this->repository = $repository;
+        $this->tree = $this->repository->getTree();
     }
 
     /**
@@ -48,8 +51,8 @@ class MenuAdminService
     {
         $this->createPermission($menuAdminForm);
         $this->getParentForCreate($parent_id);
-        $this->_repository->insertValues($menuAdminForm);
-        $this->_repository->appendTo($this->_parent);
+        $this->repository->insertValues($menuAdminForm);
+        $this->repository->appendTo($this->parent);
     }
 
     /**
@@ -59,13 +62,13 @@ class MenuAdminService
      */
     private function createPermission(MenuAdminForm $menuAdminForm)
     {
-        $permit = $this->_authManager->createPermission($menuAdminForm->name);
+        $permit = $this->authManager->createPermission($menuAdminForm->name);
         $permit->description = $menuAdminForm->description;
-        $this->_authManager->add($permit);
+        $this->authManager->add($permit);
         if ($menuAdminForm->selectedRoles) {
             foreach ($menuAdminForm->selectedRoles as $select) {
-                $role = $this->_authManager->getRole($select);
-                $this->_authManager->addChild($role, $permit);
+                $role = $this->authManager->getRole($select);
+                $this->authManager->addChild($role, $permit);
             }
         }
     }
@@ -77,10 +80,10 @@ class MenuAdminService
      */
     public function update(MenuAdminForm $menuAdminForm, int $id)
     {
-        $menuAdmin = $this->_repository->getItem($id);
+        $menuAdmin = $this->repository->getItem($id);
         $namePermission = $menuAdmin->name == $menuAdminForm->name ? $menuAdminForm->name : $menuAdmin->name;
-        $permit = $this->_authManager->getPermission($namePermission);
-        $this->_authManager->remove($permit);
+        $permit = $this->authManager->getPermission($namePermission);
+        $this->authManager->remove($permit);
         $menuAdmin->insertValues($menuAdminForm);
         $menuAdmin->saveItem();
         $this->createPermission($menuAdminForm);
@@ -94,16 +97,16 @@ class MenuAdminService
     public function getNewForm(int $parent_id = null)
     {
         $this->getParentForCreate($parent_id);
-        $this->_menuAdminForm->parent = $this->_parent->title;
-        $this->_menuAdminForm->roles = ArrayHelper::getColumn($this->_authManager->getRoles(), 'name');
+        $this->menuAdminForm->parent = $this->parent->title;
+        $this->menuAdminForm->roles = ArrayHelper::getColumn($this->authManager->getRoles(), 'name');
 
-        foreach ($this->_menuAdminForm->roles as $key => $role) {
+        foreach ($this->menuAdminForm->roles as $key => $role) {
             if (array_key_exists($role, User::RESERVED_ROLES)) {
-                unset($this->_menuAdminForm->roles[$key]);
+                unset($this->menuAdminForm->roles[$key]);
             }
         }
 
-        return $this->_menuAdminForm;
+        return $this->menuAdminForm;
     }
 
     /**
@@ -113,26 +116,26 @@ class MenuAdminService
      */
     public function getEditForm(int $id)
     {
-        $menuEdit = $this->_repository->getItem($id);
-        if (!$this->_parent = $menuEdit->parents(1)->one()) {
+        $menuEdit = $this->repository->getItem($id);
+        if (!$this->parent = $menuEdit->parents(1)->one()) {
             throw new NotFoundException('Parent is not found');
         }
-        $permit = $this->_authManager->getPermission($menuEdit->name);
-        $this->_menuAdminForm->description = $permit->description;
-        $this->_menuAdminForm->parent = $this->_parent->title;
-        $this->_menuAdminForm->createUpdateForm($menuEdit);
-        $roles = ArrayHelper::getColumn($this->_authManager->getRoles(), 'name');
+        $permit = $this->authManager->getPermission($menuEdit->name);
+        $this->menuAdminForm->description = $permit->description;
+        $this->menuAdminForm->parent = $this->parent->title;
+        $this->menuAdminForm->createUpdateForm($menuEdit);
+        $roles = ArrayHelper::getColumn($this->authManager->getRoles(), 'name');
         foreach ($roles as $key => $role) {
             if (array_key_exists($role, User::RESERVED_ROLES)) {
                 unset($roles[$key]);
             }
-            if (array_key_exists($this->_menuAdminForm->name, $this->_authManager->getPermissionsByRole($role))) {
-                $this->_menuAdminForm->selectedRoles[] = $role;
+            if (array_key_exists($this->menuAdminForm->name, $this->authManager->getPermissionsByRole($role))) {
+                $this->menuAdminForm->selectedRoles[] = $role;
             }
         }
-        $this->_menuAdminForm->roles = $roles;
+        $this->menuAdminForm->roles = $roles;
 
-        return $this->_menuAdminForm;
+        return $this->menuAdminForm;
     }
 
     /**
@@ -141,8 +144,8 @@ class MenuAdminService
      */
     public function updateTree($post)
     {
-        $this->_repository->updateTree($post);
-        return $this->_repository->getTree();
+        $this->repository->updateTree($post);
+        return $this->repository->getTree();
     }
 
     /**
@@ -151,11 +154,11 @@ class MenuAdminService
      */
     private function getParentForCreate($parent_id)
     {
-        if (!$root = $this->_repository->getRoot()) {
-            $root = $this->_repository->createRoot();
+        if (!$root = $this->repository->getRoot()) {
+            $root = $this->repository->createRoot();
         }
-        $this->_parent = $parent_id === null ? $root : $this->_repository->getItem($parent_id);
-        if (!$this->_parent) {
+        $this->parent = $parent_id === null ? $root : $this->repository->getItem($parent_id);
+        if (!$this->parent) {
             throw new NotFoundException('Parent is not found');
         }
     }
@@ -165,7 +168,7 @@ class MenuAdminService
      */
     public function getTree()
     {
-        return $this->_tree;
+        return $this->tree;
     }
 
     /**
@@ -176,9 +179,9 @@ class MenuAdminService
      */
     public function delete(int $id): void
     {
-        $menuAdmin = $this->_repository->getItem($id);
-        $permit = $this->_authManager->getPermission($menuAdmin->name);
-        $this->_authManager->remove($permit);
+        $menuAdmin = $this->repository->getItem($id);
+        $permit = $this->authManager->getPermission($menuAdmin->name);
+        $this->authManager->remove($permit);
         $menuAdmin->deleteItem();
     }
 }

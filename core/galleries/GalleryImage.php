@@ -9,7 +9,6 @@
 namespace app\core\galleries;
 
 use app\core\base\BaseImageGallery;
-use app\core\galleries\forms\GalleryForm;
 use app\core\galleries\forms\GalleryImageForm;
 use app\core\galleries\repositories\GalleryImageRepository;
 
@@ -17,10 +16,11 @@ class GalleryImage extends BaseImageGallery
 {
     /**
      * GalleryImage constructor.
+     * @param GalleryImageRepository $repository
      */
-    public function __construct()
+    public function __construct(GalleryImageRepository $repository)
     {
-        $this->_repository = new GalleryImageRepository();
+        $this->repository = $repository;
     }
 
     /**
@@ -30,7 +30,7 @@ class GalleryImage extends BaseImageGallery
      */
     public function getForm(int $id)
     {
-        $repository = $this->_repository->getItem($id);
+        $repository = $this->repository->getItem($id);
         $form = new GalleryImageForm();
         $form->createUpdateForm($repository);
         return $form;
@@ -46,7 +46,7 @@ class GalleryImage extends BaseImageGallery
     {
         parent::updateImage($form, $id);
         $form = new GalleryImageForm();
-        $form->createUpdateForm($this->_repository);
+        $form->createUpdateForm($this->repository);
         return $form;
     }
 }

@@ -10,21 +10,17 @@ namespace app\core\settings;
 
 use app\core\cache\CacheEntity;
 use Yii;
-use yii\helpers\ArrayHelper;
-use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\web\Request;
 
 class SettingService
 {
     /**@var SettingRepository */
-    private $_repository;
-
+    private $repository;
     /** @var CacheEntity */
-    private $_cache;
-
+    private $cache;
     /** @var \app\core\settings\SettingForm  */
-    private $_form;
+    private $form;
 
     /**
      * ServiceSetting constructor.
@@ -32,9 +28,9 @@ class SettingService
      */
     public function __construct(CacheEntity $cache)
     {
-        $this->_repository = new SettingRepository;
-        $this->_form = new SettingForm;
-        $this->_cache = $cache;
+        $this->repository = new SettingRepository;
+        $this->form = new SettingForm;
+        $this->cache = $cache;
     }
 
     /**
@@ -47,17 +43,17 @@ class SettingService
         if (empty($form->alias)) {
             $form->alias = Inflector::slug($form->name);
         }
-        $this->_repository->insertValues($form);
-        $parent = $parent_id === null ? $this->_repository->getRoot() : $this->_repository->getItem($parent_id);
+        $this->repository->insertValues($form);
+        $parent = $parent_id === null ? $this->repository->getRoot() : $this->repository->getItem($parent_id);
         if (!$parent) {
             throw new \DomainException('Parent category not found!');
         }
         if ($parent_id == null) {
             /**@var $parent SettingRepository */
-            $this->_repository->checkUniqAlias($form->alias, $parent->tree);
+            $this->repository->checkUniqAlias($form->alias, $parent->tree);
         }
-        $this->_repository->prependTo($parent);
-        $this->_cache->deleteItem($this->_cache::SETTING_TREE);
+        $this->repository->prependTo($parent);
+        $this->cache->deleteItem($this->cache::SETTING_TREE);
     }
 
     /**
@@ -67,7 +63,7 @@ class SettingService
      */
     public function update(SettingForm $form, int $id)
     {
-        $setting = $this->_repository->getItem($id);
+        $setting = $this->repository->getItem($id);
         if (empty($form->alias)) {
             $form->alias = Inflector::slug($form->name);
         }
@@ -78,9 +74,9 @@ class SettingService
         }
         $setting->saveItem();
         if ($setting->alias == ReservedSettings::LOGIN_EMAIL || $setting->alias == ReservedSettings::PASSWD_EMAIL || $setting->alias == ReservedSettings::MAIL_ADMIN) {
-            $loginEmail = $this->_repository->findOne(['alias' => ReservedSettings::LOGIN_EMAIL]);
-            $passwdEmail = $this->_repository->findOne(['alias' => ReservedSettings::PASSWD_EMAIL]);
-            $adminEmail = $this->_repository->findOne(['alias' => ReservedSettings::MAIL_ADMIN]);
+            $loginEmail = $this->repository->findOne(['alias' => ReservedSettings::LOGIN_EMAIL]);
+            $passwdEmail = $this->repository->findOne(['alias' => ReservedSettings::PASSWD_EMAIL]);
+            $adminEmail = $this->repository->findOne(['alias' => ReservedSettings::MAIL_ADMIN]);
             $path = yii::getAlias('@app/config/') . SITE_ROOT_NAME . '/data_email.php';
             $str = '<?php
 return [
@@ -91,7 +87,7 @@ return [
 ';
             file_put_contents($path, $str);
         }
-        $this->_cache->deleteItem($this->_cache::SETTING_TREE);
+        $this->cache->deleteItem($this->cache::SETTING_TREE);
     }
 
     /**
@@ -104,23 +100,23 @@ return [
     {
         if ($id === null) {
             if ($parent_id) {
-                $parent = $this->_repository->getItem($parent_id);
+                $parent = $this->repository->getItem($parent_id);
                 if ($parent->depth == 2) {
                     throw new \DomainException('Нельзя создавать детей 3-го уровня!');
                 }
             }
-            return $this->_form;
+            return $this->form;
         }
 
         if ($parent_id != -1) {
             throw new \DomainException('Parent id not found. For update category parent_id must bee = -1');
         }
 
-        $setting = $this->_repository->getItem($id);
-        $this->_form->createUpdateForm($setting);
-        $this->_form->reserved = $this->getReservedFields();
+        $setting = $this->repository->getItem($id);
+        $this->form->createUpdateForm($setting);
+        $this->form->reserved = $this->getReservedFields();
 
-        return $this->_form;
+        return $this->form;
     }
 
     /**
@@ -129,13 +125,13 @@ return [
      */
     public function delete(int $id)
     {
-        $setting = $this->_repository->getItem($id);
+        $setting = $this->repository->getItem($id);
 
         if (array_key_exists($setting->alias, $this->getReservedFields())) {
             throw new \DomainException('Нельзя удалять зарезервированные настройки');
         }
         $setting->deleteWithChildren();
-        $this->_cache->deleteItem($this->_cache::SETTING_TREE);
+        $this->cache->deleteItem($this->cache::SETTING_TREE);
     }
 
     /**
@@ -143,13 +139,13 @@ return [
      */
     public function getTree()
     {
-        if (!$this->_repository->checkRoot()) {
-            $this->_repository::createRoot();
+        if (!$this->repository->checkRoot()) {
+            $this->repository::createRoot();
         }
 
-        if (!$tree = $this->_cache->getItem($this->_cache::SETTING_TREE)) {
-            $this->_cache->setItem($this->_cache::SETTING_TREE, $this->_repository->getTree());
-            $tree = $this->_cache->getItem($this->_cache::SETTING_TREE);
+        if (!$tree = $this->cache->getItem($this->cache::SETTING_TREE)) {
+            $this->cache->setItem($this->cache::SETTING_TREE, $this->repository->getTree());
+            $tree = $this->cache->getItem($this->cache::SETTING_TREE);
         }
 
         return $tree;
@@ -161,9 +157,9 @@ return [
      */
     public function updateTree($post)
     {
-        $this->_repository->updateTree($post);
-        $this->_cache->deleteItem($this->_cache::SETTING_TREE);
-        return $this->_repository->getTree();
+        $this->repository->updateTree($post);
+        $this->cache->deleteItem($this->cache::SETTING_TREE);
+        return $this->repository->getTree();
     }
 
     /**

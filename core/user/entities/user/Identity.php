@@ -18,14 +18,16 @@ use yii\web\IdentityInterface;
  */
 class Identity implements IdentityInterface
 {
-    private $_user;
+    /** @var User */
+    private $user;
+    
     /**
      * Identity constructor.
      * @param User $user
      */
     public function __construct(User $user)
     {
-        $this->_user = $user;
+        $this->user = $user;
     }
 
     /**
@@ -40,32 +42,32 @@ class Identity implements IdentityInterface
 
     public function getId(): int
     {
-        return $this->_user->id;
+        return $this->user->id;
     }
 
     public function getRole(): string
     {
-        return $this->_user->role;
+        return $this->user->role;
     }
 
     public function getLogin(): string
     {
-        return $this->_user->login;
+        return $this->user->login;
     }
 
     public function getEmail(): string
     {
-        return $this->_user->email;
+        return $this->user->email;
     }
 
     public function getFirstName(): string
     {
-        return $this->_user->first_name;
+        return $this->user->first_name;
     }
 
     public function getLastName(): string
     {
-        return $this->_user->last_name;
+        return $this->user->last_name;
     }
 
     public function isRoot(): string
@@ -75,7 +77,7 @@ class Identity implements IdentityInterface
 
     public function getAuthKey(): string
     {
-        return $this->_user->auth_key;
+        return $this->user->auth_key;
     }
 
     public function validateAuthKey($authKey): bool

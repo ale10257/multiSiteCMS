@@ -19,7 +19,7 @@ class ArticleImageGallery extends BaseImageGallery
      */
     public function __construct()
     {
-        $this->_repository = new ArticleImagesRepository();
+        $this->repository = new ArticleImagesRepository();
     }
 
     /**
@@ -29,7 +29,7 @@ class ArticleImageGallery extends BaseImageGallery
      */
     public function getForm(int $id)
     {
-        $repository = $this->_repository->getItem($id);
+        $repository = $this->repository->getItem($id);
         $form = new ArticleImageForm();
         $form->createUpdateForm($repository);
         return $form;

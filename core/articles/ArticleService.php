@@ -25,15 +25,15 @@ use app\core\workWithFiles\helpers\RemoveDirectory;
 class ArticleService
 {
     /** @var ArticleForm  */
-    private $_articleForm;
+    private $articleForm;
     /** @var ArticleImageForm  */
-    private $_imageForm;
+    private $imageForm;
     /** @var ArticleRepository  */
-    private $_articleRepository;
+    private $articleRepository;
     /** @var ArticleImagesRepository  */
-    private $_imageRepositary;
+    private $imageRepositary;
     /** @var CacheCategory  */
-    private $_cacheCategory;
+    private $cacheCategory;
 
     /**
      * ArticleService constructor.
@@ -41,11 +41,11 @@ class ArticleService
      */
     public function __construct(CacheCategory $cacheCategory)
     {
-        $this->_articleForm = new ArticleForm();
-        $this->_imageForm = new ArticleImageForm();
-        $this->_articleRepository = new ArticleRepository();
-        $this->_imageRepositary = new ArticleImagesRepository();
-        $this->_cacheCategory = $cacheCategory;
+        $this->articleForm = new ArticleForm();
+        $this->imageForm = new ArticleImageForm();
+        $this->articleRepository = new ArticleRepository();
+        $this->imageRepositary = new ArticleImagesRepository();
+        $this->cacheCategory = $cacheCategory;
     }
 
     /**
@@ -55,10 +55,10 @@ class ArticleService
     public function create(ArticleForm $form)
     {
         $form->alias = Inflector::slug($form->name);
-        $this->_articleRepository->insertValues($form, true);
-        $this->_articleRepository->saveItem();
+        $this->articleRepository->insertValues($form, true);
+        $this->articleRepository->saveItem();
 
-        return $this->_articleRepository->id;
+        return $this->articleRepository->id;
     }
 
     /**
@@ -70,7 +70,7 @@ class ArticleService
      */
     public function update($form, int $id)
     {
-        $article = $this->_articleRepository->getItem($id);
+        $article = $this->articleRepository->getItem($id);
         $oldCategory = $article->categories_id;
         $oldText = $article->text;
         $web_dir = $article->getWebDir();
@@ -90,7 +90,7 @@ class ArticleService
         $article->saveItem();
 
         if ($images = $form->uploadAnyFile($web_dir, 'any_images')) {
-            $sort = $this->_imageRepositary->getNumLastElement(['articles_id' => $article->id], 'sort');
+            $sort = $this->imageRepositary->getNumLastElement(['articles_id' => $article->id], 'sort');
             foreach ($images as $image) {
                 $img = new ArticleImagesRepository();
                 $img->name = $image;
@@ -110,8 +110,8 @@ class ArticleService
 
     public function getNewForm()
     {
-        $form = $this->_articleForm;
-        $form->categories = $this->_cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_ARTICLE);
+        $form = $this->articleForm;
+        $form->categories = $this->cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_ARTICLE);
 
         return $form;
     }
@@ -123,7 +123,7 @@ class ArticleService
      */
     public function getUpdateForm(int $id)
     {
-        if (!$article = $this->_articleRepository::find()
+        if (!$article = $this->articleRepository::find()
             ->where(['id' => $id])
             ->with('category')
             ->with([
@@ -135,19 +135,19 @@ class ArticleService
             ->one()) {
             throw new NotFoundHttpException();
         }
-        $this->_articleForm->createUpdateForm($article);
-        $this->_articleForm->link = $article->category->multiple ? Url::to(['/article/' . $article->alias]) : Url::to(['/article/' . $article->category->alias]) ;
-        $this->_articleForm->categories = $this->getLeavesCategories();
-        $this->_articleForm->webDir = $article->getWebDir();
+        $this->articleForm->createUpdateForm($article);
+        $this->articleForm->link = $article->category->multiple ? Url::to(['/article/' . $article->alias]) : Url::to(['/article/' . $article->category->alias]) ;
+        $this->articleForm->categories = $this->getLeavesCategories();
+        $this->articleForm->webDir = $article->getWebDir();
         if ($article->images) {
             foreach ($article->images as $image) {
                 $img = new ArticleImageForm();
                 $img->createUpdateForm($image);
-                $this->_articleForm->uploaded_images[] = $img;
+                $this->articleForm->uploaded_images[] = $img;
             }
         }
 
-        return $this->_articleForm;
+        return $this->articleForm;
     }
 
     /**
@@ -158,9 +158,9 @@ class ArticleService
      */
     public function delete($id)
     {
-        $this->_articleRepository = $this->_articleRepository->getItem($id);
-        $this->_articleRepository->deleteItem();
-        RemoveDirectory::removeDirectory($this->_articleRepository->getWebDir());
+        $this->articleRepository = $this->articleRepository->getItem($id);
+        $this->articleRepository->deleteItem();
+        RemoveDirectory::removeDirectory($this->articleRepository->getWebDir());
     }
 
     /**
@@ -169,7 +169,7 @@ class ArticleService
      */
     public function changeActive(int $id, int $status = null)
     {
-        $this->_articleRepository->changeActive($id, $status);
+        $this->articleRepository->changeActive($id, $status);
     }
 
     /**
@@ -180,7 +180,7 @@ class ArticleService
      */
     public function deleteMainImage($id): bool
     {
-        $article = $this->_articleRepository->getItem($id);
+        $article = $this->articleRepository->getItem($id);
         if ($image = $article->image) {
             $article->image = '';
             $article->updateField('image');
@@ -195,6 +195,6 @@ class ArticleService
      */
     public function getLeavesCategories()
     {
-        return $this->_cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_ARTICLE);
+        return $this->cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_ARTICLE);
     }
 }

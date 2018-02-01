@@ -12,8 +12,8 @@ use yii\caching\CacheInterface;
 
 class CacheEntity
 {
-    /** @var CacheInterface $_cache */
-    private $_cache;
+    /** @var CacheInterface $cache */
+    private $cache;
 
     const SETTING_TREE = 'setting_tree';
 
@@ -32,7 +32,7 @@ class CacheEntity
      */
     public function __construct(CacheInterface $cache)
     {
-        $this->_cache = $cache;
+        $this->cache = $cache;
     }
 
     /**
@@ -41,7 +41,7 @@ class CacheEntity
      */
     public function getItem($key)
     {
-        return $this->_cache->get($key);
+        return $this->cache->get($key);
     }
 
     /**
@@ -50,7 +50,7 @@ class CacheEntity
      */
     public function setItem($key, $value)
     {
-        $this->_cache->set($key, $value);
+        $this->cache->set($key, $value);
     }
 
     /**
@@ -59,15 +59,15 @@ class CacheEntity
     public function deleteItem($key)
     {
         if (!is_array($key)) {
-            if ($this->_cache->exists($key)) {
-                $this->_cache->delete($key);
+            if ($this->cache->exists($key)) {
+                $this->cache->delete($key);
             }
             return;
         }
 
         foreach ($key as $item) {
-            if ($this->_cache->exists($item)) {
-                $this->_cache->delete($item);
+            if ($this->cache->exists($item)) {
+                $this->cache->delete($item);
             }
         }
     }

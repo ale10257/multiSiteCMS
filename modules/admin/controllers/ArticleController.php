@@ -24,28 +24,28 @@ class ArticleController extends BaseAdminController
     use ControllerTrait;
 
     /** @var ArticleService */
-    private $_service;
+    private $service;
     /** @var ArticleSearch */
-    private $_search;
+    private $search;
     /** @var ArticleImageGallery */
-    private $_gallery;
+    private $gallery;
 
     /**
      * ArticleController constructor.
      * @param string $id
      * @param $module
      * @param CheckCan $checkCan
-     * @param ArticleService $_service
-     * @param ArticleSearch $_search
+     * @param ArticleService $service
+     * @param ArticleSearch $search
      * @param ArticleImageGallery $gallery
      * @throws \yii\web\ForbiddenHttpException
      */
-    public function __construct(string $id, $module, CheckCan $checkCan, ArticleService $_service, ArticleSearch $_search, ArticleImageGallery $gallery)
+    public function __construct(string $id, $module, CheckCan $checkCan, ArticleService $service, ArticleSearch $search, ArticleImageGallery $gallery)
     {
         parent::__construct($id, $module, $checkCan);
-        $this->_service = $_service;
-        $this->_search = $_search;
-        $this->_gallery = $gallery;
+        $this->service = $service;
+        $this->search = $search;
+        $this->gallery = $gallery;
     }
 
     /**
@@ -88,12 +88,12 @@ class ArticleController extends BaseAdminController
      */
     public function actionIndex()
     {
-        $searchModel = $this->_search;
+        $searchModel = $this->search;
         $dataProvider = $searchModel->search(yii::$app->request->queryParams);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'parents' => $this->_service->getLeavesCategories()
+            'parents' => $this->service->getLeavesCategories()
         ]);
     }
 
@@ -102,7 +102,7 @@ class ArticleController extends BaseAdminController
      */
     public function actionCreate()
     {
-        $formModel = $this->_service->getNewForm();
+        $formModel = $this->service->getNewForm();
 
         if ($formModel->load(yii::$app->request->post())) {
             if (!$formModel->validate()) {
@@ -110,7 +110,7 @@ class ArticleController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $id = $this->_service->create($formModel);
+                $id = $this->service->create($formModel);
                 $this->session->setFlash('success', 'Данные сохранены успешно!');
                 return $this->redirect(['update', 'id' => $id]);
             } catch (\Exception $e) {
@@ -129,7 +129,7 @@ class ArticleController extends BaseAdminController
     public function actionUpdate(int $id)
     {
         try {
-            $formModel = $this->_service->getUpdateForm($id);
+            $formModel = $this->service->getUpdateForm($id);
         } catch (\Exception $e) {
             $this->session->setFlash('error', $e->getMessage());
             return $this->redirect(['index']);
@@ -141,7 +141,7 @@ class ArticleController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_service->update($formModel, $id);
+                $this->service->update($formModel, $id);
                 $this->session->setFlash('success', 'Данные сохранены успешно!');
                 return $this->redirect(yii::$app->request->referrer);
             } catch (\Exception $e) {
@@ -161,7 +161,7 @@ class ArticleController extends BaseAdminController
      */
     public function actionDeleteMainImage($id)
     {
-        $this->_service->deleteMainImage($id);
+        $this->service->deleteMainImage($id);
         return $this->redirect(yii::$app->request->referrer);
     }
 
@@ -172,12 +172,12 @@ class ArticleController extends BaseAdminController
      */
     public function actionUpdateImage(int $id)
     {
-        $formModel = $this->_gallery->getForm($id);
+        $formModel = $this->gallery->getForm($id);
 
         if ($formModel->load(yii::$app->request->post()) && $formModel->validate()) {
             try {
-                $this->_gallery->updateImage($formModel, $id);
-                return $this->renderPartial('_form_image', ['image' => $this->_gallery->getForm($id)]);
+                $this->gallery->updateImage($formModel, $id);
+                return $this->renderPartial('_form_image', ['image' => $this->gallery->getForm($id)]);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());
                 return $this->redirect(yii::$app->request->referrer);

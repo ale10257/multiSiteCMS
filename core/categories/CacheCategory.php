@@ -12,10 +12,8 @@ use app\core\cache\CacheEntity;
 
 class CacheCategory
 {
-    /**
-     * @var CacheEntity
-     */
-    private $_cache;
+    /** @var CacheEntity */
+    private $cache;
 
     /**
      * ServiceCacheCategory constructor.
@@ -23,7 +21,7 @@ class CacheCategory
      */
     public function __construct(CacheEntity $cache)
     {
-        $this->_cache = $cache;
+        $this->cache = $cache;
     }
 
     /**
@@ -33,15 +31,15 @@ class CacheCategory
     public function getTreeCategory(string $type)
     {
         $key = $this->checkKey($type, 'tree');
-        if (!$tree = $this->_cache->getItem($key)) {
+        if (!$tree = $this->cache->getItem($key)) {
             $typeRoot = $this->getRoot($type);
             /** @var CategoryRepository[] $children */
             $children = $typeRoot->children()->all();
             foreach ($children as $item) {
                 $item->parents_array = $item->parents()->andWhere(['>', 'depth', 1])->all();
             }
-            $this->_cache->setItem($key, $children);
-            $tree = $this->_cache->getItem($key);
+            $this->cache->setItem($key, $children);
+            $tree = $this->cache->getItem($key);
         }
         return $tree;
     }
@@ -69,10 +67,10 @@ class CacheCategory
     public function getLeavesCategory(string $type)
     {
         $key = $this->checkKey($type);
-        if (!$leaves = $this->_cache->getItem($key)) {
+        if (!$leaves = $this->cache->getItem($key)) {
             $typeRoot = $this->getRoot($type);
-            $this->_cache->setItem($key, $typeRoot->leaves()->all());
-            $leaves = $this->_cache->getItem($key);
+            $this->cache->setItem($key, $typeRoot->leaves()->all());
+            $leaves = $this->cache->getItem($key);
         }
         return $leaves;
     }
@@ -97,10 +95,10 @@ class CacheCategory
     {
         $key = null;
         if ($type == CategoryRepository::RESERVED_TYPE_ARTICLE) {
-            $key = $tree ? $this->_cache::CATEGORY_CACHE['article_tree'] : $this->_cache::CATEGORY_CACHE['leaves_article'];
+            $key = $tree ? $this->cache::CATEGORY_CACHE['article_tree'] : $this->cache::CATEGORY_CACHE['leaves_article'];
         }
         if ($type == CategoryRepository::RESERVED_TYPE_PRODUCT) {
-            $key = $tree ? $this->_cache::CATEGORY_CACHE['product_tree'] : $this->_cache::CATEGORY_CACHE['leaves_product'];
+            $key = $tree ? $this->cache::CATEGORY_CACHE['product_tree'] : $this->cache::CATEGORY_CACHE['leaves_product'];
         }
         if (!$key) {
             throw new \DomainException('Undefined category type for cache category.');

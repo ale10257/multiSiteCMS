@@ -8,13 +8,12 @@
 
 namespace app\core\permissionsAndRoles;
 
-
 use yii\helpers\ArrayHelper;
 use yii\rbac\ManagerInterface;
 
 class PermissionsAndRoleService
 {
-    private $_manager;
+    private $manager;
 
     /**
      * PermissionsAndRoleService constructor.
@@ -22,7 +21,7 @@ class PermissionsAndRoleService
      */
     public function __construct(ManagerInterface $manager)
     {
-        $this->_manager = $manager;
+        $this->manager = $manager;
     }
 
     /**
@@ -31,13 +30,13 @@ class PermissionsAndRoleService
      */
     public function update(FormPermissionsAndRole $form)
     {
-        $parent = $this->_manager->getRole($form->role);
-        $this->_manager->removeChildren($parent);
+        $parent = $this->manager->getRole($form->role);
+        $this->manager->removeChildren($parent);
 
         if ($form->selectedPermissions) {
             foreach ($form->selectedPermissions as $item) {
-                $permit = $this->_manager->getPermission($item);
-                $this->_manager->addChild($parent, $permit);
+                $permit = $this->manager->getPermission($item);
+                $this->manager->addChild($parent, $permit);
             }
         }
     }
@@ -48,10 +47,10 @@ class PermissionsAndRoleService
      */
     public function getForm(string $role)
     {
-        if (!$permissions = $this->_manager->getPermissions()) {
+        if (!$permissions = $this->manager->getPermissions()) {
             throw new \DomainException('Permissions not found!');
         }
-        $rolePermit = $this->_manager->getPermissionsByRole($role);
+        $rolePermit = $this->manager->getPermissionsByRole($role);
         $form = new FormPermissionsAndRole();
         foreach ($permissions as $permit) {
             if (array_key_exists($permit->name, $rolePermit)) {

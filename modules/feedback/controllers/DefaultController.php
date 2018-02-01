@@ -14,7 +14,7 @@ use yii\web\Controller;
 class DefaultController extends Controller
 {
     /** @var FeedbackService */
-    private $_service;
+    private $service;
 
     /**
      * DefaultController constructor.
@@ -25,7 +25,7 @@ class DefaultController extends Controller
     public function __construct($id, $module, FeedbackService $service)
     {
         parent::__construct($id, $module);
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
@@ -48,14 +48,14 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        $formModel = $this->_service->getForm();
+        $formModel = $this->service->getForm();
         if ($formModel->load(yii::$app->request->post())) {
             if (!$formModel->validate()) {
                 yii::$app->session->setFlash('error', FirstErrors::get($formModel));
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_service->sendFeedback($formModel, yii::$app->params['adminEmail'], yii::$app->name);
+                $this->service->sendFeedback($formModel, yii::$app->params['adminEmail'], yii::$app->name);
                 yii::$app->session->setFlash('success', 'Спасибо за обращение!');
                 return $this->goHome();
             } catch (\Exception $e) {

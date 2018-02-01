@@ -20,11 +20,11 @@ class ArticleController extends BaseController
     /**
      * @var ArticleGetService
      */
-    private $_service;
+    private $service;
     /**
      * @var ArticleSearchActive
      */
-    private $_searchArticles;
+    private $searchArticles;
 
     /**
      * ArticleController constructor.
@@ -42,9 +42,9 @@ class ArticleController extends BaseController
         ArticleGetService $service,
         ArticleSearchActive $searchArticles)
     {
-        $this->_service = $service;
+        $this->service = $service;
         parent::__construct($id, $module, $cacheCategory, $orderCheckService);
-        $this->_searchArticles = $searchArticles;
+        $this->searchArticles = $searchArticles;
     }
 
     /**
@@ -56,7 +56,7 @@ class ArticleController extends BaseController
      */
     public function actionOneArticle($alias)
     {
-        $article = $this->_service->getOneArticle($alias);
+        $article = $this->service->getOneArticle($alias);
         return $this->render('one-article', ['article' => $article]);
     }
 
@@ -69,8 +69,8 @@ class ArticleController extends BaseController
      */
     public function actionAnyArticles($alias)
     {
-        $category = $this->_searchArticles->getCategory($alias);
-        $dataProvider = $this->_searchArticles->search($category->id);
+        $category = $this->searchArticles->getCategory($alias);
+        $dataProvider = $this->searchArticles->search($category->id);
 
         return $this->render('list-articles', ['dataProvider' => $dataProvider, 'category' => $category]);
     }

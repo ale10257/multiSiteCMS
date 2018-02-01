@@ -23,18 +23,12 @@ class GalleryController extends BaseAdminController
 {
     use ControllerTrait;
 
-    /**
-     * @var GalleryService
-     */
-    private $_service;
-    /**
-     * @var GallerySearch
-     */
-    private $_search;
-    /**
-     * @var GalleryImage
-     */
-    private $_gallery;
+    /** @var GalleryService */
+    private $service;
+    /** @var GallerySearch */
+    private $search;
+    /** @var GalleryImage */
+    private $gallery;
 
     /**
      * GalleryController constructor.
@@ -49,9 +43,9 @@ class GalleryController extends BaseAdminController
     public function __construct(string $id, $module, CheckCan $checkCan, GalleryService $service, GallerySearch $search, GalleryImage $gallery)
     {
         parent::__construct($id, $module, $checkCan);
-        $this->_service = $service;
-        $this->_search = $search;
-        $this->_gallery = $gallery;
+        $this->service = $service;
+        $this->search = $search;
+        $this->gallery = $gallery;
     }
 
     /**
@@ -75,13 +69,13 @@ class GalleryController extends BaseAdminController
      */
     public function actionIndex()
     {
-        $this->_service->index();
-        $searchModel = $this->_search;
+        $this->service->index();
+        $searchModel = $this->search;
         $dataProvider = $searchModel->search(yii::$app->request->queryParams);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'formModel' => $this->_service->getNewForm()
+            'formModel' => $this->service->getNewForm()
         ]);
     }
 
@@ -90,7 +84,7 @@ class GalleryController extends BaseAdminController
      */
     public function actionCreate()
     {
-        $formModel = $this->_service->getNewForm();
+        $formModel = $this->service->getNewForm();
 
         if ($formModel->load(yii::$app->request->post())) {
             if (!$formModel->validate()) {
@@ -98,7 +92,7 @@ class GalleryController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $id = $this->_service->create($formModel);
+                $id = $this->service->create($formModel);
                 $this->session->setFlash('success', 'Данные сохранены успешно!');
                 return $this->redirect(['update', 'id' => $id]);
             } catch (\Exception $e) {
@@ -117,7 +111,7 @@ class GalleryController extends BaseAdminController
     public function actionUpdate(int $id)
     {
         try {
-            $formModel = $this->_service->getUpdateForm($id);
+            $formModel = $this->service->getUpdateForm($id);
         } catch (\Exception $e) {
             $this->session->setFlash('error', $e->getMessage());
             return $this->redirect(['index']);
@@ -130,7 +124,7 @@ class GalleryController extends BaseAdminController
             }
 
             try {
-                $this->_service->update($formModel, $id);
+                $this->service->update($formModel, $id);
                 $this->session->setFlash('success', 'Данные сохранены успешно!');
                 return $this->redirect(yii::$app->request->referrer);
             } catch (\Exception $e) {
@@ -149,12 +143,12 @@ class GalleryController extends BaseAdminController
      */
     public function actionUpdateImage(int $id)
     {
-        $formModel = $this->_gallery->getForm($id);
+        $formModel = $this->gallery->getForm($id);
 
         if ($formModel->load(yii::$app->request->post()) && $formModel->validate()) {
             try {
-                $this->_gallery->updateImage($formModel, $id);
-                return $this->renderPartial('_form_image', ['image' => $this->_gallery->getForm($id)]);
+                $this->gallery->updateImage($formModel, $id);
+                return $this->renderPartial('_form_image', ['image' => $this->gallery->getForm($id)]);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());
                 return $this->redirect(yii::$app->request->referrer);

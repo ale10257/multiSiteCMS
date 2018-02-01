@@ -16,16 +16,12 @@ class ProductSearch extends Model
 {
     /** @var string */
     public $name;
-
     /** @var string */
     public $code;
-
     /** @var boolean */
     public $active;
-
     /** @var boolean */
     public $new_prod;
-
     /** @var int */
     public $price;
 

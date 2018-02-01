@@ -19,7 +19,7 @@ class MenuAdminController extends BaseAdminController
     /**
      * @var MenuAdminService
      */
-    private $_menuAdminService;
+    private $menuAdminService;
 
     /**
      * MenuAdminController constructor.
@@ -32,7 +32,7 @@ class MenuAdminController extends BaseAdminController
     public function __construct(string $id, $module, CheckCan $checkCan, MenuAdminService $menuAdminService)
     {
         parent::__construct($id, $module, $checkCan);
-        $this->_menuAdminService = $menuAdminService;
+        $this->menuAdminService = $menuAdminService;
     }
 
     /**
@@ -57,7 +57,7 @@ class MenuAdminController extends BaseAdminController
     public function actionIndex()
     {
         return $this->render('index', [
-            'data' => $this->_menuAdminService->getTree(),
+            'data' => $this->menuAdminService->getTree(),
         ]);
     }
 
@@ -67,7 +67,7 @@ class MenuAdminController extends BaseAdminController
      */
     public function actionCreate(int $parent_id = null)
     {
-        $formModel = $this->_menuAdminService->getNewForm($parent_id);
+        $formModel = $this->menuAdminService->getNewForm($parent_id);
 
         if ($formModel->load(\yii::$app->request->post())) {
 
@@ -77,7 +77,7 @@ class MenuAdminController extends BaseAdminController
             }
 
             try {
-                $this->_menuAdminService->create($formModel, $parent_id);
+                $this->menuAdminService->create($formModel, $parent_id);
                 $this->session->setFlash('success', 'Данные сохранены успешно!');
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
@@ -92,7 +92,7 @@ class MenuAdminController extends BaseAdminController
                 'title' => 'Создать разрешение для контроллера админки<br><small>(после создание разрешения необходимо создать сам контроллер)</small>',
                 'formModel' => $formModel,
             ]),
-            'data' => $this->_menuAdminService->getTree(),
+            'data' => $this->menuAdminService->getTree(),
         ]);
     }
 
@@ -103,7 +103,7 @@ class MenuAdminController extends BaseAdminController
     public function actionUpdate($id)
     {
         try {
-            $formModel = $this->_menuAdminService->getEditForm($id);
+            $formModel = $this->menuAdminService->getEditForm($id);
         } catch (\Exception $e) {
             \yii::$app->session->setFlash('error', $e->getMessage());
             return $this->refresh();
@@ -117,7 +117,7 @@ class MenuAdminController extends BaseAdminController
             }
 
             try {
-                $this->_menuAdminService->update($formModel, $id);
+                $this->menuAdminService->update($formModel, $id);
                 $this->session->setFlash('success', 'Данные сохранены успешно!');
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
@@ -131,7 +131,7 @@ class MenuAdminController extends BaseAdminController
                 'title' => 'Редактировать разрешение для контроллера админки',
                 'formModel' => $formModel,
             ]),
-            'data' => $this->_menuAdminService->getTree(),
+            'data' => $this->menuAdminService->getTree(),
         ]);
     }
 
@@ -141,7 +141,7 @@ class MenuAdminController extends BaseAdminController
     public function actionUpdateTree()
     {
         $post = \yii::$app->request->post();
-        return $this->renderPartial('tree', ['data' => $this->_menuAdminService->updateTree($post)]);
+        return $this->renderPartial('tree', ['data' => $this->menuAdminService->updateTree($post)]);
     }
 
     /**
@@ -152,7 +152,7 @@ class MenuAdminController extends BaseAdminController
     public function actionDelete(int $id)
     {
         try {
-            $this->_menuAdminService->delete($id);
+            $this->menuAdminService->delete($id);
             return $this->redirect(['index']);
         } catch (\Exception $e) {
             \yii::$app->session->setFlash('error', $e->getMessage());

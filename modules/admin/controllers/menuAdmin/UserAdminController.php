@@ -12,13 +12,12 @@ use app\components\helpers\FirstErrors;
 use app\core\user\services\CheckCan;
 use app\core\user\services\UserAdminService;
 use app\modules\admin\controllers\BaseAdminController;
-use yii\db\Exception;
 use yii\filters\VerbFilter;
 use app\core\user\services\SearchUserModel;
 
 class UserAdminController extends BaseAdminController
 {
-    private $_adminService;
+    private $adminService;
 
     /**
      * UserAdminController constructor.
@@ -29,7 +28,7 @@ class UserAdminController extends BaseAdminController
      */
     public function __construct(string $id, $module, CheckCan $checkCan, UserAdminService $adminService)
     {
-        $this->_adminService = $adminService;
+        $this->adminService = $adminService;
         parent::__construct($id, $module, $checkCan);
     }
 
@@ -65,7 +64,7 @@ class UserAdminController extends BaseAdminController
      */
     public function actionCreate()
     {
-        $formModel = $this->_adminService->getAdminForm();
+        $formModel = $this->adminService->getAdminForm();
 
         if ($formModel->load(\yii::$app->request->post())) {
             if (!$formModel->validate()) {
@@ -74,7 +73,7 @@ class UserAdminController extends BaseAdminController
             }
 
             try {
-                $this->_adminService->createAdmin($formModel);
+                $this->adminService->createAdmin($formModel);
                 $this->session->setFlash('success', 'Пользователь создан успешно!');
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
@@ -93,7 +92,7 @@ class UserAdminController extends BaseAdminController
     public function actionUpdate($id)
     {
         try {
-            $formModel = $this->_adminService->getAdminForm($id);
+            $formModel = $this->adminService->getAdminForm($id);
         } catch (\Exception $e) {
             \yii::$app->session->setFlash('error', $e->getMessage());
             return $this->redirect(\yii::$app->request->referrer);
@@ -106,7 +105,7 @@ class UserAdminController extends BaseAdminController
                 return $this->redirect(\yii::$app->request->referrer);
             }
             try {
-                $this->_adminService->updateAdmin($formModel, $id);
+                $this->adminService->updateAdmin($formModel, $id);
                 $this->session->setFlash('success', 'Данные обновлены успешно!');
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
@@ -126,7 +125,7 @@ class UserAdminController extends BaseAdminController
     public function actionDelete($id)
     {
         try {
-            $this->_adminService->delete($id);
+            $this->adminService->delete($id);
         } catch (\Exception $e) {
             $this->session->setFlash('error', $e->getMessage());
         }

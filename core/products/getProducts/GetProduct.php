@@ -18,9 +18,9 @@ use yii\web\NotFoundHttpException;
 class GetProduct
 {
     /** @var CacheCategory */
-    private $_cacheCategory;
+    private $cacheCategory;
     /** @var ThumbSettingImg */
-    private $_thumbSetting;
+    private $thumbSetting;
 
     /**
      * GetProduct constructor.
@@ -29,8 +29,8 @@ class GetProduct
      */
     public function __construct(CacheCategory $cacheCategory, ThumbSettingImg $thumbSetting)
     {
-        $this->_cacheCategory = $cacheCategory;
-        $this->_thumbSetting = $thumbSetting;
+        $this->cacheCategory = $cacheCategory;
+        $this->thumbSetting = $thumbSetting;
     }
 
     /**
@@ -41,7 +41,7 @@ class GetProduct
      */
     public function getCategory($alias)
     {
-        $categories = $this->_cacheCategory->getLeavesCategoryActive('product');
+        $categories = $this->cacheCategory->getLeavesCategoryActive('product');
 
         $categories = ArrayHelper::index($categories, 'alias');
 
@@ -64,7 +64,7 @@ class GetProduct
                 }
             ])->all();
 
-        $thumbImg = $this->_thumbSetting->createImgThumb('size-category-product', 'categoryThumb');
+        $thumbImg = $this->thumbSetting->createImgThumb('size-category-product', 'categoryThumb');
 
         foreach ($products as $key => $product) {
             if (!$product->images) {
@@ -114,7 +114,7 @@ class GetProduct
             throw new NotFoundHttpException();
         }
 
-        $thumbImg = $this->_thumbSetting->createImgThumb('product-image', 'productThumb');
+        $thumbImg = $this->thumbSetting->createImgThumb('product-image', 'productThumb');
         $thumbImg->web_dir = $product->getWebDir();
 
         foreach ($product->images as $image) {

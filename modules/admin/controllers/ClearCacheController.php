@@ -13,8 +13,8 @@ use yii\helpers\FileHelper;
 
 class ClearCacheController extends BaseAdminController
 {
-    private $_success;
-    private $_error;
+    private $success;
+    private $error;
 
     /**
      * @return yii\web\Response
@@ -22,9 +22,9 @@ class ClearCacheController extends BaseAdminController
     public function actionDeleteCache()
     {
         if (yii::$app->cache->flush()) {
-            $this->_success = 'Кеш очищен успешно';
+            $this->success = 'Кеш очищен успешно';
         } else {
-            $this->_error = 'Ошибка при очистке кеша';
+            $this->error = 'Ошибка при очистке кеша';
         }
         return $this->setMsg();
     }
@@ -39,7 +39,7 @@ class ClearCacheController extends BaseAdminController
         $dir = yii::getAlias('@webroot/assets');
         FileHelper::removeDirectory($dir);
         if (FileHelper::createDirectory($dir)) {
-            $this->_success = 'Assets сброшены успешно';
+            $this->success = 'Assets сброшены успешно';
         } else {
             throw new \DomainException('Directory Assets not created');
 
@@ -53,11 +53,11 @@ class ClearCacheController extends BaseAdminController
     private function setMsg()
     {
         $session = yii::$app->session;
-        if ($this->_success) {
-            $session->setFlash('success', $this->_success);
+        if ($this->success) {
+            $session->setFlash('success', $this->success);
         }
-        if ($this->_error) {
-            $session->setFlash('error', $this->_error);
+        if ($this->error) {
+            $session->setFlash('error', $this->error);
         }
         return $this->redirect(yii::$app->request->referrer);
     }

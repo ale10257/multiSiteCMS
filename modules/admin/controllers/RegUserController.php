@@ -21,11 +21,11 @@ class RegUserController extends BaseAdminController
     /**
      * @var UserRegService
      */
-    private $_service;
+    private $service;
     /**
      * @var UserRegSearch
      */
-    private $_search;
+    private $search;
 
     /**
      * RegUserController constructor.
@@ -39,8 +39,8 @@ class RegUserController extends BaseAdminController
     public function __construct(string $id, $module, CheckCan $checkCan, UserRegService $service, UserRegSearch $search)
     {
         parent::__construct($id, $module, $checkCan);
-        $this->_service = $service;
-        $this->_search = $search;
+        $this->service = $service;
+        $this->search = $search;
     }
 
     /**
@@ -63,7 +63,7 @@ class RegUserController extends BaseAdminController
      */
     public function actionIndex()
     {
-        $searchModel = $this->_search;
+        $searchModel = $this->search;
         $dataProvider = $searchModel->search(yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -75,7 +75,7 @@ class RegUserController extends BaseAdminController
     
     public function actionCreate()
     {
-        $formModel = $this->_service->getNewForm();
+        $formModel = $this->service->getNewForm();
 
         if ($formModel->load(yii::$app->request->post())) {
             if (!$formModel->validate()) {
@@ -83,7 +83,7 @@ class RegUserController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_service->create($formModel);
+                $this->service->create($formModel);
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());
@@ -101,7 +101,7 @@ class RegUserController extends BaseAdminController
     public function actionUpdate(int $id)
     {
         try {
-            $formModel = $this->_service->getUpdateForm($id);
+            $formModel = $this->service->getUpdateForm($id);
         } catch (\Exception $e) {
             $this->session->setFlash('error', $e->getMessage());
             return $this->redirect(['index']);
@@ -113,7 +113,7 @@ class RegUserController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_service->update($formModel, $id);
+                $this->service->update($formModel, $id);
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());
@@ -132,7 +132,7 @@ class RegUserController extends BaseAdminController
     public function actionDelete($id)
     {
         try {
-            $this->_service->delete($id);
+            $this->service->delete($id);
             return $this->redirect(['index']);
         } catch (\Exception $e) {
             yii::$app->session->setFlash('error', $e->getMessage());

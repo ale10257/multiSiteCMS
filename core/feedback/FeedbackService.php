@@ -14,9 +14,9 @@ use yii\web\UploadedFile;
 class FeedbackService
 {
     /** @var FeedBackForm */
-    private $_form;
+    private $form;
     /** @var MailerInterface */
-    private $_mailer;
+    private $mailer;
 
     /**
      * FeedbackService constructor.
@@ -25,8 +25,8 @@ class FeedbackService
      */
     public function __construct(FeedBackForm $form, MailerInterface $mailer)
     {
-        $this->_form = $form;
-        $this->_mailer = $mailer;
+        $this->form = $form;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -34,7 +34,7 @@ class FeedbackService
      */
     public function getForm()
     {
-        return $this->_form;
+        return $this->form;
     }
 
     /**
@@ -46,7 +46,7 @@ class FeedbackService
     {
         $data = new FeedbackData($form);
         $subject = 'Сообщение с сайта ' . $appName;
-        $message = $this->_mailer->compose('feedback_reply', ['data' => $data])
+        $message = $this->mailer->compose('feedback_reply', ['data' => $data])
             ->setTo($adminEmail)
             ->setReplyTo($form->email)
             ->setSubject($subject)

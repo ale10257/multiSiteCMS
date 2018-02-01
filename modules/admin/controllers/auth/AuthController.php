@@ -19,14 +19,14 @@ use app\core\user\auth\PasswordResetRequestForm;
 
 class AuthController extends Controller
 {
-    private $_service;
+    private $service;
 
     public $layout = 'main-login';
 
     public function __construct($id, $module, AuthService $service)
     {
         parent::__construct($id, $module);
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
@@ -56,7 +56,7 @@ class AuthController extends Controller
         $form = new LoginForm();
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try {
-                $user = $this->_service->auth($form);
+                $user = $this->service->auth($form);
                 Yii::$app->user->login(new Identity($user), $form->rememberMe ? 3600 * 24 * 30 : 0);
                 return $this->redirect('/admin');
             } catch (\DomainException $e) {
@@ -81,7 +81,7 @@ class AuthController extends Controller
         $modelForm = new PasswordResetRequestForm();
         if ($modelForm->load(Yii::$app->request->post()) && $modelForm->validate()) {
             try {
-                $this->_service->sendEmailResetPassword($modelForm, yii::$app->params['adminEmail']);
+                $this->service->sendEmailResetPassword($modelForm, yii::$app->params['adminEmail']);
                 yii::$app->session->setFlash('success', 'Проверьте почту, и следуйте инструкциям в письме. Время жизни токена для восстановления пароля - 1 час.');
                 return $this->goHome();
             } catch (\Exception $e) {
@@ -105,7 +105,7 @@ class AuthController extends Controller
 
         if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()) {
             try {
-                $user = $this->_service->resetPassword($formModel, $token);
+                $user = $this->service->resetPassword($formModel, $token);
                 Yii::$app->user->login(new Identity($user), 3600 * 24 * 30);
                 return $this->redirect(['/admin']);
             } catch (\Exception $e) {

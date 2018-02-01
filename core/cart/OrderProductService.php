@@ -16,21 +16,24 @@ use app\core\products\repositories\ProductRepository;
 class OrderProductService
 {
     /** @var OrderService */
-    private $_orderService;
+    private $orderService;
     /** @var OrderProductRepository */
-    private $_productOrderRepository;
+    private $productRepository;
     /** @var OrderProductForm */
-    private $_form;
+    private $form;
+
 
     /**
      * OrderProductService constructor.
      * @param OrderService $orderService
+     * @param OrderProductRepository $productRepository
+     * @param OrderProductForm $form
      */
-    public function __construct(OrderService $orderService)
+    public function __construct(OrderService $orderService, OrderProductRepository $productRepository, OrderProductForm $form)
     {
-        $this->_productOrderRepository = new OrderProductRepository();
-        $this->_form = new OrderProductForm();
-        $this->_orderService = $orderService;
+        $this->productRepository = $productRepository;
+        $this->form = $form;
+        $this->orderService = $orderService;
     }
 
     /**
@@ -45,14 +48,16 @@ class OrderProductService
         }
 
         if (!$form->order_id) {
-            $form->order_id = $this->_orderService->getOrderId();
+            $form->order_id = $this->orderService->getOrderId();
         }
+
         $product = ProductRepository::findOne($form->product_id);
         $this->checkCount($form->count, $product->count);
         $this->setCount($form, $product);
-        $this->_productOrderRepository->insertValues($form);
-        $this->_productOrderRepository->saveItem();
+        $this->productRepository->insertValues($form);
+        $this->productRepository->saveItem();
         $this->setAll($form->order_id, $form->count, $product->price);
+
         return $product->count;
     }
 
@@ -63,17 +68,17 @@ class OrderProductService
      */
     public function update(OrderProductForm $form, int $id)
     {
-        $this->_productOrderRepository = $this->_productOrderRepository->getItem($id);
+        $this->productRepository = $this->productRepository->getItem($id);
         $product = new ProductRepository();
-        $product = $product->getItem($this->_productOrderRepository->product_id);
-        $this->checkCount($form->count, $product->count + $this->_productOrderRepository->count);
-        $count = $form->count - $this->_productOrderRepository->count;
-        $product->count += $this->_productOrderRepository->count;
+        $product = $product->getItem($this->productRepository->product_id);
+        $this->checkCount($form->count, $product->count + $this->productRepository->count);
+        $count = $form->count - $this->productRepository->count;
+        $product->count += $this->productRepository->count;
         $this->setCount($form, $product);
-        $this->_productOrderRepository->count = $form->count;
-        $this->_productOrderRepository->saveItem();
+        $this->productRepository->count = $form->count;
+        $this->productRepository->saveItem();
 
-        $this->setAll($this->_productOrderRepository->order_id, $count, $product->price);
+        $this->setAll($this->productRepository->order_id, $count, $product->price);
     }
 
     /**
@@ -81,7 +86,7 @@ class OrderProductService
      */
     public function getNewForm()
     {
-        return $this->_form;
+        return $this->form;
     }
 
     /**
@@ -93,7 +98,7 @@ class OrderProductService
     public function getUpdateForm(int $id, OrderProductRepository $productRepository = null)
     {
         if ($productRepository === null) {
-            $productRepository = $this->_productOrderRepository->getItem($id);
+            $productRepository = $this->productRepository->getItem($id);
         }
         $form = new OrderProductForm();
         $form->createUpdateForm($productRepository);
@@ -107,7 +112,7 @@ class OrderProductService
      */
     public function getOrderWithForms(int $id)
     {
-        $order = $this->_orderService->getOrderForAdmin($id);
+        $order = $this->orderService->getOrderForAdmin($id);
         if ($order->orderProducts) {
             foreach ($order->orderProducts as $orderProduct) {
                 $orderProduct->form = $this->getUpdateForm($orderProduct->id, $orderProduct);
@@ -122,11 +127,11 @@ class OrderProductService
      */
     public function getProductsForCart()
     {
-        if (!$order_id = $this->_orderService->checkOrder()) {
+        if (!$order_id = $this->orderService->checkOrder()) {
             return false;
         }
 
-        $products = $this->_productOrderRepository::find()->where(['order_id' => $order_id])->with('product.category')->all();
+        $products = $this->productRepository::find()->where(['order_id' => $order_id])->with('product.category')->all();
         if (!$products) {
             return false;
         }
@@ -146,7 +151,7 @@ class OrderProductService
      */
     public function getOneProductForCart(int $id)
     {
-        $product = $this->_productOrderRepository::find()->where(['id' => $id])->with('product.category')->one();
+        $product = $this->productRepository::find()->where(['id' => $id])->with('product.category')->one();
         $product->form = $this->getNewForm();
         return $product;
     }
@@ -162,7 +167,7 @@ class OrderProductService
     public function deleteOneProduct(int $id, OrderProductRepository $orderProductRepository = null)
     {
         if ($orderProductRepository === null) {
-            $orderProductRepository = $this->_productOrderRepository->getItem($id);
+            $orderProductRepository = $this->productRepository->getItem($id);
         }
 
         if (!$product = ProductRepository::findOne($orderProductRepository->product_id)) {
@@ -175,7 +180,7 @@ class OrderProductService
         $orderProductRepository->deleteItem();
 
         if (!$orderProductRepository::find()->where(['order_id' => $orderProductRepository->order_id])->count()) {
-            $this->_orderService->deleteOnly($orderProductRepository->order_id);
+            $this->orderService->delete($orderProductRepository->order_id);
             return;
         }
 
@@ -183,6 +188,27 @@ class OrderProductService
         $this->setAll($orderProductRepository->order_id, $count, $product->price);
     }
 
+    /**
+     * @param int $id
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function deleteOrder(int $id)
+    {
+        $order = $this->orderService->getOrder($id);
+
+        if (!$this->orderService->checkStatusOrderClosed($order)) {
+            if ($orderProducts = $this->productRepository::find()->where(['order_id' => $id])->all()) {
+                foreach ($orderProducts as $orderProduct) {
+                    $this->deleteOneProduct($orderProduct->id, $orderProduct);
+                }
+            }
+        } else {
+            $order->deleteItem();
+        }
+    }
 
     /**
      * @param int $product_id
@@ -190,8 +216,8 @@ class OrderProductService
      */
     public function checkOrderedProduct(int $product_id)
     {
-        if ($order_id = $this->_orderService->checkOrder()) {
-            return $this->_productOrderRepository::find()->where([
+        if ($order_id = $this->orderService->checkOrder()) {
+            return $this->productRepository::find()->where([
                 'order_id' => $order_id,
                 'product_id' => $product_id
             ])->count();
@@ -229,7 +255,7 @@ class OrderProductService
      */
     private function setAll(int $repository_id, int $num, int $price)
     {
-        $orderRepository = $this->_orderService->getOrder($repository_id);
+        $orderRepository = $this->orderService->getOrder($repository_id);
         $orderRepository->all_sum = $orderRepository->all_sum + ($num * $price);
         $orderRepository->all_total += $num;
         $orderRepository->saveItem();

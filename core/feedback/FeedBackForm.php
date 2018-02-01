@@ -31,9 +31,9 @@ class FeedBackForm extends Model
     public $file;
 
     /** @var string  */
-    private $_secret_key = 'key';
+    private $secret_key = 'key';
     /** @var GetOneSetting  */
-    private $_setting;
+    private $setting;
 
     /**
      * FeedBackForm constructor.
@@ -41,16 +41,16 @@ class FeedBackForm extends Model
      */
     public function __construct(GetOneSetting $setting)
     {
-        $this->_setting = $setting;
+        $this->setting = $setting;
         parent::__construct();
 
     }
 
     public function init()
     {
-        if ($googleCaptcha = $this->_setting->get('google_captcha')) {
+        if ($googleCaptcha = $this->setting->get('google_captcha')) {
             $this->site_key = $googleCaptcha['site_key'];
-            $this->_secret_key = $googleCaptcha['secret_key'];
+            $this->secret_key = $googleCaptcha['secret_key'];
         }
     }
 
@@ -71,7 +71,7 @@ class FeedBackForm extends Model
             ],
             [['reCaptcha'], ReCaptchaValidator::class, 'when' => function () {
                 return $this->site_key;
-            }, 'secret' => $this->_secret_key,]
+            }, 'secret' => $this->secret_key,]
         ];
     }
 

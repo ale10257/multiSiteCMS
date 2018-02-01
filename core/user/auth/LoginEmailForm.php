@@ -12,8 +12,11 @@ use yii\base\Model;
 
 class LoginEmailForm extends Model
 {
+    /** @var string */
     public $email;
+    /** @var string */
     public $password;
+    /** @var bool */
     public $rememberMe = true;
 
     /**

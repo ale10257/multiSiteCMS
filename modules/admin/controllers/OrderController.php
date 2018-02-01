@@ -22,11 +22,11 @@ use yii\web\Response;
 class OrderController extends BaseAdminController
 {
     /** @var OrderService */
-    private $_service;
+    private $service;
     /** @var OrderProductService */
-    private $_productService;
+    private $productService;
     /** @var OrderCheckService */
-    private $_checkService;
+    private $checkService;
 
     /**
      * OrderController constructor.
@@ -40,7 +40,7 @@ class OrderController extends BaseAdminController
      * @throws yii\db\Exception
      */
     public function __construct(
-        string $id,
+        $id,
         $module,
         CheckCan $checkCan,
         OrderService $service,
@@ -48,10 +48,10 @@ class OrderController extends BaseAdminController
         OrderCheckService $checkService
     ) {
         parent::__construct($id, $module, $checkCan);
-        $this->_service = $service;
-        $this->_productService = $productService;
-        $this->_checkService = $checkService;
-        $this->_checkService->checkTimeout();
+        $this->service = $service;
+        $this->productService = $productService;
+        $this->checkService = $checkService;
+        $this->checkService->checkTimeout();
     }
 
     /**
@@ -81,7 +81,7 @@ class OrderController extends BaseAdminController
     {
         $searchModel = new OrderSearch();
         $dataProvider = $searchModel->search(yii::$app->request->queryParams);
-        $this->_checkService->setProductsCountForProvider($dataProvider);
+        $this->checkService->setProductsCountForProvider($dataProvider);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -96,7 +96,7 @@ class OrderController extends BaseAdminController
      */
     public function actionChangeStatus($order_id, $status)
     {
-        $this->_service->changeStatus($order_id, $status);
+        $this->service->changeStatus($order_id, $status);
         return $this->redirect(yii::$app->request->referrer . '#' . $order_id);
     }
 
@@ -107,8 +107,8 @@ class OrderController extends BaseAdminController
      */
     public function actionView($id)
     {
-        $cart_data = $this->_checkService->productsCount($id);
-        $model = $this->_productService->getOrderWithForms($id);
+        $cart_data = $this->checkService->productsCount($id);
+        $model = $this->productService->getOrderWithForms($id);
 
         return $this->render('view', ['cart_data' => $cart_data, 'model' => $model]);
     }
@@ -122,7 +122,7 @@ class OrderController extends BaseAdminController
      */
     public function actionDelete($id)
     {
-        $this->_service->delete($id);
+        $this->productService->deleteOrder($id);
         return $this->redirect(['index']);
     }
 
@@ -146,7 +146,7 @@ class OrderController extends BaseAdminController
      */
     public function actionChangeNum(int $id)
     {
-        $formModel = $this->_productService->getUpdateForm($id);
+        $formModel = $this->productService->getUpdateForm($id);
 
         if ($formModel->load(yii::$app->request->post())) {
             if (!$formModel->validate()) {
@@ -154,13 +154,14 @@ class OrderController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_productService->update($formModel, $id);
+                $this->productService->update($formModel, $id);
                 return $this->redirect(yii::$app->request->referrer);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());
                 return $this->redirect(yii::$app->request->referrer);
             }
         }
+
         return false;
     }
 
@@ -172,7 +173,7 @@ class OrderController extends BaseAdminController
     public function actionDeleteItem($id)
     {
         try {
-            $this->_productService->deleteOneProduct($id);
+            $this->productService->deleteOneProduct($id);
             return $this->redirect(yii::$app->request->referrer);
         } catch (\Exception $e) {
             yii::$app->session->setFlash('error', $e->getMessage());

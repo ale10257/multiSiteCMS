@@ -18,22 +18,14 @@ use app\core\workWithFiles\helpers\RemoveDirectory;
 
 class GalleryService
 {
-    /**
-     * @var GalleryRepository
-     */
-    private $_galleryRepository;
-    /**
-     * @var GalleryImageRepository
-     */
-    private $_imageRepository;
-    /**
-     * @var GalleryForm
-     */
-    private $_galleryForm;
-    /**
-     * @var GalleryImageForm
-     */
-    private $_galleryImageForm;
+    /** @var GalleryRepository */
+    private $galleryRepository;
+    /** @var GalleryImageRepository */
+    private $imageRepository;
+    /** @var GalleryForm */
+    private $galleryForm;
+    /** @var GalleryImageForm */
+    private $galleryImageForm;
 
     /**
      * GalleryService constructor.
@@ -44,16 +36,16 @@ class GalleryService
      */
     public function __construct(GalleryRepository $galleryRepository, GalleryImageRepository $imageRepository, GalleryForm $galleryForm, GalleryImageForm $galleryImageForm)
     {
-        $this->_galleryRepository = $galleryRepository;
-        $this->_imageRepository = $imageRepository;
-        $this->_galleryForm = $galleryForm;
-        $this->_galleryImageForm = $galleryImageForm;
+        $this->galleryRepository = $galleryRepository;
+        $this->imageRepository = $imageRepository;
+        $this->galleryForm = $galleryForm;
+        $this->galleryImageForm = $galleryImageForm;
     }
 
     public function index()
     {
         /** @var $root GalleryRepository */
-        if (!$root = $this->_galleryRepository->getRoot()) {
+        if (!$root = $this->galleryRepository->getRoot()) {
             $this->createRoot();
         }
     }
@@ -67,7 +59,7 @@ class GalleryService
         $form->alias = Inflector::slug($form->name);
 
         /** @var $root GalleryRepository */
-        $root = $this->_galleryRepository->getRoot();
+        $root = $this->galleryRepository->getRoot();
         $gallery = new GalleryRepository();
         $gallery->checkUniqAlias($form->alias, $root->tree);
         $gallery->insertValues($form);
@@ -83,14 +75,14 @@ class GalleryService
      */
     public function update(GalleryForm $form, int $id)
     {
-        $gallery = $this->_galleryRepository->getItem($id);
+        $gallery = $this->galleryRepository->getItem($id);
         $web_dir = $gallery->getWebDir();
 
         $gallery->insertValues($form);
         $gallery->saveItem();
 
         if ($images = $form->uploadAnyFile($web_dir, 'any_images')) {
-            $sort = $this->_imageRepository->getNumLastElement(['galleries_id' => $gallery->id], 'sort');
+            $sort = $this->imageRepository->getNumLastElement(['galleries_id' => $gallery->id], 'sort');
             foreach ($images as $image) {
                 $img = new GalleryImageRepository();
                 $img->name = $image;
@@ -104,7 +96,7 @@ class GalleryService
 
     public function getNewForm()
     {
-        return $this->_galleryForm;
+        return $this->galleryForm;
     }
 
     /**
@@ -114,7 +106,7 @@ class GalleryService
      */
     public function getUpdateForm(int $id)
     {
-        if (!$gallery = $this->_galleryRepository::find()
+        if (!$gallery = $this->galleryRepository::find()
             ->where(['id' => $id])
             ->with([
                 'images' => function ($q) {
@@ -126,18 +118,18 @@ class GalleryService
             throw new NotFoundHttpException();
         }
 
-        $this->_galleryForm->createUpdateForm($gallery);
-        $this->_galleryForm->webDir = $gallery->getWebDir();
+        $this->galleryForm->createUpdateForm($gallery);
+        $this->galleryForm->webDir = $gallery->getWebDir();
 
         if ($gallery->images) {
             foreach ($gallery->images as $image) {
                 $img = new GalleryImageForm();
                 $img->createUpdateForm($image);
-                $this->_galleryForm->uploaded_images[] = $img;
+                $this->galleryForm->uploaded_images[] = $img;
             }
         }
 
-        return $this->_galleryForm;
+        return $this->galleryForm;
     }
 
     /**
@@ -150,11 +142,14 @@ class GalleryService
      */
     public function delete(int $id)
     {
-        $gallery = $this->_galleryRepository->getItem($id);
+        $gallery = $this->galleryRepository->getItem($id);
         $gallery->deleteItem();
         RemoveDirectory::removeDirectory($gallery->getWebDir());
     }
 
+    /**
+     * @return GalleryRepository
+     */
     private function createRoot()
     {
         $root = new GalleryRepository();

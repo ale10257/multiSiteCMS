@@ -16,7 +16,7 @@ class SiteController extends BaseController
     /**
      * @var FeedbackService
      */
-    private $_feedbackService;
+    private $feedbackService;
 
     /**
      * SiteController constructor.
@@ -33,7 +33,7 @@ class SiteController extends BaseController
         OrderCheckService $orderCheckService,
         FeedbackService $feedbackService)
     {
-        $this->_feedbackService = $feedbackService;
+        $this->feedbackService = $feedbackService;
         parent::__construct($id, $module, $cacheCategory, $orderCheckService);
     }
 
@@ -110,7 +110,7 @@ class SiteController extends BaseController
     {
         $form = $this->renderPartial('@app/modules/feedback/views/default/index',
             [
-                'formModel' => $this->_feedbackService->getForm(),
+                'formModel' => $this->feedbackService->getForm(),
                 'file' => true,
             ]);
         return $this->render('contact', ['form' => $form]);

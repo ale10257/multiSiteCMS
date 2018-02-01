@@ -18,13 +18,13 @@ use app\core\cart\repositories\OrderRepository;
 class SendOrder
 {
     /** @var MailerInterface */
-    private $_mailer;
+    private $mailer;
     /** @var Session */
-    private $_session;
+    private $session;
     /** @var OrderService */
-    private $_order;
+    private $order;
     /** @var OrderCheckService */
-    private $_orderCheckService;
+    private $orderCheckService;
 
     /**
      * SendOrder constructor.
@@ -35,10 +35,10 @@ class SendOrder
      */
     public function __construct(MailerInterface $mailer, Session $session, OrderService $order, OrderCheckService $orderCheckService)
     {
-        $this->_mailer = $mailer;
-        $this->_session = $session;
-        $this->_order = $order;
-        $this->_orderCheckService = $orderCheckService;
+        $this->mailer = $mailer;
+        $this->session = $session;
+        $this->order = $order;
+        $this->orderCheckService = $orderCheckService;
     }
 
     /**
@@ -50,23 +50,23 @@ class SendOrder
      */
     public function sendEmail(OrderForm $form, string $adminEmail, string $appName)
     {
-        if (!$order_id = $this->_session->get($this->_order::SESSION_KEY)) {
+        if (!$order_id = $this->session->get($this->order::SESSION_KEY)) {
             throw new NotFoundException('Заказ не найден');
         }
 
         $user_data = new UserData($form);
 
-        $order = $this->_order->getOrderForSend($order_id);
-        $this->_order->createData($order, json_encode($user_data));
+        $order = $this->order->getOrderForSend($order_id);
+        $this->order->createData($order, json_encode($user_data));
 
-        $admin_mail = $this->_mailer
+        $admin_mail = $this->mailer
             ->compose(
                 ['html' => 'sendOrder'],
                 [
                     'user_data' => $user_data,
                     'order_products' => $order->orderProducts,
                     'order_id' => $order_id,
-                    'cart_data' => $this->_orderCheckService->productsCount($order->id)
+                    'cart_data' => $this->orderCheckService->productsCount($order->id)
                 ]
             )
             ->setFrom($adminEmail)
@@ -77,8 +77,8 @@ class SendOrder
         $user_mail->setTo($form->email);
 
         if ($admin_mail->send() && $user_mail->send()) {
-            $this->_order->changeStatus($order_id, OrderRepository::STATUS_ORDER_NOT_VERIFED);
-            $this->_session->remove($this->_order::SESSION_KEY);
+            $this->order->changeStatus($order_id, OrderRepository::STATUS_ORDER_NOT_VERIFED);
+            $this->session->remove($this->order::SESSION_KEY);
             return true;
         }
 

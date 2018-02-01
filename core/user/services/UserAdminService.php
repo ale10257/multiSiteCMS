@@ -19,21 +19,21 @@ use yii\rbac\ManagerInterface;
 class UserAdminService
 {
     /** @var User */
-    private $_user;
+    private $user;
     /** @var ManagerInterface */
-    private $_authManager;
+    private $authManager;
     /** @var UserRepository */
-    private $_userRepository;
+    private $userRepository;
 
     /**
      * UserAdminService constructor.
      * @param ManagerInterface $manager
      */
-    public function __construct(ManagerInterface $manager)
+    public function __construct(ManagerInterface $manager, User $user, UserRepository $repository)
     {
-        $this->_user = new User();
-        $this->_authManager = $manager;
-        $this->_userRepository = new UserRepository();
+        $this->user = $user;
+        $this->authManager = $manager;
+        $this->userRepository = $repository;
     }
 
     /**
@@ -43,10 +43,10 @@ class UserAdminService
     public function createAdmin(UserFormInterface $userAdminForm)
     {
         /**@var $userAdminForm UserAdminEditForm */
-        $user = $this->_user::create($userAdminForm);
-        $this->_userRepository->save($user);
-        $role = $this->_authManager->getRole($user->role);
-        $this->_authManager->assign($role, $user->id);
+        $user = $this->user::create($userAdminForm);
+        $this->userRepository->save($user);
+        $role = $this->authManager->getRole($user->role);
+        $this->authManager->assign($role, $user->id);
 
     }
 
@@ -59,18 +59,18 @@ class UserAdminService
     {
         /**@var $userAdminForm UserAdminEditForm */
 
-        $user = $this->_userRepository->get($id);
+        $user = $this->userRepository->get($id);
 
         if ($user->role == 'root') {
             $userAdminForm->status = User::STATUS_ACTIVE;
         }
 
-        $this->_userRepository->save($this->_user->edit($userAdminForm, $user));
+        $this->userRepository->save($this->user->edit($userAdminForm, $user));
 
         if ($user->role !== 'root') {
-            $this->_authManager->revokeAll($user->id);
-            $role = $this->_authManager->getRole($userAdminForm->role);
-            $this->_authManager->assign($role, $user->id);
+            $this->authManager->revokeAll($user->id);
+            $role = $this->authManager->getRole($userAdminForm->role);
+            $this->authManager->assign($role, $user->id);
         }
     }
 
@@ -81,14 +81,14 @@ class UserAdminService
     public function getAdminForm(int $id = null)
     {
         if ($id) {
-            $user = $this->_userRepository->get($id);
+            $user = $this->userRepository->get($id);
             $form = new UserAdminEditForm();
             $form->createUpdateForm($user);
         } else {
             $form = new UserAdminCreateForm();
         }
         $form->statuses = [User::NO_ACTIVE, User::STATUS_ACTIVE];
-        $form->roles = ArrayHelper::map($this->_authManager->getRoles(), 'name', 'name');
+        $form->roles = ArrayHelper::map($this->authManager->getRoles(), 'name', 'name');
         foreach ($form->roles as $role) {
             if (array_key_exists($role, User::RESERVED_ROLES)) {
                 unset($form->roles[$role]);
@@ -106,10 +106,10 @@ class UserAdminService
      */
     public function delete(int $id)
     {
-        $this->_user = $this->_userRepository->get($id);
-        if ($this->_user->role == 'root') {
+        $this->user = $this->userRepository->get($id);
+        if ($this->user->role == 'root') {
             throw new \DomainException('Суперпользователя root нельзя удалить из системы!');
         }
-        $this->_userRepository->remove($this->_user);
+        $this->userRepository->remove($this->user);
     }
 }

@@ -21,13 +21,13 @@ use yii\filters\VerbFilter;
 class OrderController extends BaseController
 {
     /** @var OrderProductService */
-    private $_service;
+    private $service;
     /** @var OrderFormService */
-    private $_formService;
+    private $formService;
     /** @var SendOrder */
-    private $_sendOrder;
+    private $sendOrder;
     /** @var \yii\web\Session */
-    private $_session;
+    private $session;
 
     /**
      * OrderController constructor.
@@ -49,10 +49,10 @@ class OrderController extends BaseController
         SendOrder $sendOrder
     )
     {
-        $this->_service = $service;
-        $this->_formService = $formService;
-        $this->_sendOrder = $sendOrder;
-        $this->_session = yii::$app->session;
+        $this->service = $service;
+        $this->formService = $formService;
+        $this->sendOrder = $sendOrder;
+        $this->session = yii::$app->session;
         parent::__construct($id, $module, $cacheCategory, $orderCheckService);
     }
 
@@ -77,12 +77,12 @@ class OrderController extends BaseController
      */
     public function actionIndex()
     {
-        $order_product = $this->_service->getProductsForCart();
+        $order_product = $this->service->getProductsForCart();
         $cart_data = $this->orderCheckService->productsCount();
 
         return $this->render('cart', [
             'order_product' => $order_product,
-            'formModel' => $this->_formService->getForm(),
+            'formModel' => $this->formService->getForm(),
             'cart_data' => $cart_data,
         ]);
     }
@@ -93,18 +93,18 @@ class OrderController extends BaseController
      */
     public function actionChangeOrder(int $id)
     {
-        $formModel = $this->_service->getNewForm();
+        $formModel = $this->service->getNewForm();
 
         if ($formModel->load(yii::$app->request->post())) {
             if (!$formModel->validate()) {
-                $this->_session->setFlash('error', FirstErrors::get($formModel));
+                $this->session->setFlash('error', FirstErrors::get($formModel));
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_service->update($formModel, $id);
+                $this->service->update($formModel, $id);
                 return $this->redirect(yii::$app->request->referrer);
             } catch (\Exception $e) {
-                $this->_session->setFlash('error', $e->getMessage());
+                $this->session->setFlash('error', $e->getMessage());
                 return $this->redirect(yii::$app->request->referrer);
             }
         }
@@ -117,19 +117,19 @@ class OrderController extends BaseController
      */
     public function actionSendOrder()
     {
-        $formModel = $this->_formService->getForm();
+        $formModel = $this->formService->getForm();
 
         if ($formModel->load(yii::$app->request->post())) {
             if (!$formModel->validate()) {
-                $this->_session->setFlash('error', FirstErrors::get($formModel));
+                $this->session->setFlash('error', FirstErrors::get($formModel));
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_sendOrder->sendEmail($formModel, yii::$app->params['adminEmail'], yii::$app->name);
-                $this->_session->setFlash('success', 'Спасибо за заказ. Мы свяжемся с вами в ближайшее время.');
+                $this->sendOrder->sendEmail($formModel, yii::$app->params['adminEmail'], yii::$app->name);
+                $this->session->setFlash('success', 'Спасибо за заказ. Мы свяжемся с вами в ближайшее время.');
                 return $this->goHome();
             } catch (\Exception $e) {
-                $this->_session->setFlash('error', $e->getMessage());
+                $this->session->setFlash('error', $e->getMessage());
                 return $this->redirect(yii::$app->request->referrer);
             }
         }
@@ -147,7 +147,7 @@ class OrderController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->_service->deleteOneProduct($id);
+        $this->service->deleteOneProduct($id);
         return $this->redirect(yii::$app->request->referrer);
     }
 

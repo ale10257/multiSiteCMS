@@ -18,7 +18,7 @@ class ArticleSearch extends Model
     /** @var string */
     public $name;
     /** @var CacheCategory */
-    private $_cacheCategory;
+    private $cacheCategory;
 
     /**
      * @inheritdoc
@@ -26,7 +26,7 @@ class ArticleSearch extends Model
     public function __construct(array $config = [], CacheCategory $cacheCategory)
     {
         parent::__construct($config);
-        $this->_cacheCategory = $cacheCategory;
+        $this->cacheCategory = $cacheCategory;
     }
 
     public function rules()
@@ -43,7 +43,7 @@ class ArticleSearch extends Model
      */
     public function search($params)
     {
-        $categories = $this->_cacheCategory->getLeavesCategory(Category::RESERVED_TYPE_ARTICLE);
+        $categories = $this->cacheCategory->getLeavesCategory(Category::RESERVED_TYPE_ARTICLE);
 
         $query = Article::find()->with('category')->where(['in', 'categories_id', ArrayHelper::map($categories, 'id', 'id')]);
 

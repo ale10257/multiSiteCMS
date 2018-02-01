@@ -13,14 +13,10 @@ use app\core\cache\CacheEntity;
 
 class GetChunkFromCache
 {
-    /**
-     * @var CacheEntity
-     */
-    private $_cache;
-    /**
-     * @var ChunkRepository
-     */
-    private $_repository;
+    /** @var CacheEntity */
+    private $cache;
+    /** @var ChunkRepository */
+    private $repository;
 
     /**
      * GetChunkFromCache constructor.
@@ -29,8 +25,8 @@ class GetChunkFromCache
      */
     public function __construct(CacheEntity $cache, ChunkRepository $repository)
     {
-        $this->_cache = $cache;
-        $this->_repository = $repository;
+        $this->cache = $cache;
+        $this->repository = $repository;
     }
 
     /**
@@ -39,12 +35,12 @@ class GetChunkFromCache
      */
     public function get($alias)
     {
-        if (!$item = $this->_cache->getItem($alias)) {
-            if (!$value = $this->_repository::findOne(['alias' => $alias])) {
+        if (!$item = $this->cache->getItem($alias)) {
+            if (!$value = $this->repository::findOne(['alias' => $alias])) {
                 return false;
             }
-            $this->_cache->setItem($alias, $value->text);
+            $this->cache->setItem($alias, $value->text);
         }
-        return $this->_cache->getItem($alias);
+        return $this->cache->getItem($alias);
     }
 }

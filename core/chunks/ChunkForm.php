@@ -16,16 +16,12 @@ class ChunkForm extends Model
 {
     /** @var int */
     public $id;
-
     /** @var string */
     public $name;
-
     /** @var string */
     public $alias;
-
     /** @var string */
     public $description;
-
     /** @var string */
     public $text;
 

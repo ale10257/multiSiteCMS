@@ -47,6 +47,7 @@ use creocoder\nestedsets\NestedSetsBehavior;
 class SettingRepository extends BaseRepository
 {
     use CheckUniqAliasInTree;
+
     /**
      * @inheritdoc
      */

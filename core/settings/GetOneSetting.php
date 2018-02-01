@@ -13,15 +13,19 @@ use app\core\cache\CacheEntity;
 class GetOneSetting
 {
     /** @var CacheEntity  */
-    private $_cache;
+    private $cache;
+    /**@var SettingRepository */
+    private $repository;
 
     /**
      * GetSetting constructor.
      * @param CacheEntity $cache
+     * @param SettingRepository $repository
      */
-    public function __construct(CacheEntity $cache)
+    public function __construct(CacheEntity $cache, SettingRepository $repository)
     {
-        $this->_cache = $cache;
+        $this->cache = $cache;
+        $this->repository = $repository;
     }
 
     /**
@@ -30,10 +34,9 @@ class GetOneSetting
      */
     public function get(string $settingName)
     {
-        if (!$tree = $this->_cache->getItem($this->_cache::SETTING_TREE)) {
-            $settings = new SettingRepository();
-            $this->_cache->setItem($this->_cache::SETTING_TREE, $settings->getTree());
-            $tree = $this->_cache->getItem($this->_cache::SETTING_TREE);
+        if (!$tree = $this->cache->getItem($this->cache::SETTING_TREE)) {
+            $this->cache->setItem($this->cache::SETTING_TREE, $this->repository->getTree());
+            $tree = $this->cache->getItem($this->cache::SETTING_TREE);
         }
 
         /** @var SettingRepository[] $tree */

@@ -15,10 +15,8 @@ class DiscountForm extends Model
 {
     /** @var int */
     public $start_sum;
-
     /** @var int */
     public $percent;
-
     /** @var string */
     public $site_constant;
 

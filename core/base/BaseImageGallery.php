@@ -13,7 +13,7 @@ use app\core\workWithFiles\helpers\DeleteImages;
 abstract class BaseImageGallery
 {
     /** @var \app\core\products\repositories\ProductImagesRepository|\app\core\articles\repositories\ArticleImagesRepository */
-    protected $_repository;
+    protected $repository;
 
     /**
      * @param $form
@@ -22,9 +22,9 @@ abstract class BaseImageGallery
      * @throws \yii\web\NotFoundHttpException
      */
     public function updateImage($form, $id) {
-        $this->_repository = $this->_repository->getItem($id);
-        $this->_repository->insertValues($form);
-        $this->_repository->saveItem();
+        $this->repository = $this->repository->getItem($id);
+        $this->repository->insertValues($form);
+        $this->repository->saveItem();
     }
 
     /**
@@ -35,10 +35,10 @@ abstract class BaseImageGallery
      * @throws \yii\web\NotFoundHttpException
      */
     public function deleteImage(int $id) {
-        $this->_repository = $this->_repository->getItem($id);
-        $dir = $this->_repository->getWebDir();
-        $this->_repository->deleteItem();
-        DeleteImages::deleteImages($dir, $this->_repository->name);
+        $this->repository = $this->repository->getItem($id);
+        $dir = $this->repository->getWebDir();
+        $this->repository->deleteItem();
+        DeleteImages::deleteImages($dir, $this->repository->name);
     }
 
     /**
@@ -46,6 +46,6 @@ abstract class BaseImageGallery
      * @throws \yii\db\Exception
      */
     public function sortImage($sort) {
-        $this->_repository->changeSort(json_decode($sort), 'sort');
+        $this->repository->changeSort(json_decode($sort), 'sort');
     }
 }

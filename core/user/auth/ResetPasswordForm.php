@@ -12,6 +12,7 @@ use yii\base\Model;
 
 class ResetPasswordForm extends Model
 {
+    /** @var string */
     public $password;
 
     /**

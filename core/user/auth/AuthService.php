@@ -17,15 +17,11 @@ use yii\mail\MailerInterface;
 class AuthService
 {
     /** @var UserRepository  */
-    private $_repository;
-    /**
-     * @var MailerInterface
-     */
-    private $_mailer;
-    /**
-     * @var User
-     */
-    private $_user;
+    private $repository;
+    /** @var MailerInterface */
+    private $mailer;
+    /** @var User */
+    private $user;
 
     /**
      * AuthService constructor.
@@ -35,9 +31,9 @@ class AuthService
      */
     public function __construct(User $user, UserRepository $repository, MailerInterface $mailer)
     {
-        $this->_repository = $repository;
-        $this->_mailer = $mailer;
-        $this->_user = $user;
+        $this->repository = $repository;
+        $this->mailer = $mailer;
+        $this->user = $user;
     }
 
     /**
@@ -46,7 +42,7 @@ class AuthService
      */
     public function auth(LoginForm $form): User
     {
-        $user = $this->_repository->getByLogin($form->login);
+        $user = $this->repository->getByLogin($form->login);
 
         if (!$user || !$user->isActive() || !$user->validatePassword($form->password)) {
             throw new \DomainException('Неверный логин, или пароль.');
@@ -61,7 +57,7 @@ class AuthService
      */
     public function authRegUser(LoginEmailForm $form): User
     {
-        $user = $this->_repository->getByEmailRegUser($form->email);
+        $user = $this->repository->getByEmailRegUser($form->email);
 
         if (!$user || !$user->validatePassword($form->password)) {
             throw new \DomainException('Неверный логин, или пароль.');
@@ -79,9 +75,9 @@ class AuthService
     public function sendEmailResetPassword(PasswordResetRequestForm $form, string $adminEmail, bool $regUser = null)
     {
        if ($regUser === null) {
-           $user = $this->_repository->getByEmail($form->email);
+           $user = $this->repository->getByEmail($form->email);
        } else {
-           $user = $this->_repository->getByEmailRegUser($form->email);
+           $user = $this->repository->getByEmailRegUser($form->email);
        }
 
         if (User::isPasswordResetTokenValid($user->password_reset_token)) {
@@ -90,9 +86,9 @@ class AuthService
 
         $url = $user->role == 'reg_user' ? 'login' : 'admin/auth';
         $user->generatePasswordResetToken();
-        $this->_repository->save($user);
+        $this->repository->save($user);
 
-         $send = $this->_mailer
+         $send = $this->mailer
             ->compose(
                 ['html' => 'passwordResetToken',],
                 ['user' => $user, 'url' => $url]
@@ -115,13 +111,13 @@ class AuthService
      */
     public function resetPassword(ResetPasswordForm $form, string $token)
     {
-        if (!$user = $this->_user::findByPasswordResetToken($token)) {
+        if (!$user = $this->user::findByPasswordResetToken($token)) {
             throw new \DomainException('Token is not valide!');
         }
         $user->setPassword($form->password);
         $user->password_reset_token = '';
 
-        $this->_repository->save($user);
+        $this->repository->save($user);
 
         return $user;
     }

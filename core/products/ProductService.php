@@ -23,23 +23,39 @@ use app\core\workWithFiles\helpers\RemoveDirectory;
 
 class ProductService implements Service
 {
-    private $_repository;
-    private $_imagesRepository;
-    private $_imageForm;
-    private $_productForm;
-    private $_cacheCategory;
+    /** @var ProductRepository  */
+    private $repository;
+    /** @var ProductImagesRepository  */
+    private $imagesRepository;
+    /** @var ProductImageForm  */
+    private $imageForm;
+    /** @var ProductForm  */
+    private $productForm;
+    /** @var CacheCategory  */
+    private $cacheCategory;
+
 
     /**
      * ProductService constructor.
-     * @param CacheCategory $_cacheCategory
+     * @param CacheCategory $cacheCategory
+     * @param ProductRepository $repository
+     * @param ProductImagesRepository $imagesRepository
+     * @param ProductImageForm $imageForm
+     * @param ProductForm $productForm
      */
-    public function __construct(CacheCategory $_cacheCategory)
+    public function __construct(
+        CacheCategory $cacheCategory,
+        ProductRepository $repository,
+        ProductImagesRepository $imagesRepository,
+        ProductImageForm $imageForm,
+        ProductForm $productForm
+    )
     {
-        $this->_repository = new ProductRepository();
-        $this->_imagesRepository = new ProductImagesRepository();
-        $this->_imageForm = new ProductImageForm();
-        $this->_productForm = new ProductForm();
-        $this->_cacheCategory = $_cacheCategory;
+        $this->cacheCategory = $cacheCategory;
+        $this->repository = $repository;
+        $this->imagesRepository = $imagesRepository;
+        $this->imageForm = $imageForm;
+        $this->productForm = $productForm;
     }
 
     /**
@@ -49,10 +65,10 @@ class ProductService implements Service
     public function index(int $category_id = null)
     {
         if ($category_id === null) {
-            return $this->_productForm;
+            return $this->productForm;
         }
-        $this->_productForm->categories_id = $category_id;
-        return $this->_productForm;
+        $this->productForm->categories_id = $category_id;
+        return $this->productForm;
     }
 
     /**
@@ -62,7 +78,7 @@ class ProductService implements Service
      */
     public function getCategory(int $category_id = null)
     {
-        if (!$category = $this->_repository::getCategoryForId($category_id)) {
+        if (!$category = $this->repository::getCategoryForId($category_id)) {
             throw new NotFoundHttpException('Category with id = ' . $category_id . ' not found');
         }
         return $category;
@@ -75,10 +91,10 @@ class ProductService implements Service
     public function create($form)
     {
         $form->alias = Inflector::slug($form->name);
-        $this->_repository->insertValues($form, true);
-        $this->_repository->saveItem();
+        $this->repository->insertValues($form, true);
+        $this->repository->saveItem();
 
-        return $this->_repository->id;
+        return $this->repository->id;
     }
 
     /**
@@ -90,14 +106,14 @@ class ProductService implements Service
      */
     public function update($form, int $id)
     {
-        $product = $this->_repository->getItem($id);
+        $product = $this->repository->getItem($id);
         $webDir = $product->getWebDir();
         $oldCategory = $product->categories_id;
         $product->insertValues($form);
         $product->saveItem();
 
         if ($images = $form->uploadAnyFile($webDir, 'any_images')) {
-            $sort = $this->_imagesRepository->getNumLastElement(['products_id' => $product->id], 'sort');
+            $sort = $this->imagesRepository->getNumLastElement(['products_id' => $product->id], 'sort');
             foreach ($images as $image) {
                 $img = new ProductImagesRepository();
                 $img->name = $image;
@@ -123,9 +139,9 @@ class ProductService implements Service
     public function getNewForm(int $category_id)
     {
         $category = $this->getCategory($category_id);
-        $form = $this->_productForm;
+        $form = $this->productForm;
         $form->categories_id = $category->id;
-        $categories = $this->_cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_PRODUCT);
+        $categories = $this->cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_PRODUCT);
         $form->categories = ArrayHelper::map($categories, 'id', 'name');
 
         return $form;
@@ -138,7 +154,7 @@ class ProductService implements Service
      */
     public function getUpdateForm(int $id)
     {
-        if (!$product = $this->_repository::find()
+        if (!$product = $this->repository::find()
             ->where(['id' => $id])
             ->with('category')
             ->with([
@@ -151,21 +167,21 @@ class ProductService implements Service
             throw new NotFoundHttpException();
         }
 
-        $this->_productForm->createUpdateForm($product);
+        $this->productForm->createUpdateForm($product);
 
-        $categories = $this->_cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_PRODUCT);
-        $this->_productForm->categories = ArrayHelper::map($categories, 'id', 'name');
+        $categories = $this->cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_PRODUCT);
+        $this->productForm->categories = ArrayHelper::map($categories, 'id', 'name');
 
         if ($product->images) {
-            $this->_productForm->webDir = $product->getWebDir();
+            $this->productForm->webDir = $product->getWebDir();
             foreach ($product->images as $image) {
                 $imageForm = new ProductImageForm();
                 $imageForm->createUpdateForm($image);
-                $this->_productForm->uploaded_images[] = $imageForm;
+                $this->productForm->uploaded_images[] = $imageForm;
             }
         }
 
-        return $this->_productForm;
+        return $this->productForm;
     }
 
     /**
@@ -177,7 +193,7 @@ class ProductService implements Service
      */
     public function delete(int $id)
     {
-        $product = $this->_repository->getItem($id);
+        $product = $this->repository->getItem($id);
         $product->deleteItem();
         RemoveDirectory::removeDirectory($product->getWebDir());
     }
@@ -187,7 +203,7 @@ class ProductService implements Service
      */
     public function getLeavesCategories()
     {
-        return $this->_cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_PRODUCT);
+        return $this->cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_PRODUCT);
     }
 
     /**
@@ -196,7 +212,7 @@ class ProductService implements Service
      */
     public function changeActive(int $id, int $status = null)
     {
-        $this->_repository->changeActive($id, $status);
+        $this->repository->changeActive($id, $status);
     }
 
     /**
@@ -205,6 +221,6 @@ class ProductService implements Service
      */
     public function sort($jsonData)
     {
-        $this->_repository->changeSort(json_decode($jsonData), 'sort');
+        $this->repository->changeSort(json_decode($jsonData), 'sort');
     }
 }

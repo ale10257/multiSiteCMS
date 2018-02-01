@@ -12,10 +12,8 @@ use app\core\workWithFiles\ImgThumb;
 
 class ThumbSettingImg
 {
-    /**
-     * @var GetOneSetting
-     */
-    private $_setting;
+    /** @var GetOneSetting */
+    private $setting;
 
     /**
      * MainService constructor.
@@ -23,7 +21,7 @@ class ThumbSettingImg
      */
     public function __construct(GetOneSetting $setting)
     {
-        $this->_setting = $setting;
+        $this->setting = $setting;
     }
 
     /**
@@ -33,7 +31,7 @@ class ThumbSettingImg
      */
     public function createImgThumb(string $settingName, string $thumb)
     {
-        $settings = $this->_setting->get($settingName);
+        $settings = $this->setting->get($settingName);
         $imgThumb = new ImgThumb();
         if (!empty($settings['width']) && !empty($settings['height'])) {
             $imgThumb->width = $settings['width'];

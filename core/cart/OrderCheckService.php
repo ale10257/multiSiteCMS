@@ -16,44 +16,46 @@ use yii\web\Session;
 class OrderCheckService
 {
     /** @var Session */
-    private $_session;
+    private $session;
     /** @var User */
-    private $_user;
+    private $user;
     /** @var OrderRepository */
-    private $_repository;
+    private $repository;
     /** @var GetDiscount */
-    private $_discount;
+    private $discount;
+
 
     /**
      * OrderCheckService constructor.
      * @param Session $session
      * @param User $user
      * @param GetDiscount $discount
+     * @param OrderRepository $repository
      */
-    public function __construct(Session $session, User $user, GetDiscount $discount)
+    public function __construct(Session $session, User $user, GetDiscount $discount, OrderRepository $repository)
     {
-        $this->_session = $session;
-        $this->_user = $user;
-        $this->_repository = new OrderRepository();
-        $this->_discount = $discount;
+        $this->session = $session;
+        $this->user = $user;
+        $this->repository = $repository;
+        $this->discount = $discount;
     }
 
     public function checkOrderRegUser() : void
     {
-        if (!$this->_session->has(OrderService::SESSION_KEY) && !$this->_user->isGuest) {
-            $where = ['user_id' => $this->_user->id, 'status' => $this->_repository::STATUS_ORDER_CREATION];
-            if ($this->_repository::find()->where($where)->count()) {
-                $order = $this->_repository::find()->select('id')->where($where)->one();
-                $this->_session->set(OrderService::SESSION_KEY, $order->id);
+        if (!$this->session->has(OrderService::SESSION_KEY) && !$this->user->isGuest) {
+            $where = ['user_id' => $this->user->id, 'status' => $this->repository::STATUS_ORDER_CREATION];
+            if ($this->repository::find()->where($where)->count()) {
+                $order = $this->repository::find()->select('id')->where($where)->one();
+                $this->session->set(OrderService::SESSION_KEY, $order->id);
             }
         }
     }
 
     public function checkEmptyOrder() : void
     {
-        if ($id = $this->_session->get(OrderService::SESSION_KEY)) {
-            if (!$this->_repository::find()->where(['id' => $id])->count()) {
-                $this->_session->remove(OrderService::SESSION_KEY);
+        if ($id = $this->session->get(OrderService::SESSION_KEY)) {
+            if (!$this->repository::find()->where(['id' => $id])->count()) {
+                $this->session->remove(OrderService::SESSION_KEY);
             }
         }
     }
@@ -63,7 +65,7 @@ class OrderCheckService
      */
     public function checkTimeout()
     {
-        $this->_repository::checkTimeout();
+        $this->repository::checkTimeout();
     }
 
     /**
@@ -75,18 +77,18 @@ class OrderCheckService
     {
         $data = new ProductCount();
 
-        if ($this->_session->has(OrderService::SESSION_KEY) && $order === null) {
-            $order_id = $this->_session->get(OrderService::SESSION_KEY);
+        if ($this->session->has(OrderService::SESSION_KEY) && $order === null) {
+            $order_id = $this->session->get(OrderService::SESSION_KEY);
         }
 
         if ($order_id) {
             if ($order === null) {
-                $order = $this->_repository::findOne($order_id);
+                $order = $this->repository::findOne($order_id);
             }
             if ($order) {
                 $data->sum = $order->all_sum;
                 $data->all_num = $order->all_total;
-                $data->percent = $discount = $this->_discount->getDiscountPercent($data->sum);
+                $data->percent = $discount = $this->discount->getDiscountPercent($data->sum);
                 $data->discount = round(($data->sum / 100) * $data->percent, 0);
                 $data->total = $data->sum - $data->discount;
             }

@@ -26,11 +26,11 @@ class LoginController extends BaseController
     /**
      * @var AuthService
      */
-    private $_service;
+    private $service;
     /**
      * @var UserRegService
      */
-    private $_regService;
+    private $regService;
     /**
      * @var AuthService
      */
@@ -53,8 +53,8 @@ class LoginController extends BaseController
         UserRegService $regService)
     {
         parent::__construct($id, $module, $cacheCategory, $orderCheckService);
-        $this->_service = $service;
-        $this->_regService = $regService;
+        $this->service = $service;
+        $this->regService = $regService;
     }
 
     /**
@@ -84,7 +84,7 @@ class LoginController extends BaseController
         $form = new LoginEmailForm();
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try {
-                $user = $this->_service->authRegUser($form);
+                $user = $this->service->authRegUser($form);
                 Yii::$app->user->login(new Identity($user), $form->rememberMe ? 3600 * 24 * 30 : 0);
                 return $this->goHome();
             } catch (\DomainException $e) {
@@ -104,7 +104,7 @@ class LoginController extends BaseController
      */
     public function actionCreate()
     {
-        $formModel = $this->_regService->getNewForm();
+        $formModel = $this->regService->getNewForm();
 
         if ($formModel->load(yii::$app->request->post())) {
             if (!$formModel->validate()) {
@@ -112,7 +112,7 @@ class LoginController extends BaseController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $user = $this->_regService->create($formModel);
+                $user = $this->regService->create($formModel);
                 Yii::$app->user->login(new Identity($user), 3600 * 24 * 30);
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
@@ -129,8 +129,8 @@ class LoginController extends BaseController
     public function actionUpdate()
     {
         try {
-            $id = $this->_regService->getIdRegUser(yii::$app->user->id);
-            $formModel = $this->_regService->getUpdateForm($id);
+            $id = $this->regService->getIdRegUser(yii::$app->user->id);
+            $formModel = $this->regService->getUpdateForm($id);
         } catch (\Exception $e) {
             yii::$app->session->setFlash('error', $e->getMessage());
             return $this->redirect(['index']);
@@ -138,11 +138,11 @@ class LoginController extends BaseController
 
         if ($formModel->load(yii::$app->request->post())) {
             if (!$formModel->validate()) {
-                $this->_session->setFlash('error', FirstErrors::get($formModel));
+                $this->session->setFlash('error', FirstErrors::get($formModel));
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_regService->update($formModel, $id);
+                $this->regService->update($formModel, $id);
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());
@@ -161,7 +161,7 @@ class LoginController extends BaseController
         $modelForm = new PasswordResetRequestForm();
         if ($modelForm->load(Yii::$app->request->post()) && $modelForm->validate()) {
             try {
-                $this->_service->sendEmailResetPassword($modelForm, yii::$app->params['adminEmail'], true);
+                $this->service->sendEmailResetPassword($modelForm, yii::$app->params['adminEmail'], true);
                 yii::$app->session->setFlash('success', 'Проверьте почту, и следуйте инструкциям в письме. Время жизни токена для восстановления пароля - 1 час.');
                 return $this->goHome();
             } catch (\Exception $e) {
@@ -183,7 +183,7 @@ class LoginController extends BaseController
         $model = new ResetPasswordForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             try {
-                $user = $this->_service->resetPassword($model, $token);
+                $user = $this->service->resetPassword($model, $token);
                 Yii::$app->user->login(new Identity($user), 3600 * 24 * 30);
                 return $this->goHome();
             } catch (\Exception $e) {

@@ -20,7 +20,7 @@ trait ControllerTrait
     public function actionDelete($id)
     {
         try {
-            $this->_service->delete($id);
+            $this->service->delete($id);
         } catch (\Exception $e) {
             $this->session->setFlash('error', $e->getMessage());
         }
@@ -29,18 +29,18 @@ trait ControllerTrait
 
     public function actionChangeActive(int $id, int $status = null)
     {
-        $this->_service->changeActive($id, $status);
+        $this->service->changeActive($id, $status);
     }
 
     public function actionSort()
     {
-        $this->_service->sort(yii::$app->request->post('list'));
+        $this->service->sort(yii::$app->request->post('list'));
     }
 
 
     public function actionDeleteImage($id)
     {
-        if ($this->_gallery->deleteImage($id)) {
+        if ($this->gallery->deleteImage($id)) {
             return $this->redirect(yii::$app->request->referrer);
         }
         return false;
@@ -48,6 +48,6 @@ trait ControllerTrait
 
     public function actionSortImage()
     {
-        $this->_gallery->sortImage(yii::$app->request->post('list'));
+        $this->gallery->sortImage(yii::$app->request->post('list'));
     }
 }

@@ -24,28 +24,20 @@ class UserRegForm extends CompositeForm
 {
     /** @var int */
     public $id;
-
     /** @var int */
     public $users_id;
-
     /** @var int */
     public $post_code;
-
     /** @var string */
     public $region;
-
     /** @var string */
     public $city;
-
     /** @var string */
     public $address;
-
     /** @var string */
     public $phone;
-
     /** @var string */
     public $billing_info;
-
     /** @var string */
     public $site_constant;
 

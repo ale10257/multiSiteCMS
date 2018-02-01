@@ -20,22 +20,23 @@ class OrderService
     const SESSION_KEY = 'order_id';
 
     /** @var Session */
-    private $_session;
+    private $session;
     /** @var OrderRepository */
-    private $_repository;
+    private $repository;
     /** @var User */
-    private $_user;
+    private $user;
 
     /**
      * OrderService constructor.
      * @param Session $session
      * @param User $user
+     * @param OrderRepository $repository
      */
-    public function __construct(Session $session, User $user)
+    public function __construct(Session $session, User $user, OrderRepository $repository)
     {
-        $this->_session = $session;
-        $this->_user = $user;
-        $this->_repository = new OrderRepository();
+        $this->session = $session;
+        $this->user = $user;
+        $this->repository = $repository;
     }
 
     /**
@@ -44,32 +45,32 @@ class OrderService
     private function createOrder()
     {
         $user = null;
-        if (!$this->_user->isGuest) {
-            $this->_repository->user_id = $this->_user->identity->getId();
+        if (!$this->user->isGuest) {
+            $this->repository->user_id = $this->user->identity->getId();
         } else {
             $user = UserReadRepository::findNoRegUser();
-            $this->_repository->user_id = $user->id;
+            $this->repository->user_id = $user->id;
         }
 
-        if (!$this->_repository->user_id) {
+        if (!$this->repository->user_id) {
             throw new NotFoundException('User not found!');
         }
 
-        $this->_repository->status = $this->_repository::STATUS_ORDER_CREATION;
-        $this->_repository->site_constant = SITE_ROOT_NAME;
-        $this->_repository->ip_address = $_SERVER['REMOTE_ADDR'];
+        $this->repository->status = $this->repository::STATUS_ORDER_CREATION;
+        $this->repository->site_constant = SITE_ROOT_NAME;
+        $this->repository->ip_address = $_SERVER['REMOTE_ADDR'];
 
-        $this->_repository->saveItem();
+        $this->repository->saveItem();
     }
 
     public function getOrderId()
     {
-        if (!$this->_session->has(self::SESSION_KEY)) {
+        if (!$this->session->has(self::SESSION_KEY)) {
             $this->createOrder();
-            $this->_session->set(self::SESSION_KEY, $this->_repository->id);
+            $this->session->set(self::SESSION_KEY, $this->repository->id);
         }
 
-        return $this->_session->get(self::SESSION_KEY);
+        return $this->session->get(self::SESSION_KEY);
     }
 
     /**
@@ -77,7 +78,7 @@ class OrderService
      */
     public function checkOrder()
     {
-        return $this->_session->get(OrderService::SESSION_KEY);
+        return $this->session->get(OrderService::SESSION_KEY);
     }
 
     /**
@@ -87,7 +88,7 @@ class OrderService
      */
     public function getOrder(int $id)
     {
-        return $this->_repository->getItem($id);
+        return $this->repository->getItem($id);
     }
 
     /**
@@ -96,8 +97,8 @@ class OrderService
      */
     public function getOrderForAdmin(int $id)
     {
-        $this->_repository = $this->_repository::find()->where(['id' => $id])->with('orderProducts')->with('user')->one();
-        return $this->_repository;
+        $this->repository = $this->repository::find()->where(['id' => $id])->with('orderProducts')->with('user')->one();
+        return $this->repository;
     }
 
     /**
@@ -106,7 +107,7 @@ class OrderService
      */
     public function getOrderForSend(int $id)
     {
-        return $this->_repository::find()->where(['id' => $id])->with('orderProducts.product')->one();
+        return $this->repository::find()->where(['id' => $id])->with('orderProducts.product')->one();
     }
 
     /**
@@ -120,23 +121,12 @@ class OrderService
     }
 
     /**
-     * @param int $id
-     * @throws \Exception
-     * @throws Throwable
-     * @throws \yii\db\StaleObjectException
+     * @param OrderRepository $repository
+     * @return bool
      */
-    public function delete(int $id)
+    public function checkStatusOrderClosed(OrderRepository $repository)
     {
-        $order = $this->_repository::find()->where(['id' => $id])->with('orderProducts')->one();
-        if ($order->status != $this->_repository::STATUS_ORDER_CLOSED) {
-            if ($orderService = new OrderProductService($this)) {
-                foreach ($order->orderProducts as $orderProduct) {
-                    $orderService->deleteOneProduct($orderProduct->id, $orderProduct);
-                }
-            }
-        }
-
-        $order->deleteItem();
+        return $repository === $repository::STATUS_ORDER_CLOSED;
     }
 
     /**
@@ -145,10 +135,10 @@ class OrderService
      * @throws \Exception
      * @throws \yii\db\StaleObjectException
      */
-    public function deleteOnly(int $id)
+    public function delete(int $id)
     {
-        $this->_repository = $this->_repository->getItem($id);
-        $this->_repository->deleteItem();
+        $this->repository = $this->repository->getItem($id);
+        $this->repository->deleteItem();
     }
 
     /**
@@ -158,7 +148,7 @@ class OrderService
      */
     public function changeStatus($order_id, $status)
     {
-        $this->_repository::changeStatus($order_id, $status);
+        $this->repository::changeStatus($order_id, $status);
     }
 
 }

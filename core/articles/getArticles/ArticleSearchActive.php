@@ -19,9 +19,9 @@ use yii\web\NotFoundHttpException;
 class ArticleSearchActive extends Model
 {
     /** @var CacheCategory  */
-    private $_cacheCategory;
+    private $cacheCategory;
     /** @var ThumbSettingImg */
-    private $_settingImg;
+    private $settingImg;
 
     /**
      * ArticleSearchActive constructor.
@@ -32,8 +32,8 @@ class ArticleSearchActive extends Model
     public function __construct($config = [], CacheCategory $cacheCategory, ThumbSettingImg $settingImg)
     {
         parent::__construct($config);
-        $this->_cacheCategory = $cacheCategory;
-        $this->_settingImg = $settingImg;
+        $this->cacheCategory = $cacheCategory;
+        $this->settingImg = $settingImg;
     }
 
     /**
@@ -44,7 +44,7 @@ class ArticleSearchActive extends Model
     public function getCategory($alias)
     {
         /** @var \app\core\categories\CategoryRepository[] $categories */
-        $categories = ArrayHelper::index($this->_cacheCategory->getLeavesCategoryActive('article'), 'alias');
+        $categories = ArrayHelper::index($this->cacheCategory->getLeavesCategoryActive('article'), 'alias');
         if (empty($categories[$alias])) {
             throw new NotFoundHttpException();
         }
@@ -64,7 +64,7 @@ class ArticleSearchActive extends Model
             ->with('category')
             ->orderBy(['updated_at' => SORT_DESC,]);
         $dataProvider = new ActiveDataProvider(['query' => $query]);
-        $imgThumb = $this->_settingImg->createImgThumb('preview-gallery', 'thumb-gallery');
+        $imgThumb = $this->settingImg->createImgThumb('preview-gallery', 'thumb-gallery');
         foreach ($dataProvider->getModels() as $model) {
             /** @var ArticleRepository $model */
             if ($model->image) {

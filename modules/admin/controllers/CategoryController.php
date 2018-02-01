@@ -16,7 +16,7 @@ class CategoryController extends BaseAdminController
 
     private $title_form_create = 'Создать категорию';
     private $title_form_update = 'Редактировать категорию ';
-    private $_service;
+    private $service;
 
 
     /**
@@ -30,7 +30,7 @@ class CategoryController extends BaseAdminController
     public function __construct(string $id, $module, CheckCan $checkCan, CategoryService $service)
     {
         parent::__construct($id, $module, $checkCan);
-        $this->_service = $service;
+        $this->service = $service;
     }
 
     /**
@@ -65,7 +65,7 @@ class CategoryController extends BaseAdminController
     public function actionIndex()
     {
         return $this->render('index', [
-            'data' => $this->_service->index(),
+            'data' => $this->service->index(),
             'form' => null,
         ]);
     }
@@ -78,7 +78,7 @@ class CategoryController extends BaseAdminController
     public function actionCreate(int $parent_id = null)
     {
         try {
-            $formModel = $this->_service->getNewForm($parent_id);
+            $formModel = $this->service->getNewForm($parent_id);
         } catch (\Exception $e) {
             $this->session->setFlash('error', $e->getMessage());
             return $this->redirect(yii::$app->request->referrer);
@@ -90,7 +90,7 @@ class CategoryController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_service->create($formModel, $parent_id);
+                $this->service->create($formModel, $parent_id);
                 $this->session->setFlash('success', 'Данные сохранены успешно!');
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
@@ -104,7 +104,7 @@ class CategoryController extends BaseAdminController
             'title' => $this->title_form_create,
         ]);
 
-        return $this->render('index', ['data' => $this->_service->index(), 'form' => $form]);
+        return $this->render('index', ['data' => $this->service->index(), 'form' => $form]);
     }
 
     /**
@@ -114,7 +114,7 @@ class CategoryController extends BaseAdminController
     public function actionUpdate($id)
     {
         try {
-            $formModel = $this->_service->getUpdateForm($id);
+            $formModel = $this->service->getUpdateForm($id);
         } catch (\Exception $e) {
             $this->session->setFlash('error', $e->getMessage());
             return $this->redirect(['index']);
@@ -126,7 +126,7 @@ class CategoryController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_service->update($formModel, $id);
+                $this->service->update($formModel, $id);
                 $this->session->setFlash('success', 'Данные сохранены успешно!');
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
@@ -140,7 +140,7 @@ class CategoryController extends BaseAdminController
             'title' => $this->title_form_update,
         ]);
 
-        return $this->render('index', ['data' => $this->_service->index(), 'form' => $form]);
+        return $this->render('index', ['data' => $this->service->index(), 'form' => $form]);
     }
 
     /**
@@ -149,6 +149,6 @@ class CategoryController extends BaseAdminController
     public function actionUpdateTree()
     {
         $post = yii::$app->request->post();
-        return $this->renderPartial('tree', ['data' => $this->_service->updateTree($post)]);
+        return $this->renderPartial('tree', ['data' => $this->service->updateTree($post)]);
     }
 }

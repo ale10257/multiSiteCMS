@@ -14,16 +14,14 @@ class FormPermissionsAndRole extends Model
 {
     /** @var string */
     public $role;
-
     /** @var array */
     public $permissions = [];
-
     /** @var array */
     public $selectedPermissions = [];
+
     /**
      * @inheritdoc
      */
-
     public function rules()
     {
         return [

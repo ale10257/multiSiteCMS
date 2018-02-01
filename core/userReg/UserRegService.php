@@ -18,17 +18,17 @@ use yii\rbac\ManagerInterface;
 class UserRegService
 {
     /** @var UserRegRepository */
-    private $_userRegRepository;
+    private $userRegRepository;
     /** @var ManagerInterface */
-    private $_userManager;
+    private $userManager;
     /** @var UserAdminCreateForm */
-    private $_adminCreateForm;
+    private $adminCreateForm;
     /** @var UserAdminEditForm */
-    private $_adminEditForm;
+    private $adminEditForm;
     /** @var UserRepository */
-    private $_userRepository;
+    private $userRepository;
     /** @var User */
-    private $_user;
+    private $user;
 
     /**
      * @param ManagerInterface $userManager
@@ -47,12 +47,12 @@ class UserRegService
         User $user
     )
     {
-        $this->_userRegRepository = $repository;
-        $this->_userManager = $userManager;
-        $this->_adminCreateForm = $adminCreateForm;
-        $this->_adminEditForm = $adminEditForm;
-        $this->_userRepository = $userRepository;
-        $this->_user = $user;
+        $this->userRegRepository = $repository;
+        $this->userManager = $userManager;
+        $this->adminCreateForm = $adminCreateForm;
+        $this->adminEditForm = $adminEditForm;
+        $this->userRepository = $userRepository;
+        $this->user = $user;
     }
 
     /**
@@ -63,17 +63,17 @@ class UserRegService
      */
     public function create(UserRegForm $form)
     {
-        $this->_user = $this->_user::create($form->user);
-        $this->_userRepository->save($this->_user);
+        $this->user = $this->user::create($form->user);
+        $this->userRepository->save($this->user);
 
-        $role = $this->_userManager->getRole('reg_user');
-        $this->_userManager->assign($role, $this->_user->id);
+        $role = $this->userManager->getRole('reg_user');
+        $this->userManager->assign($role, $this->user->id);
 
-        $form->users_id = $this->_user->id;
-        $this->_userRegRepository->insertValues($form);
-        $this->_userRegRepository->saveItem();
+        $form->users_id = $this->user->id;
+        $this->userRegRepository->insertValues($form);
+        $this->userRegRepository->saveItem();
 
-        return $this->_user;
+        return $this->user;
     }
 
     /**
@@ -84,13 +84,13 @@ class UserRegService
      */
     public function update(UserRegForm $form, int $id)
     {
-        $user = $this->_userRepository->get($form->users_id);
+        $user = $this->userRepository->get($form->users_id);
         $user = $user->edit($form->user, $user);
-        $this->_userRepository->save($user);
+        $this->userRepository->save($user);
 
-        $this->_userRegRepository = $this->_userRegRepository->getItem($id);
-        $this->_userRegRepository->insertValues($form);
-        $this->_userRegRepository->saveItem();
+        $this->userRegRepository = $this->userRegRepository->getItem($id);
+        $this->userRegRepository->insertValues($form);
+        $this->userRegRepository->saveItem();
     }
 
     /**
@@ -98,7 +98,7 @@ class UserRegService
      */
     public function getNewForm()
     {
-        $form = new UserRegForm($this->_adminCreateForm);
+        $form = new UserRegForm($this->adminCreateForm);
         $form->user->role = 'reg_user';
         return $form;
     }
@@ -110,18 +110,18 @@ class UserRegService
      */
     public function getUpdateForm(int $id)
     {
-        $this->_userRegRepository = $this->_userRegRepository->getItem($id);
-        $user = $this->_userRepository->get($this->_userRegRepository->users_id);
-        $this->_adminEditForm->createUpdateForm($user);
-        $form = new UserRegForm($this->_adminEditForm);
-        $form->createUpdateForm($this->_userRegRepository);
+        $this->userRegRepository = $this->userRegRepository->getItem($id);
+        $user = $this->userRepository->get($this->userRegRepository->users_id);
+        $this->adminEditForm->createUpdateForm($user);
+        $form = new UserRegForm($this->adminEditForm);
+        $form->createUpdateForm($this->userRegRepository);
 
         return $form;
     }
 
     public function getIdRegUser($id)
     {
-        if (!$user = $this->_userRegRepository::findOne(['users_id' => $id])) {
+        if (!$user = $this->userRegRepository::findOne(['users_id' => $id])) {
             throw new NotFoundException('Пользователь не найден');
         }
         return $user->id;
@@ -136,8 +136,8 @@ class UserRegService
      */
     public function delete(int $id)
     {
-        $this->_userRegRepository = $this->_userRegRepository->getItem($id);
-        $user = $this->_userRepository->get($this->_userRegRepository->users_id);
-        $this->_userRepository->remove($user);
+        $this->userRegRepository = $this->userRegRepository->getItem($id);
+        $user = $this->userRepository->get($this->userRegRepository->users_id);
+        $this->userRepository->remove($user);
     }
 }

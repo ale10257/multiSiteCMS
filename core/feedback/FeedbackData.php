@@ -21,7 +21,7 @@ class FeedbackData
     public $phone;
 
     /** @var FeedBackForm */
-    private $_form;
+    private $form;
 
     /**
      * FeedbackData constructor.
@@ -29,15 +29,15 @@ class FeedbackData
      */
     public function __construct(FeedBackForm $form)
     {
-        $this->_form = $form;
+        $this->form = $form;
         $this->create();
     }
 
     private function create()
     {
-        $this->name = $this->_form->name;
-        $this->email = $this->_form->email;
-        $this->text = $this->_form->text;
-        $this->phone = $this->_form->phone;
+        $this->name = $this->form->name;
+        $this->email = $this->form->email;
+        $this->text = $this->form->text;
+        $this->phone = $this->form->phone;
     }
 }

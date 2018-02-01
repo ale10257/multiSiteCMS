@@ -17,9 +17,9 @@ class ProductImageGallery extends BaseImageGallery
     /**
      * ProductImageGallery constructor.
      */
-    public function __construct()
+    public function __construct(ProductImagesRepository $repository)
     {
-        $this->_repository = new ProductImagesRepository();
+        $this->repository = $repository;
     }
 
     /**
@@ -29,7 +29,7 @@ class ProductImageGallery extends BaseImageGallery
      */
     public function getForm(int $id)
     {
-        $repository = $this->_repository->getItem($id);
+        $repository = $this->repository->getItem($id);
         $form = new ProductImageForm();
         $form->createUpdateForm($repository);
         return $form;

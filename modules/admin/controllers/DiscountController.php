@@ -9,8 +9,6 @@
 namespace app\modules\admin\controllers;
 
 use app\components\helpers\FirstErrors;
-use app\core\discounts\ChunkSearch;
-use app\core\discounts\ChunkService;
 use app\core\discounts\DiscountSearch;
 use app\core\discounts\DiscountService;
 use app\core\user\services\CheckCan;
@@ -22,12 +20,12 @@ class DiscountController extends BaseAdminController
     /**
      * @var DiscountService
      */
-    private $_service;
+    private $service;
 
     /**
      * @var DiscountSearch
      */
-    private $_search;
+    private $search;
 
     /**
      * DiscountController constructor.
@@ -41,8 +39,8 @@ class DiscountController extends BaseAdminController
     public function __construct(string $id, $module, CheckCan $checkCan, DiscountService $service, DiscountSearch $search)
     {
         parent::__construct($id, $module, $checkCan);
-        $this->_service = $service;
-        $this->_search = $search;
+        $this->service = $service;
+        $this->search = $search;
     }
 
     /**
@@ -65,12 +63,12 @@ class DiscountController extends BaseAdminController
      */
     public function actionIndex()
     {
-        $searchModel = $this->_search;
+        $searchModel = $this->search;
         $dataProvider = $searchModel->search(yii::$app->request->queryParams);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'formModel' => $this->_service->getNewForm()
+            'formModel' => $this->service->getNewForm()
         ]);
     }
 
@@ -79,7 +77,7 @@ class DiscountController extends BaseAdminController
      */
     public function actionCreate()
     {
-        $formModel = $this->_service->getNewForm();
+        $formModel = $this->service->getNewForm();
 
         if ($formModel->load(yii::$app->request->post())) {
             if (!$formModel->validate()) {
@@ -87,7 +85,7 @@ class DiscountController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $id = $this->_service->create($formModel);
+                $id = $this->service->create($formModel);
                 return $this->redirect(['index', 'id' => $id]);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());
@@ -105,7 +103,7 @@ class DiscountController extends BaseAdminController
     public function actionUpdate(int $id)
     {
         try {
-            $formModel = $this->_service->getUpdateForm($id);
+            $formModel = $this->service->getUpdateForm($id);
         } catch (\Exception $e) {
             $this->session->setFlash('error', $e->getMessage());
             return $this->redirect(['index']);
@@ -117,7 +115,7 @@ class DiscountController extends BaseAdminController
                 return $this->redirect(yii::$app->request->referrer);
             }
             try {
-                $this->_service->update($formModel, $id);
+                $this->service->update($formModel, $id);
                 return $this->redirect(['index']);
             } catch (\Exception $e) {
                 yii::$app->session->setFlash('error', $e->getMessage());
@@ -136,7 +134,7 @@ class DiscountController extends BaseAdminController
     public function actionDelete($id)
     {
         try {
-            $this->_service->delete($id);
+            $this->service->delete($id);
             return $this->redirect(['index']);
         } catch (\Exception $e) {
             yii::$app->session->setFlash('error', $e->getMessage());

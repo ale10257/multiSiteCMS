@@ -13,17 +13,17 @@ use app\core\cache\CacheEntity;
 class DiscountService
 {
     /** @var DiscountRepository  */
-    private $_repository;
+    private $repository;
     /** @var DiscountForm  */
-    private $_form;
+    private $form;
     /** @var CacheEntity */
-    private $_cache;
+    private $cache;
 
     public function __construct(DiscountRepository $repository, DiscountForm $form, CacheEntity $cache)
     {
-        $this->_repository = $repository;
-        $this->_form = $form;
-        $this->_cache = $cache;
+        $this->repository = $repository;
+        $this->form = $form;
+        $this->cache = $cache;
     }
 
     /**
@@ -32,10 +32,10 @@ class DiscountService
      */
     public function create(DiscountForm $form)
     {
-        $this->_repository->insertValues($form);
-        $this->_repository->saveItem();
-        $this->_cache->deleteItem($this->_cache::DISCOUNT);
-        return $this->_repository->id;
+        $this->repository->insertValues($form);
+        $this->repository->saveItem();
+        $this->cache->deleteItem($this->cache::DISCOUNT);
+        return $this->repository->id;
     }
 
     /**
@@ -45,10 +45,10 @@ class DiscountService
      */
     public function update(DiscountForm $form, int $id)
     {
-        $this->_repository = $this->_repository->getItem($id);
-        $this->_repository->insertValues($form);
-        $this->_repository->saveItem();
-        $this->_cache->deleteItem($this->_cache::DISCOUNT);
+        $this->repository = $this->repository->getItem($id);
+        $this->repository->insertValues($form);
+        $this->repository->saveItem();
+        $this->cache->deleteItem($this->cache::DISCOUNT);
     }
 
     /**
@@ -56,7 +56,7 @@ class DiscountService
      */
     public function getNewForm()
     {
-        return $this->_form;
+        return $this->form;
     }
 
     /**
@@ -66,9 +66,9 @@ class DiscountService
      */
     public function getUpdateForm(int $id)
     {
-        $this->_repository = $this->_repository->getItem($id);
-        $this->_form->createUpdateForm($this->_repository);
-        return $this->_form;
+        $this->repository = $this->repository->getItem($id);
+        $this->form->createUpdateForm($this->repository);
+        return $this->form;
     }
 
     /**
@@ -80,8 +80,8 @@ class DiscountService
      */
     public function delete(int $id)
     {
-        $this->_repository = $this->_repository->getItem($id);
-        $this->_repository->deleteItem();
-        $this->_cache->deleteItem($this->_cache::DISCOUNT);
+        $this->repository = $this->repository->getItem($id);
+        $this->repository->deleteItem();
+        $this->cache->deleteItem($this->cache::DISCOUNT);
     }
 }

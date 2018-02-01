@@ -13,9 +13,13 @@ use yii\data\ActiveDataProvider;
 
 class UserRegSearch extends Model
 {
+    /** @var string */
     public $first_name;
+    /** @var string */
     public $last_name;
+    /** @var string */
     public $email;
+    /** @var string */
     public $phone;
 
     public function rules()

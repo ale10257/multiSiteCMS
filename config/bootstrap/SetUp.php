@@ -10,6 +10,7 @@ namespace app\config\bootstrap;
 
 use app\core\cart\forms\OrderFormService;
 use app\core\cart\OrderCheckService;
+use app\core\cart\repositories\OrderRepository;
 use app\core\user\services\CheckCan;
 use yii\base\BootstrapInterface;
 use yii\mail\MailerInterface;
@@ -50,7 +51,7 @@ class SetUp implements BootstrapInterface
         });
 
         $container->setSingleton(OrderService::class, function () use ($app) {
-            return new OrderService($app->session, $app->user);
+            return new OrderService($app->session, $app->user, new OrderRepository());
         });
 
         $container->setSingleton(GetDiscount::class, function () use ($app) {
@@ -58,7 +59,7 @@ class SetUp implements BootstrapInterface
         });
 
         $container->setSingleton(OrderCheckService::class, function () use ($app) {
-            return new OrderCheckService($app->session, $app->user, new GetDiscount(new CacheEntity($app->cache)));
+            return new OrderCheckService($app->session, $app->user, new GetDiscount(new CacheEntity($app->cache)), new OrderRepository());
         });
 
         $container->setSingleton(OrderFormService::class, function () use ($app) {

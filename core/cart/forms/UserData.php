@@ -26,22 +26,22 @@ class UserData
     /**
      * @var OrderForm
      */
-    private $_form;
+    private $form;
 
     public function __construct(OrderForm $form)
     {
-        $this->_form = $form;
+        $this->form = $form;
         $this->create();
     }
 
     private function create()
     {
-        $this->firstName = $this->_form->first_name;
-        $this->lastName = $this->_form->last_name;
-        $this->email = $this->_form->email;
-        $this->phone = $this->_form->phone;
-        $this->address = $this->_form->address;
-        $this->comment = $this->_form->comment;
+        $this->firstName = $this->form->first_name;
+        $this->lastName = $this->form->last_name;
+        $this->email = $this->form->email;
+        $this->phone = $this->form->phone;
+        $this->address = $this->form->address;
+        $this->comment = $this->form->comment;
     }
 
 }
