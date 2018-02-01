@@ -28,6 +28,8 @@ class UserAdminService
     /**
      * UserAdminService constructor.
      * @param ManagerInterface $manager
+     * @param User $user
+     * @param UserRepository $repository
      */
     public function __construct(ManagerInterface $manager, User $user, UserRepository $repository)
     {
