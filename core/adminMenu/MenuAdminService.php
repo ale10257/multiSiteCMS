@@ -75,8 +75,10 @@ class MenuAdminService
 
     /**
      * @param MenuAdminForm $menuAdminForm
-     * @throws \yii\base\Exception
+     * @param int $id
      * @throws \Exception
+     * @throws \yii\base\Exception
+     * @throws \yii\web\NotFoundHttpException
      */
     public function update(MenuAdminForm $menuAdminForm, int $id)
     {

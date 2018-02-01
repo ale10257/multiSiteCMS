@@ -33,6 +33,7 @@ trait UploadFiles
 
     /**
      * @param $web_dir
+     * @param string $field_name
      * @return array|bool
      * @throws Exception
      */

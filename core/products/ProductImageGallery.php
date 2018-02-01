@@ -16,6 +16,7 @@ class ProductImageGallery extends BaseImageGallery
 {
     /**
      * ProductImageGallery constructor.
+     * @param ProductImagesRepository $repository
      */
     public function __construct(ProductImagesRepository $repository)
     {

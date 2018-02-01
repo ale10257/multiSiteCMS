@@ -26,9 +26,10 @@ trait Sort
 
     /**
      * @param array $arr
+     * @param string $field
      * @throws \yii\db\Exception
      */
-    public function changeSort(array $arr, $field)
+    public function changeSort(array $arr, string $field)
     {
         foreach ($arr as $item) {
             yii::$app->db->createCommand()->update(self::tableName(), [$field => $item->$field], ['id' => $item->id])->execute();

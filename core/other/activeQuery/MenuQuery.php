@@ -9,8 +9,9 @@
 namespace app\core\other\activeQuery;
 
 use creocoder\nestedsets\NestedSetsQueryBehavior;
+use yii\db\ActiveQuery;
 
-class MenuQuery extends \yii\db\ActiveQuery
+class MenuQuery extends ActiveQuery
 {
     public function behaviors() {
         return [
