@@ -115,10 +115,12 @@ class PhpJqueryHelper
         if ($arrOld) {
             $dir = FileHelper::normalizePath(yii::getAlias('@webroot'));
             $dir = $dir . FileHelper::normalizePath($webDir);
-            foreach ($arrOld as $img) {
-                if ($images = FileHelper::findFiles($dir, ['only' => [$img]])) {
-                    foreach ($images as $item) {
-                        unlink($item);
+            if ($dir) {
+                foreach ($arrOld as $img) {
+                    if ($images = FileHelper::findFiles($dir, ['only' => [$img]])) {
+                        foreach ($images as $item) {
+                            unlink($item);
+                        }
                     }
                 }
             }

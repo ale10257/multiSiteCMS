@@ -17,30 +17,17 @@ use yii\rbac\ManagerInterface;
 
 class UserRegService
 {
-    /**
-     * @var UserRegRepository
-     */
+    /** @var UserRegRepository */
     private $_userRegRepository;
-
-    /**
-     * @var ManagerInterface
-     */
+    /** @var ManagerInterface */
     private $_userManager;
-    /**
-     * @var UserAdminCreateForm
-     */
+    /** @var UserAdminCreateForm */
     private $_adminCreateForm;
-    /**
-     * @var UserAdminEditForm
-     */
+    /** @var UserAdminEditForm */
     private $_adminEditForm;
-    /**
-     * @var UserRepository
-     */
+    /** @var UserRepository */
     private $_userRepository;
-    /**
-     * @var User
-     */
+    /** @var User */
     private $_user;
 
     /**
