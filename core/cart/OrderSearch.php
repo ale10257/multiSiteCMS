@@ -14,33 +14,19 @@ use yii\data\ActiveDataProvider;
 
 class OrderSearch extends Model
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $full_name;
-    /**
-     * @var string
-     */
+    /** @var string */
     public $phone;
-    /**
-     * @var string
-     */
+    /** @var string */
     public $email;
-    /**
-     * @var array
-     */
+    /** @var array */
     public $status_data;
-    /**
-     * @var string
-     */
+    /** @var string */
     public $status;
-    /**
-     * @var int
-     */
+    /** @var int */
     public $all_sum;
-    /**
-     * @var int
-     */
+    /** @var int */
     public $id;
 
     /**
@@ -120,9 +106,7 @@ class OrderSearch extends Model
 
         $query->joinWith([
             'user u' => function ($q) {
-                /**
-                 * @var $q \yii\db\ActiveQuery
-                 */
+                /** @var $q \yii\db\ActiveQuery */
                 $q->where('u.first_name LIKE "%' . $this->full_name . '%"')->orWhere('u.last_name LIKE "%' . $this->full_name . '%"');
             }
         ,]);

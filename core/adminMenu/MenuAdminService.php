@@ -142,7 +142,6 @@ class MenuAdminService
     public function updateTree($post)
     {
         $this->_repository->updateTree($post);
-
         return $this->_repository->getTree();
     }
 

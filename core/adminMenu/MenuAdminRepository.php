@@ -21,7 +21,7 @@ use creocoder\nestedsets\NestedSetsBehavior;
  * @property integer $rgt
  * @property integer $depth
  *
- * @method NestedSetsBehavior parent($level = null)
+ * @method NestedSetsBehavior parents($level = null)
  * @method NestedSetsBehavior children()
  * @method NestedSetsBehavior prependTo($parent)
  * @method NestedSetsBehavior appendTo($parent)

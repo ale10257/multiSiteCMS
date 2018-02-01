@@ -14,10 +14,6 @@ use yii\base\Model;
 
 class FeedBackForm extends Model
 {
-    /** @var string  */
-    private $_secret_key = 'key';
-    /** @var GetOneSetting  */
-    private $_setting;
     /** @var string */
     public $site_key;
     /** @var string */
@@ -33,6 +29,11 @@ class FeedBackForm extends Model
     /** @var string */
     public $phone;
     public $file;
+
+    /** @var string  */
+    private $_secret_key = 'key';
+    /** @var GetOneSetting  */
+    private $_setting;
 
     /**
      * FeedBackForm constructor.

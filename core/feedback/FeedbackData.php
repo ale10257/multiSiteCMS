@@ -18,7 +18,8 @@ class FeedbackData
     /** @var string */
     public $text;
     /** @var string */
-    public $presentation;
+    public $phone;
+
     /** @var FeedBackForm */
     private $_form;
 
@@ -37,6 +38,6 @@ class FeedbackData
         $this->name = $this->_form->name;
         $this->email = $this->_form->email;
         $this->text = $this->_form->text;
-        $this->presentation = $this->_form->presentation;
+        $this->phone = $this->_form->phone;
     }
 }

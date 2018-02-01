@@ -19,17 +19,11 @@ class OrderService
 {
     const SESSION_KEY = 'order_id';
 
-    /**
-     * @var Session
-     */
+    /** @var Session */
     private $_session;
-    /**
-     * @var OrderRepository
-     */
+    /** @var OrderRepository */
     private $_repository;
-    /**
-     * @var User
-     */
+    /** @var User */
     private $_user;
 
     /**
