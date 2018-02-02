@@ -152,7 +152,7 @@ class ProductController extends BaseAdminController
                 $this->session->setFlash('success', 'Данные сохранены успешно!');
                 return $this->redirect(yii::$app->request->referrer);
             } catch (\Exception $e) {
-                yii::$app->session->setFlash('error', $e->getMessage());
+                yii::$app->session->setFlash('error', nl2br($e->getMessage()));
                 return $this->redirect(yii::$app->request->referrer);
             }
         }

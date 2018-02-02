@@ -12,7 +12,6 @@ use app\core\articles\forms\ArticleForm;
 use app\core\base\BaseRepository;
 use app\core\categories\CategoryRepository;
 use app\core\other\helpers\InsertValuesHelper;
-use app\core\other\traits\ChangeActive;
 use app\core\other\traits\Sort;
 use app\core\other\traits\UpdateOneField;
 use app\core\workWithFiles\helpers\GetWebDir;
@@ -39,7 +38,6 @@ use yii\behaviors\TimestampBehavior;
 class ArticleRepository extends BaseRepository
 {
     use Sort;
-    use ChangeActive;
     use UpdateOneField;
 
     /**

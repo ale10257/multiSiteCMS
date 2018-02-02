@@ -23,15 +23,15 @@ use app\core\workWithFiles\helpers\RemoveDirectory;
 
 class ProductService implements Service
 {
-    /** @var ProductRepository  */
+    /** @var ProductRepository */
     private $repository;
-    /** @var ProductImagesRepository  */
+    /** @var ProductImagesRepository */
     private $imagesRepository;
-    /** @var ProductImageForm  */
+    /** @var ProductImageForm */
     private $imageForm;
-    /** @var ProductForm  */
+    /** @var ProductForm */
     private $productForm;
-    /** @var CacheCategory  */
+    /** @var CacheCategory */
     private $cacheCategory;
 
 
@@ -49,8 +49,7 @@ class ProductService implements Service
         ProductImagesRepository $imagesRepository,
         ProductImageForm $imageForm,
         ProductForm $productForm
-    )
-    {
+    ) {
         $this->cacheCategory = $cacheCategory;
         $this->repository = $repository;
         $this->imagesRepository = $imagesRepository;
@@ -106,29 +105,31 @@ class ProductService implements Service
      */
     public function update($form, int $id)
     {
-        $product = $this->repository->getItem($id);
-        $webDir = $product->getWebDir();
-        $oldCategory = $product->categories_id;
-        $product->insertValues($form);
-        $product->saveItem();
+        $this->repository = $this->repository->getItem($id);
+        $webDir = $this->repository->getWebDir();
+        $oldCategory = $this->repository->categories_id;
+        $this->repository->insertValues($form);
+        $this->repository->saveItem();
 
         if ($images = $form->uploadAnyFile($webDir, 'any_images')) {
-            $sort = $this->imagesRepository->getNumLastElement(['products_id' => $product->id], 'sort');
+            $sort = $this->imagesRepository->getNumLastElement(['products_id' => $this->repository->id], 'sort');
             foreach ($images as $image) {
                 $img = new ProductImagesRepository();
                 $img->name = $image;
-                $img->products_id = $product->id;
+                $img->products_id = $this->repository->id;
                 $img->sort = $sort;
                 $img->saveItem();
                 $sort++;
             }
         }
 
-        $newCategory = $product->categories_id;
+        $newCategory = $this->repository->categories_id;
 
         if ($oldCategory != $newCategory) {
-            ChangeDirectory::changeDirectory($webDir, $product);
+            ChangeDirectory::changeDirectory($webDir, $this->repository);
         }
+
+        $this->checkStatus();
     }
 
     /**
@@ -209,10 +210,23 @@ class ProductService implements Service
     /**
      * @param int $id
      * @param int|null $status
+     * @param ProductRepository|null $repository
+     * @throws NotFoundHttpException
      */
-    public function changeActive(int $id, int $status = null)
+    public function changeActive(int $id, int $status = null, ProductRepository $repository = null)
     {
-        $this->repository->changeActive($id, $status);
+        if ($repository === null) {
+            $this->repository = $this->repository->getItem($id);
+        }
+
+        $newStatus = $status ? 0 : 1;
+        $this->repository->active = $newStatus;
+
+        if ($this->repository->active) {
+            $this->checkStatus();
+        }
+
+        $this->repository->saveItem();
     }
 
     /**
@@ -222,5 +236,32 @@ class ProductService implements Service
     public function sort($jsonData)
     {
         $this->repository->changeSort(json_decode($jsonData), 'sort');
+    }
+
+    private function checkStatus() : void
+    {
+        $check = '';
+
+        if ($this->repository->active) {
+            if (!$this->repository->images) {
+                $check .= PHP_EOL . 'У продукта нет картинок' . PHP_EOL;
+            }
+            if (!$this->repository->price) {
+                $check .= 'У продукта нет цены' . PHP_EOL;
+            }
+            if (!$this->repository->code) {
+                $check .= 'У продукта нет артикула' . PHP_EOL;
+            }
+            if (!$this->repository->count) {
+                $check .= 'У продукта нет остатков' . PHP_EOL;
+            }
+        }
+
+        if ($check) {
+            $check .= 'Продукт не может быть активным!';
+            $this->repository->active = 0;
+            $this->repository->saveItem();
+            throw new \DomainException($check);
+        }
     }
 }

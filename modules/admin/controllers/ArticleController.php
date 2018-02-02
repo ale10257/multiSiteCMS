@@ -186,5 +186,4 @@ class ArticleController extends BaseAdminController
         yii::$app->session->setFlash('error', 'Неизвестная ошибка при обновлении формы.');
         return $this->redirect(yii::$app->request->referrer);
     }
-
 }

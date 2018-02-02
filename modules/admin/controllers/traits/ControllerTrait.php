@@ -27,11 +27,6 @@ trait ControllerTrait
         return $this->redirect(yii::$app->request->referrer);
     }
 
-    public function actionChangeActive(int $id, int $status = null)
-    {
-        $this->service->changeActive($id, $status);
-    }
-
     public function actionSort()
     {
         $this->service->sort(yii::$app->request->post('list'));
@@ -49,5 +44,21 @@ trait ControllerTrait
     public function actionSortImage()
     {
         $this->gallery->sortImage(yii::$app->request->post('list'));
+    }
+
+    /**
+     * @param int $id
+     * @param int|null $status
+     * @return bool
+     */
+    public function actionChangeActive(int $id, int $status = null)
+    {
+        try {
+            $this->service->changeActive($id, $status);
+            return true;
+        } catch (\Exception $e) {
+            yii::$app->session->setFlash('error', nl2br($e->getMessage()));
+            return false;
+        }
     }
 }

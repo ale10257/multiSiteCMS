@@ -7,9 +7,16 @@ $(function () {
 
     $('.btn-active').click(function (e) {
         e.preventDefault();
-        $.post(this.href);
-        $(this).addClass('hide-btn');
-        $(this).siblings('.btn-active').removeClass('hide-btn');
+        var button = $(this);
+        $.post(this.href, function (data) {
+            if (data) {
+                button.addClass('hide-btn');
+                button.siblings('.btn-active').removeClass('hide-btn');
+            } else {
+                location.reload();
+            }
+        });
+
     });
 
     $('#check-all').change(function () {

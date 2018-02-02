@@ -38,13 +38,23 @@ class ArticleService
     /**
      * ArticleService constructor.
      * @param CacheCategory $cacheCategory
+     * @param ArticleForm $form
+     * @param ArticleImageForm $imageForm
+     * @param ArticleRepository $articleRepository
+     * @param ArticleImagesRepository $articleImagesRepository
      */
-    public function __construct(CacheCategory $cacheCategory)
+    public function __construct(
+        CacheCategory $cacheCategory,
+        ArticleForm $form,
+        ArticleImageForm $imageForm,
+        ArticleRepository $articleRepository,
+        ArticleImagesRepository $articleImagesRepository
+    )
     {
-        $this->articleForm = new ArticleForm();
-        $this->imageForm = new ArticleImageForm();
-        $this->articleRepository = new ArticleRepository();
-        $this->imageRepositary = new ArticleImagesRepository();
+        $this->articleForm = $form;
+        $this->imageForm = $imageForm;
+        $this->articleRepository = $articleRepository;
+        $this->imageRepositary = $articleImagesRepository;
         $this->cacheCategory = $cacheCategory;
     }
 
@@ -70,42 +80,44 @@ class ArticleService
      */
     public function update($form, int $id)
     {
-        $article = $this->articleRepository->getItem($id);
-        $oldCategory = $article->categories_id;
-        $oldText = $article->text;
-        $web_dir = $article->getWebDir();
+        $this->articleRepository = $this->articleRepository->getItem($id);
+        $oldCategory = $this->articleRepository->categories_id;
+        $oldText = $this->articleRepository->text;
+        $web_dir = $this->articleRepository->getWebDir();
 
-        if ($article->image) {
+        if ($this->articleRepository->image) {
             if ($mainImg = $form->uploadOneFile($web_dir, 'one_image')) {
-                DeleteImages::deleteImages($web_dir, $article->image);
+                DeleteImages::deleteImages($web_dir, $this->articleRepository->image);
                 $form->image = $mainImg;
             }
         } else {
             $form->image = $form->uploadOneFile($web_dir, 'one_image');
         }
 
-        $form->text = PhpJqueryHelper::changeImages($form->text, $article->getWebDir());
-        PhpJqueryHelper::deleteImagesFromFS($oldText, $form->text, $article->getWebDir());
-        $article->insertValues($form);
-        $article->saveItem();
+        $form->text = PhpJqueryHelper::changeImages($form->text, $web_dir);
+        PhpJqueryHelper::deleteImagesFromFS($oldText, $form->text, $web_dir);
+        $this->articleRepository->insertValues($form);
+        $this->articleRepository->saveItem();
 
         if ($images = $form->uploadAnyFile($web_dir, 'any_images')) {
-            $sort = $this->imageRepositary->getNumLastElement(['articles_id' => $article->id], 'sort');
+            $sort = $this->imageRepositary->getNumLastElement(['articles_id' => $this->articleRepository->id], 'sort');
             foreach ($images as $image) {
                 $img = new ArticleImagesRepository();
                 $img->name = $image;
-                $img->articles_id = $article->id;
+                $img->articles_id = $this->articleRepository->id;
                 $img->sort = $sort;
                 $img->saveItem();
                 $sort++;
             }
         }
 
-        $newCategory = $article->categories_id;
+        $newCategory = $this->articleRepository->categories_id;
 
         if ($oldCategory != $newCategory) {
-            ChangeDirectory::changeDirectory($web_dir, $article);
+            ChangeDirectory::changeDirectory($web_dir, $this->articleRepository);
         }
+
+        $this->checkStatus();
     }
 
     public function getNewForm()
@@ -166,10 +178,23 @@ class ArticleService
     /**
      * @param int $id
      * @param int|null $status
+     * @param ArticleRepository|null $repository
+     * @throws NotFoundHttpException
      */
-    public function changeActive(int $id, int $status = null)
+    public function changeActive(int $id, int $status = null, ArticleRepository $repository = null)
     {
-        $this->articleRepository->changeActive($id, $status);
+        if ($repository === null) {
+            $this->articleRepository = $this->articleRepository->getItem($id);
+        }
+
+        $newStatus = $status ? 0 : 1;
+        $this->articleRepository->active = $newStatus;
+
+        if ($this->articleRepository->active) {
+            $this->checkStatus();
+        }
+
+        $this->articleRepository->saveItem();
     }
 
     /**
@@ -196,5 +221,22 @@ class ArticleService
     public function getLeavesCategories()
     {
         return $this->cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_ARTICLE);
+    }
+
+    private function checkStatus() : void
+    {
+        $check = '';
+
+        if ($this->articleRepository->active) {
+            if (!trim($this->articleRepository->text)) {
+                $check .= PHP_EOL . 'У статьи нет текста' . PHP_EOL . 'Статья не может быть активной!';
+            }
+        }
+
+        if ($check) {
+            $this->articleRepository->active = 0;
+            $this->articleRepository->saveItem();
+            throw new \DomainException($check);
+        }
     }
 }

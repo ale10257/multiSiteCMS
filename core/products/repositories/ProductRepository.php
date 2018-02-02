@@ -13,7 +13,6 @@ use app\core\cart\forms\OrderProductForm;
 use app\core\categories\CategoryRepository;
 use app\core\NotFoundException;
 use app\core\other\helpers\InsertValuesHelper;
-use app\core\other\traits\ChangeActive;
 use app\core\other\traits\Sort;
 use app\core\products\forms\ProductForm;
 use app\core\workWithFiles\DataPathImage;
@@ -44,11 +43,9 @@ use yii\behaviors\TimestampBehavior;
 class ProductRepository extends BaseRepository
 {
     use Sort;
-    use ChangeActive;
 
     /** @var OrderProductForm */
     public $form;
-
     /** @var DataPathImage[]|DataPathImage  */
     public $imagesGallery;
 
