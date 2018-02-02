@@ -34,7 +34,6 @@ class ProductService implements Service
     /** @var CacheCategory */
     private $cacheCategory;
 
-
     /**
      * ProductService constructor.
      * @param CacheCategory $cacheCategory
