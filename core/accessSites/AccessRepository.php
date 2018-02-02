@@ -12,13 +12,6 @@ use app\core\base\BaseRepository;
 use app\core\other\helpers\InsertValuesHelper;
 use app\core\user\entities\user\User;
 
-/**
- * @property int $id
- * @property int $users_id
- * @property string $site_constant
- *
- * @property User $user
- */
 class AccessRepository extends BaseRepository
 {
     /**
@@ -61,7 +54,6 @@ class AccessRepository extends BaseRepository
     {
         return $this->hasOne(User::className(), ['id' => 'users_id']);
     }
-
 
     /**
      * @return User[]|array|\yii\db\ActiveRecord[]
