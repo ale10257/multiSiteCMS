@@ -38,6 +38,9 @@ class CategoryService implements \app\core\interfaces\CategoryService
         $this->checkRoot();
     }
 
+    /**
+     * @return \ale10257\ext\ChangeTreeBehavior
+     */
     public function index()
     {
         if (!$tree = $this->repository->getTree()) {
