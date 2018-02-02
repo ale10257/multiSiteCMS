@@ -62,7 +62,9 @@ class GetProduct
                     /** @var \yii\db\ActiveQuery $q */
                     $q->orderBy(['sort' => SORT_ASC]);
                 }
-            ])->all();
+            ])
+            ->orderBy(['sort' => SORT_ASC])
+            ->all();
 
         $thumbImg = $this->thumbSetting->createImgThumb('size-category-product', 'categoryThumb');
 
