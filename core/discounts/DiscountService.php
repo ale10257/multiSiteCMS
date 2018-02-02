@@ -19,6 +19,12 @@ class DiscountService
     /** @var CacheEntity */
     private $cache;
 
+    /**
+     * DiscountService constructor.
+     * @param DiscountRepository $repository
+     * @param DiscountForm $form
+     * @param CacheEntity $cache
+     */
     public function __construct(DiscountRepository $repository, DiscountForm $form, CacheEntity $cache)
     {
         $this->repository = $repository;
