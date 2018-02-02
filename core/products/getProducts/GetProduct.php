@@ -69,6 +69,7 @@ class GetProduct
         foreach ($products as $key => $product) {
             if (!$product->images) {
                 unset($products[$key]);
+                continue;
             }
             $thumbImg->web_dir = $product->getWebDir();
             $product->imagesGallery = $thumbImg->checkFile($product->images[0]->name);
