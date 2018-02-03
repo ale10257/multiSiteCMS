@@ -1,7 +1,8 @@
 <?php
 $params = require __DIR__ . '/params.php';
 $data_email = require __DIR__ . '/data_email.php';
-$params = array_merge($params, $data_email);
+$app_name = require __DIR__ . '/app_name.php';
+$params = array_merge($params, $data_email, $app_name);
 require __DIR__ . '/../web.php';
 $new_config = [
     'components' => [
@@ -10,7 +11,7 @@ $new_config = [
             'appendTimestamp' => true,
         ],
         'request' => [
-            'cookieValidationKey' => 'startSiteKey',
+            'cookieValidationKey' => 'startSite',
         ],
         'urlManager' => [
             'rules' => [

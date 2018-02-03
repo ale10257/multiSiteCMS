@@ -10,6 +10,7 @@ namespace app\core\settings;
 
 use app\core\cache\CacheEntity;
 use Yii;
+use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\web\Request;
 
@@ -72,12 +73,16 @@ class SettingService
             /**@var $parent SettingRepository */
             $setting->checkUniqAlias();
         }
+
         $setting->saveItem();
+
+        $path = FileHelper::normalizePath(yii::getAlias('@app')) . DIRECTORY_SEPARATOR .'config' . DIRECTORY_SEPARATOR . SITE_ROOT_NAME . DIRECTORY_SEPARATOR;
+
         if ($setting->alias == ReservedSettings::LOGIN_EMAIL || $setting->alias == ReservedSettings::PASSWD_EMAIL || $setting->alias == ReservedSettings::MAIL_ADMIN) {
-            $loginEmail = $this->repository->findOne(['alias' => ReservedSettings::LOGIN_EMAIL]);
-            $passwdEmail = $this->repository->findOne(['alias' => ReservedSettings::PASSWD_EMAIL]);
-            $adminEmail = $this->repository->findOne(['alias' => ReservedSettings::MAIL_ADMIN]);
-            $path = yii::getAlias('@app/config/') . SITE_ROOT_NAME . '/data_email.php';
+            $path = $path . 'data_email.php';
+            $adminEmail = $this->repository::findOne(['alias' => ReservedSettings::MAIL_ADMIN]);
+            $loginEmail = $this->repository::findOne(['alias' => ReservedSettings::LOGIN_EMAIL]);
+            $passwdEmail = $this->repository::findOne(['alias' => ReservedSettings::PASSWD_EMAIL]);
             $str = '<?php
 return [
     "adminEmail" => "' . $adminEmail->value . '",
@@ -87,7 +92,18 @@ return [
 ';
             file_put_contents($path, $str);
         }
-        $this->cache->deleteItem($this->cache::SETTING_TREE);
+
+        if ($setting->alias == ReservedSettings::APPLICATION_NAME) {
+            $path = $path . 'app_name.php';
+            $str = '<?php
+return [
+    "name" => "' . $setting->value . '",
+];
+';
+            file_put_contents($path, $str);
+        }
+
+        $this->cache->flush();
     }
 
     /**

@@ -209,16 +209,14 @@ class ProductService implements Service
     /**
      * @param int $id
      * @param int|null $status
-     * @param ProductRepository|null $repository
      * @throws NotFoundHttpException
      */
     public function changeActive(int $id, int $status = null)
     {
         $this->repository = $this->repository->getItem($id);
         $newStatus = $status ? 0 : 1;
-        $this->repository->active = $newStatus;
 
-        if ($this->repository->active) {
+        if ($this->repository->active = $newStatus) {
             $this->checkStatus();
         }
 
@@ -236,11 +234,11 @@ class ProductService implements Service
 
     private function checkStatus(): void
     {
-        $check = '';
+        $check = null;
 
         if ($this->repository->active) {
             if (!$this->repository->images) {
-                $check .= PHP_EOL . 'У продукта нет картинок' . PHP_EOL;
+                $check = PHP_EOL . 'У продукта нет картинок' . PHP_EOL;
             }
             if (!$this->repository->price) {
                 $check .= 'У продукта нет цены' . PHP_EOL;

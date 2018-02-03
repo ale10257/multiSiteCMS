@@ -1,5 +1,3 @@
 <?php
 
-return [
-    'name' => 'startSite'
-];
+return [];

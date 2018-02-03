@@ -55,9 +55,12 @@ class CreateDomainController extends Controller
 
         $configFile = str_replace(['startSiteKey', 'startSite'], [yii::$app->security->generateRandomString(), $site_constant], file_get_contents($configFilePath));
         file_put_contents($configFilePath, $configFile);
-
-        $paramsFilePath = $newFolderConfig . DIRECTORY_SEPARATOR . 'params.php';
-        $paramsFile = str_replace('startSite', $app_name, file_get_contents($paramsFilePath));
-        file_put_contents($paramsFilePath, $paramsFile);
+        $appNamePath = $newFolderConfig . DIRECTORY_SEPARATOR . 'app_name.php';
+        $str = '<?php
+return [
+    "name" => "' . $app_name . '",
+];
+';
+        file_put_contents($appNamePath, $str);
     }
 }

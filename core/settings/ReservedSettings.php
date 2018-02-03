@@ -15,6 +15,8 @@ class ReservedSettings
     const LOGIN_EMAIL = 'login_email';
     const PASSWD_EMAIL = 'passwd_email';
 
+    const APPLICATION_NAME = 'application_name';
+
     const RESERVED_SETTINGS = [
         'mail_admin' => [
             'name' => 'Почта для отправки сообщений с сайта',
@@ -119,6 +121,20 @@ class ReservedSettings
                 ]
 
             ],
+        ],
+        'app-settings' => [
+            'name' => 'Настройки приложения',
+            'alias' => 'app-settings',
+            'value' => 'no-value',
+            'active' => 1,
+            'childs' => [
+                [
+                    'name' => 'Имя приложения',
+                    'alias' => self::APPLICATION_NAME,
+                    'value' => SITE_ROOT_NAME,
+                    'active' => 1,
+                ]
+            ]
         ],
     ];
 }

@@ -71,4 +71,9 @@ class CacheEntity
             }
         }
     }
+
+    public function flush()
+    {
+        $this->cache->flush();
+    }
 }
