@@ -138,5 +138,3 @@ AdminSortableAsset::register($this);
         </div>
     </div>
 <?php endif ?>
-
-
