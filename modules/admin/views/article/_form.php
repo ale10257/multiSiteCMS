@@ -13,7 +13,6 @@ use vova07\imperavi\Widget;
 use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 use app\components\helpers\RemoveImgAdminHelper;
-//use app\assets\FancyBoxAsset;
 
 AdminSortableAsset::register($this);
 //FancyBoxAsset::register($this);
@@ -31,7 +30,12 @@ AdminSortableAsset::register($this);
     <?php endif ?>
 </div>
 <div class="row">
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'form-ctrl-save']]); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => [
+            'enctype' => 'multipart/form-data',
+            'class' => 'form-ctrl-save'
+        ]
+    ]); ?>
     <div class="col-md-6">
         <div class="box">
             <div class="box-body">
@@ -87,7 +91,6 @@ AdminSortableAsset::register($this);
                     <?= $form->field($formModel, 'metaDescription')->textarea(['maxlength' => true, 'rows' => 2]) ?>
                     <?= $form->field($formModel, 'active')->checkbox() ?>
                     <?= $form->field($formModel, 'one_image')->fileInput() ?>
-
                     <?php if ($formModel->image) : ?>
                         <h4>Выбранное изображение для статьи</h4>
                         <?= RemoveImgAdminHelper::addElementRemove(
@@ -99,7 +102,6 @@ AdminSortableAsset::register($this);
                         );
                         ?>
                     <?php endif ?>
-
                 </div>
             </div>
 
@@ -127,9 +129,7 @@ AdminSortableAsset::register($this);
                         <div data-id="<?= $image->id ?>" class="item-gallery-admin-wrap">
                             <div class="item-gallery-admin">
                                 <?= $img ?>
-
                                 <?= $this->render('_form_image', ['image' => $image]) ?>
-
                             </div>
                         </div>
                     <? endforeach ?>
