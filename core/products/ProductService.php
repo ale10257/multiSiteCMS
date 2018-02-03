@@ -212,12 +212,9 @@ class ProductService implements Service
      * @param ProductRepository|null $repository
      * @throws NotFoundHttpException
      */
-    public function changeActive(int $id, int $status = null, ProductRepository $repository = null)
+    public function changeActive(int $id, int $status = null)
     {
-        if ($repository === null) {
-            $this->repository = $this->repository->getItem($id);
-        }
-
+        $this->repository = $this->repository->getItem($id);
         $newStatus = $status ? 0 : 1;
         $this->repository->active = $newStatus;
 
@@ -237,7 +234,7 @@ class ProductService implements Service
         $this->repository->changeSort(json_decode($jsonData), 'sort');
     }
 
-    private function checkStatus() : void
+    private function checkStatus(): void
     {
         $check = '';
 
