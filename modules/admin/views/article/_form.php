@@ -15,7 +15,7 @@ use kartik\select2\Select2;
 use app\components\helpers\RemoveImgAdminHelper;
 
 AdminSortableAsset::register($this);
-//FancyBoxAsset::register($this);
+
 ?>
 <div class="row">
     <?php if (!$new) : ?>
