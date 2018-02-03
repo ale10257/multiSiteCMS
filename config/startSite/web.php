@@ -11,7 +11,7 @@ $new_config = [
             'appendTimestamp' => true,
         ],
         'request' => [
-            'cookieValidationKey' => 'startSite',
+            'cookieValidationKey' => 'startSiteKey',
         ],
         'urlManager' => [
             'rules' => [
