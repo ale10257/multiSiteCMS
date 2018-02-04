@@ -15,6 +15,14 @@ use yii;
 class CreateDomainController extends Controller
 {
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        defined('SITE_ROOT_NAME') or define('SITE_ROOT_NAME', 'startSite');
+    }
+    
+    /**
      * @throws yii\base\Exception
      */
     public function actionIndex(): void
@@ -24,36 +32,36 @@ class CreateDomainController extends Controller
 
         $app = FileHelper::normalizePath(yii::getAlias('@app'));
 
-        $startFolder = $app . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'startSite';
+        $startFolder = $app . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . SITE_ROOT_NAME;
         $startFolderConfig = str_replace('sites', 'config', $startFolder);
         $startFolderWeb = str_replace('sites', 'web', $startFolder);
 
-        $newFolder = str_replace('startSite', $site_constant, $startFolder);
-        $newFolderConfig = str_replace('startSite', $site_constant, $startFolderConfig);
-        $newFolderWeb = str_replace('startSite', $site_constant, $startFolderWeb);
+        $newFolder = str_replace(SITE_ROOT_NAME, $site_constant, $startFolder);
+        $newFolderConfig = str_replace(SITE_ROOT_NAME, $site_constant, $startFolderConfig);
+        $newFolderWeb = str_replace(SITE_ROOT_NAME, $site_constant, $startFolderWeb);
 
         FileHelper::copyDirectory($startFolder, $newFolder);
         FileHelper::copyDirectory($startFolderConfig, $newFolderConfig);
         FileHelper::copyDirectory($startFolderWeb, $newFolderWeb);
 
         $indexFilePath = $newFolderWeb . DIRECTORY_SEPARATOR . 'index.php';
-        $indexFile = str_replace('startSite', $site_constant, file_get_contents($indexFilePath));
+        $indexFile = str_replace(SITE_ROOT_NAME, $site_constant, file_get_contents($indexFilePath));
         file_put_contents($indexFilePath, $indexFile);
 
         $controllerFilePath = $newFolder . DIRECTORY_SEPARATOR . 'BaseController.php';
-        $controllerFile = str_replace('startSite', $site_constant, file_get_contents($controllerFilePath));
+        $controllerFile = str_replace(SITE_ROOT_NAME, $site_constant, file_get_contents($controllerFilePath));
         file_put_contents($controllerFilePath, $controllerFile);
 
         $controllers = FileHelper::findFiles($newFolder . DIRECTORY_SEPARATOR . 'controllers', ['only' => ['*.php',]]);
 
         foreach ($controllers as $controller) {
-            $controllerFile = str_replace('startSite', $site_constant, file_get_contents($controller));
+            $controllerFile = str_replace(SITE_ROOT_NAME, $site_constant, file_get_contents($controller));
             file_put_contents($controller, $controllerFile);
         }
 
         $configFilePath = $newFolderConfig . DIRECTORY_SEPARATOR . 'web.php';
         $configFile = str_replace(
-            ['startSiteKey', 'startSite'],
+            ['startSiteKey', SITE_ROOT_NAME],
             [yii::$app->security->generateRandomString(), $site_constant],
             file_get_contents($configFilePath));
         file_put_contents($configFilePath, $configFile);
