@@ -20,19 +20,14 @@ class GalleryForm extends Model
 
     /** @var int */
     public $id;
-
     /** @var string */
     public $name;
-
     /** @var string */
     public $alias;
-
     /** @var array */
     public $any_images = [];
-
     /** @var array */
     public $uploaded_images = [];
-
     /** @var string */
     public $webDir;
 
@@ -57,6 +52,7 @@ class GalleryForm extends Model
         return [
             'alias' => 'Alias',
             'name' => 'Имя галереи',
+            'any_images' => 'Загрузить картинки для галереи'
         ];
     }
 
