@@ -2,6 +2,7 @@
 /* @var $this yii\web\View */
 /* @var $formModel \app\core\products\forms\ProductForm */
 /* @var $form yii\widgets\ActiveForm */
+
 /* @var $new boolean */
 
 use app\components\helpers\RemoveImgAdminHelper;
@@ -12,6 +13,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Tabs;
 use app\assets\FancyBoxAsset;
+use kartik\file\FileInput;
 
 AdminSortableAsset::register($this);
 FancyBoxAsset::register($this);
@@ -33,7 +35,12 @@ $link = Html::a('Посмотреть продукт на сайте', ['/produc
 <?php endif ?>
 
 <div class="row">
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'form-ctrl-save']]); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => [
+            'enctype' => 'multipart/form-data',
+            'class' => 'form-ctrl-save'
+        ]
+    ]); ?>
     <div class="col-md-7">
         <div class="box">
             <div class="box-body">
@@ -76,10 +83,6 @@ $link = Html::a('Посмотреть продукт на сайте', ['/produc
                         ?>
                     </div>
                     <?= $form->field($formModel, 'sort')->hiddenInput()->label(false) ?>
-                    <?= $form->field($formModel, 'any_images[]')->fileInput([
-                        'multiple' => true,
-                        'accept' => 'image/*'
-                    ]) ?>
                 <?php endif ?>
                 <div class="text-right" class="form-group">
                     <?= Html::a('Вернуться к продуктам',
@@ -91,7 +94,20 @@ $link = Html::a('Посмотреть продукт на сайте', ['/produc
                     <?php endif ?>
                     <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
                 </div>
-
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body">
+                <?= $form->field($formModel, 'any_images[]')->widget(FileInput::class, [
+                    'options' => [
+                        'accept' => 'image/*',
+                        'multiple' => true
+                    ],
+                    'pluginOptions' => [
+                        'showRemove' => true,
+                        'showUpload' => false,
+                    ]
+                ]) ?>
             </div>
         </div>
     </div>
@@ -101,7 +117,6 @@ $link = Html::a('Посмотреть продукт на сайте', ['/produc
                 <div class="box-body">
                     <?= $form->field($formModel, 'metaTitle')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($formModel, 'metaDescription')->textarea() ?>
-                    <? //= $form->field($formModel, 'showOnMainPage')->checkbox() ?>
                     <?= $form->field($formModel, 'active')->checkbox() ?>
                     <?= $form->field($formModel, 'new_prod')->checkbox() ?>
                 </div>

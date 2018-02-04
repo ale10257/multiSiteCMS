@@ -6,6 +6,7 @@
 /* @var $new boolean */
 
 use app\modules\admin\assets\AdminSortableAsset;
+use kartik\file\FileInput;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -70,16 +71,24 @@ AdminSortableAsset::register($this);
                 <div class="form-group text-right">
                     <p><?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?></p>
                 </div>
-                <?php if (!$new) : ?>
-                    <?= $form->field($formModel, 'any_images[]')->fileInput([
-                        'multiple' => true,
-                        'accept' => 'image/*'
-                    ])->label('Загрузка картинок для галереи в конце статьи') ?>
-                <?php endif ?>
-
-
             </div>
         </div>
+        <?php if (!$new) : ?>
+            <div class="box">
+                <div class="box-body">
+                    <?= $form->field($formModel, 'any_images[]')->widget(FileInput::class, [
+                        'options' => [
+                            'accept' => 'image/*',
+                            'multiple' => true
+                        ],
+                        'pluginOptions' => [
+                            'showRemove' => true,
+                            'showUpload' => false,
+                        ]
+                    ]) ?>
+                </div>
+            </div>
+        <?php endif ?>
     </div>
 
     <?php if (!$new) : ?>
@@ -90,7 +99,16 @@ AdminSortableAsset::register($this);
                     <?= $form->field($formModel, 'metaTitle')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($formModel, 'metaDescription')->textarea(['maxlength' => true, 'rows' => 2]) ?>
                     <?= $form->field($formModel, 'active')->checkbox() ?>
-                    <?= $form->field($formModel, 'one_image')->fileInput() ?>
+                    <?= $form->field($formModel, 'one_image')->widget(FileInput::class, [
+                        'options' => [
+                            'accept' => 'image/*',
+                            'multiple' => false
+                        ],
+                        'pluginOptions' => [
+                            'showRemove' => true,
+                            'showUpload' => false,
+                        ]
+                    ]) ?>
                     <?php if ($formModel->image) : ?>
                         <h4>Выбранное изображение для статьи</h4>
                         <?= RemoveImgAdminHelper::addElementRemove(

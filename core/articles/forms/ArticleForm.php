@@ -87,6 +87,7 @@ class ArticleForm extends Model
             'short_text' => 'Аннотация',
             'text' => 'Текст статьи',
             'active' => 'Active',
+            'any_images' => 'Загрузка картинок для галереи в конце статьи'
         ];
     }
 

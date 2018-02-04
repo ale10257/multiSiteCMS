@@ -16,7 +16,6 @@ use app\core\workWithFiles\helpers\RemoveDirectory;
 
 class CategoryService implements \app\core\interfaces\CategoryService
 {
-
     /** @var CacheEntity */
     private $cache;
     /** @var CategoryForm  */

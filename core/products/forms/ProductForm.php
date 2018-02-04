@@ -90,7 +90,7 @@ class ProductForm extends Model
             'code' => 'Артикул',
             'active' => 'Active',
             'new_prod' => 'Новинка',
-            'any_images' => 'Картинки для продукта',
+            'any_images' => 'Загрузка картинок для продукта',
         ];
     }
 

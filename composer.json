@@ -25,6 +25,7 @@
     "phpoffice/phpexcel": "*",
     "ale10257/yii2-ext-for-work-nested-set": "dev-master",
     "kartik-v/yii2-widget-select2": "@dev",
+    "kartik-v/yii2-widget-fileinput": "@dev",
     "yiisoft/yii2-jui": "~2.0.0",
     "fishvision/yii2-migrate": "*",
     "elisdn/yii2-composite-form": "^1.0",

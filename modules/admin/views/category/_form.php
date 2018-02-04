@@ -1,6 +1,7 @@
 <?php
 
 use app\components\helpers\RemoveImgAdminHelper;
+use kartik\file\FileInput;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
@@ -50,8 +51,16 @@ if ($formModel->alias == Category::RESERVED_ALIAS_ARTICLE || $formModel->alias =
                 <?php if($formModel->type_category == 'article') : ?>
                     <?= $form->field($formModel, 'multiple')->checkbox() ?>
                 <?php endif ?>
-
-                <?= $form->field($formModel, 'one_image')->fileInput() ?>
+                <?= $form->field($formModel, 'one_image')->widget(FileInput::class, [
+                    'options' => [
+                        'accept' => 'image/*',
+                        'multiple' => false
+                    ],
+                    'pluginOptions' => [
+                        'showRemove' => true,
+                        'showUpload' => false,
+                    ]
+                ]) ?>
                 <div class="form-group">
                     <div>
                         <?= Html::submitButton('Ok', ['class' => 'btn btn-success']) ?>

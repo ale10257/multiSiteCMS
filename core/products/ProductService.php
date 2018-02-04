@@ -240,6 +240,9 @@ class ProductService implements Service
             if (!$this->repository->images) {
                 $check = PHP_EOL . 'У продукта нет картинок' . PHP_EOL;
             }
+            if (!$this->repository->description) {
+                $check .= 'У продукта нет описания' . PHP_EOL;
+            }
             if (!$this->repository->price) {
                 $check .= 'У продукта нет цены' . PHP_EOL;
             }

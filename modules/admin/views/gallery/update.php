@@ -3,6 +3,7 @@
 use app\assets\FancyBoxAsset;
 use app\components\helpers\RemoveImgAdminHelper;
 use app\modules\admin\assets\AdminSortableAsset;
+use kartik\file\FileInput;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
@@ -18,16 +19,23 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="gallery-update">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="box">
                 <div class="box-header with-border">
                     <h2 class="box-title"><?= $this->title ?></h2>
                 </div>
                 <div class="box-body">
                     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
-
-                    <?= $form->field($formModel, 'any_images[]')->fileInput(['multiple' => true, 'accept' => 'image/*'])->label('Загрузка картинок для галереи') ?>
-
+                    <?= $form->field($formModel, 'any_images[]')->widget(FileInput::class, [
+                        'options' => [
+                            'accept' => 'image/*',
+                            'multiple' => true
+                        ],
+                        'pluginOptions' => [
+                            'showRemove' => true,
+                            'showUpload' => false,
+                        ]
+                    ]) ?>
                     <div class="form-group">
                         <p><?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?></p>
                     </div>
