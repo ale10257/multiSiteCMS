@@ -94,8 +94,11 @@ class ArticleService
             $form->image = $form->uploadOneFile($web_dir, 'one_image');
         }
 
-        $form->text = PhpJqueryHelper::changeImages($form->text, $web_dir);
-        PhpJqueryHelper::deleteImagesFromFS($oldText, $form->text, $web_dir);
+        if ($form->text) {
+            $form->text = PhpJqueryHelper::changeImages($form->text, $web_dir);
+            PhpJqueryHelper::deleteImagesFromFS($oldText, $form->text, $web_dir);
+        }
+
         $this->articleRepository->insertValues($form);
         $this->articleRepository->saveItem();
 
