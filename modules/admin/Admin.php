@@ -15,5 +15,10 @@ class Admin extends \yii\base\Module
     {
         parent::init();
         yii::$app->errorHandler->errorAction='admin/default/error';
+        /*$this->modules = [
+            'filemanager' => [
+                'class' => 'app\modules\fileManager\SimpleFilemanagerModule',
+            ]
+        ];*/
     }
 }
