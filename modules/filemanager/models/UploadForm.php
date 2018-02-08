@@ -44,6 +44,9 @@ class UploadForm extends Model
         ];
     }
 
+    /**
+     * @param $attribute
+     */
     public function checkPath($attribute)
     {
         $directory = Directory::createByPath($this->$attribute);
