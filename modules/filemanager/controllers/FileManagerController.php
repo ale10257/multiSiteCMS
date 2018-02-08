@@ -10,7 +10,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 
 /**
- * Class DefaultController
+ * Class FileManagerController
  * @package app\modules\filemanager\controllers
  * @property SimpleFilemanagerModule $module
  */
