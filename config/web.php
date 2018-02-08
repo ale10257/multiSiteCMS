@@ -1,6 +1,9 @@
 <?php
 
 $db = require __DIR__ . '/db.php';
+echo "<pre>";
+    print_r(dirname(__DIR__));
+echo "</pre>";
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
