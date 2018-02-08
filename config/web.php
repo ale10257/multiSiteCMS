@@ -51,6 +51,7 @@ $config = [
                 'admin' => 'admin/default',
                 'login' => 'login/index',
                 'logout' => 'login/logout',
+                'admin/file-manager|admin/filemanager/default/index|admin/filemanager/default' => 'admin/filemanager/file-manager',
             ],
         ],
         'authManager' => [

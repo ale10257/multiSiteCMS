@@ -14,7 +14,7 @@ use yii\web\Controller;
  * @package app\modules\filemanager\controllers
  * @property SimpleFilemanagerModule $module
  */
-class DefaultController extends Controller
+class FileManagerController extends Controller
 {
     /**
      * @param null $path
