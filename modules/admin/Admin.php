@@ -17,7 +17,7 @@ class Admin extends \yii\base\Module
         yii::$app->errorHandler->errorAction='admin/default/error';
         $this->modules = [
             'filemanager' => [
-                'class' => 'app\modules\fileManager\SimpleFilemanagerModule',
+                'class' => 'app\modules\filemanager\SimpleFilemanagerModule',
             ]
         ];
     }
