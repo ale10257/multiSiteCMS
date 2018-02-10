@@ -39,7 +39,7 @@ trait Sort
         if ($oldData->$field < $object->$field) {
             static::updateAllCounters(
                 [$field => -1],
-                '`' . $field . '` > 1 AND `' . $field . '` <= ' . $object->$field . ' AND `id` <> ' . $object->id . ' AND `' . $whereField . '` = ' . $whereFieldValue
+                '`' . $field . '` > 1 AND `' . $field . '` <= ' . $object->$field . ' AND `' . $whereField . '` = ' . $whereFieldValue
             );
         } else {
             static::updateAllCounters(
