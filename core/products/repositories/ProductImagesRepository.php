@@ -20,8 +20,7 @@ use app\core\products\forms\ProductImageForm;
  * @property string $alt
  * @property string $title_link
  * @property int $sort
- *
- * @property ProductRepository $orderProduct
+ * @property ProductRepository $product
  */
 class ProductImagesRepository extends BaseRepository
 {
@@ -36,14 +35,13 @@ class ProductImagesRepository extends BaseRepository
 
     /**
      * @param ProductImageForm $form
-     * @return $this
      */
     public function insertValues($form)
     {
         if (!$form->sort) {
             $form->sort = $this->getNumLastElement(['products_id' => $form->products_id], 'sort');
         }
-        return InsertValuesHelper::insertValues($this, $form, [
+        InsertValuesHelper::insertValues($this, $form, [
             'alt',
             'name',
             'products_id',

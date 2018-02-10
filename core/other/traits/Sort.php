@@ -8,11 +8,13 @@
 
 namespace app\core\other\traits;
 
-
-use Yii;
-
 trait Sort
 {
+    /**
+     * @param $where
+     * @param $field
+     * @return int
+     */
     public function getNumLastElement($where, $field)
     {
         if (!$sort = static::find()->where($where)->max($field)) {
@@ -25,15 +27,28 @@ trait Sort
     }
 
     /**
-     * @param array $arr
+     * @param \stdClass $object
      * @param string $field
-     * @throws \yii\db\Exception
+     * @param string $whereField
      */
-    public function changeSort(array $arr, string $field)
+    public function changeSort(\stdClass $object, string $field, string $whereField)
     {
-        foreach ($arr as $item) {
-            yii::$app->db->createCommand()->update(self::tableName(), [$field => $item->$field], ['id' => $item->id])->execute();
-        }
-    }
+        $oldData = static::findOne($object->id);
+        $whereFieldValue = $oldData->$whereField;
 
+        if ($oldData->$field < $object->$field) {
+            static::updateAllCounters(
+                [$field => -1],
+                '`' . $field . '` > 1 AND `' . $field . '` <= ' . $object->$field . ' AND `id` <> ' . $object->id . ' AND `' . $whereField . '` = ' . $whereFieldValue
+            );
+        } else {
+            static::updateAllCounters(
+                [$field => 1],
+                '`' . $field . '` >= ' . $object->$field . ' AND `' . $field . '` < ' . $oldData->$field  . ' AND `' . $whereField . '` = ' . $whereFieldValue
+            );
+        }
+
+        $oldData->$field = $object->$field;
+        $oldData->save();
+    }
 }

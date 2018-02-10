@@ -225,11 +225,10 @@ class ProductService implements Service
 
     /**
      * @param $jsonData
-     * @throws \yii\db\Exception
      */
     public function sort($jsonData)
     {
-        $this->repository->changeSort(json_decode($jsonData), 'sort');
+        $this->repository->changeSort(json_decode($jsonData), 'sort', 'categories_id');
     }
 
     private function checkStatus(): void

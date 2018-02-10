@@ -34,4 +34,11 @@ class ArticleImageGallery extends BaseImageGallery
         $form->createUpdateForm($repository);
         return $form;
     }
+
+    /**
+     * @param $sort
+     */
+    public function sortImage($sort) {
+        $this->repository->changeSort(json_decode($sort), 'sort', 'articles_id');
+    }
 }

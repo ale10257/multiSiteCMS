@@ -40,12 +40,4 @@ abstract class BaseImageGallery
         $this->repository->deleteItem();
         DeleteImages::deleteImages($dir, $this->repository->name);
     }
-
-    /**
-     * @param $sort
-     * @throws \yii\db\Exception
-     */
-    public function sortImage($sort) {
-        $this->repository->changeSort(json_decode($sort), 'sort');
-    }
 }
