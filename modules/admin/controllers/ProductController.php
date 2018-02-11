@@ -22,6 +22,8 @@ class ProductController extends BaseAdminController
 {
     use ControllerTrait;
 
+    const PAGINATION_NAME = 'product_pagination';
+
     private $service;
     private $search;
     private $gallery;
@@ -72,26 +74,32 @@ class ProductController extends BaseAdminController
                 'delete' => ['post'],
                 'delete-image' => ['post'],
                 'change-status' => ['post'],
+                'change-pagination' => ['post'],
             ],
         ];
         return $arr;
     }
 
+
     /**
-     * @param null $category_id
+     * @param int|null $category_id
      * @return string
      * @throws \yii\web\NotFoundHttpException
      */
-    public function actionIndex($category_id = null)
+    public function actionIndex(int $category_id = null)
     {
         if ($category_id) {
             $category = $this->service->getCategory($category_id);
             $searchModel = $this->search;
-            $dataProvider = $searchModel->search(yii::$app->request->queryParams, $category_id);
+            $pagination = $this->session->get(self::PAGINATION_NAME) ?  : 20;
+            $dataProvider = $searchModel->search(yii::$app->request->queryParams, $category_id, $pagination);
+            $arrayPagination = [20 => 20, 30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90, 100 => 100];
         } else {
             $category = null;
             $searchModel = null;
             $dataProvider = null;
+            $arrayPagination = [];
+            $pagination = null;
         }
 
         return $this->render('index', [
@@ -100,6 +108,8 @@ class ProductController extends BaseAdminController
             'category' => $category,
             'parents' => $this->service->getLeavesCategories(),
             'product' =>  $this->service->index($category_id),
+            'arrayPagination' => $arrayPagination,
+            'pagination' => $pagination
         ]);
     }
 
@@ -182,6 +192,16 @@ class ProductController extends BaseAdminController
 
         yii::$app->session->setFlash('error', 'Неизвестная ошибка при обновлении формы.');
         return $this->redirect(yii::$app->request->referrer);
+    }
+
+    /**
+     * @param int $pagination
+     */
+    public function actionChangePagination($pagination)
+    {
+        if ((int)$pagination) {
+            $this->session->set(self::PAGINATION_NAME, $pagination);
+        }
     }
 
 }

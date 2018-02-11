@@ -56,7 +56,7 @@ class ProductSearch extends Model
      * @param int $category_id
      * @return ActiveDataProvider
      */
-    public function search($params, int $category_id)
+    public function search($params, int $category_id, int $pagination)
     {
         $query = Product::find()
             ->where(['categories_id' => $category_id])
@@ -70,7 +70,7 @@ class ProductSearch extends Model
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => ['pageSize' => 30],
+            'pagination' => ['pageSize' => $pagination],
             'sort' => ['defaultOrder' => ['sort' => SORT_ASC,]]
         ]);
 

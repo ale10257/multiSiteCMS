@@ -2,7 +2,6 @@
 /* @var $this yii\web\View */
 /* @var $formModel \app\core\products\forms\ProductForm */
 /* @var $form yii\widgets\ActiveForm */
-
 /* @var $new boolean */
 
 use app\components\helpers\RemoveImgAdminHelper;
@@ -96,20 +95,22 @@ $link = Html::a('Посмотреть продукт на сайте', ['/produc
                 </div>
             </div>
         </div>
-        <div class="box">
-            <div class="box-body">
-                <?= $form->field($formModel, 'any_images[]')->widget(FileInput::class, [
-                    'options' => [
-                        'accept' => 'image/*',
-                        'multiple' => true
-                    ],
-                    'pluginOptions' => [
-                        'showRemove' => true,
-                        'showUpload' => false,
-                    ]
-                ]) ?>
+        <?php if(!$new) : ?>
+            <div class="box">
+                <div class="box-body">
+                    <?= $form->field($formModel, 'any_images[]')->widget(FileInput::class, [
+                        'options' => [
+                            'accept' => 'image/*',
+                            'multiple' => true
+                        ],
+                        'pluginOptions' => [
+                            'showRemove' => true,
+                            'showUpload' => false,
+                        ]
+                    ]) ?>
+                </div>
             </div>
-        </div>
+        <?php endif ?>
     </div>
     <?php if (!$new) : ?>
         <div class="col-md-5">
@@ -174,11 +175,6 @@ $link = Html::a('Посмотреть продукт на сайте', ['/produc
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 <?php endif ?>
-
-
-
-

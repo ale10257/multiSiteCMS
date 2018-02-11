@@ -15,6 +15,8 @@ use app\core\workWithFiles\helpers\GetWebDir;
 /** @var \app\core\categories\CategoryRepository $category */
 /** @var \app\core\products\ProductSearch $searchModel */
 /** @var \app\core\products\forms\ProductForm $product */
+/** @var int $pagination */
+/** @var array $arrayPagination */
 
 AdminSortableAsset::register($this);
 
@@ -29,22 +31,24 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-md-6">
                 <div class="box">
                     <div class="box-body">
-                        <?php $form = ActiveForm::begin([
+                        <?php
+                        $form = ActiveForm::begin([
                             'action' => Url::to(['index'])
-                        ]) ?>
+                        ]);
+                        ?>
                         <?php
                         try {
-                            echo $form->field($product, 'categories_id')->widget(Select2::classname(), [
-                            'language' => 'ru',
-                            'options' => ['placeholder' => 'Выберите категорию'],
-                            'data' => ArrayHelper::map($parents, 'id', 'name'),
-                            'pluginEvents' => [
-                                "change" => 'function() {
-                                    var form = $(this).parents("form");
-                                    location.href = form.attr("action") + "?category_id=" + $(this).val();
+                            echo $form->field($product, 'categories_id')->widget(Select2::class, [
+                                'language' => 'ru',
+                                'options' => ['placeholder' => 'Выберите категорию'],
+                                'data' => ArrayHelper::map($parents, 'id', 'name'),
+                                'pluginEvents' => [
+                                    "change" => 'function() {
+                                        var form = $(this).parents("form");
+                                        location.href = form.attr("action") + "?category_id=" + $(this).val();
                                 }',
-                            ]
-                        ]);
+                                ]
+                            ]);
                         } catch (Exception $e) {
                             echo $e->getMessage();
                         } ?>
@@ -52,6 +56,39 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
             </div>
+            <?php if ($pagination) : ?>
+                <div class="col-md-2 col-md-offset-4">
+
+                    <div class="box">
+                        <div class="box-body">
+                            <?php $form = ActiveForm::begin([
+                                'action' => Url::to(['change-pagination'])
+                            ]) ?>
+                            <?= '<label>Кол-во элементов на странице</label>'; ?>
+                            <?php
+                            try {
+                                echo Select2::widget([
+                                    'name' => 'pagination',
+                                    'value' => $pagination,
+                                    'data' => $arrayPagination,
+                                    'pluginEvents' => [
+                                        "change" => 'function() {
+                                            var form = $(this).parents("form");
+                                            $.post(form.attr("action") + "?pagination=" + $(this).val());
+                                            location.reload();
+                                    }',
+                                    ]
+                                ]);
+                            } catch (Exception $e) {
+                                echo $e->getMessage();
+                            }
+                            ?>
+                            <?php $form::end() ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endif ?>
+
         </div>
 
         <?php if (!empty($dataProvider)) : ?>

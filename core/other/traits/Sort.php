@@ -8,6 +8,8 @@
 
 namespace app\core\other\traits;
 
+use app\core\NotFoundException;
+
 trait Sort
 {
     /**
@@ -34,20 +36,24 @@ trait Sort
     public function changeSort(\stdClass $object, string $field, string $whereField)
     {
         $oldData = static::findOne($object->id);
-        $whereFieldValue = $oldData->$whereField;
 
-        if ($oldData->$field < $object->$field) {
-            static::updateAllCounters(
-                [$field => -1],
-                '`' . $field . '` > 1 AND `' . $field . '` <= ' . $object->$field . ' AND `' . $whereField . '` = ' . $whereFieldValue
-            );
-        } else {
-            static::updateAllCounters(
-                [$field => 1],
-                '`' . $field . '` >= ' . $object->$field . ' AND `' . $field . '` < ' . $oldData->$field  . ' AND `' . $whereField . '` = ' . $whereFieldValue
-            );
+        if (!($oldData && $whereFieldValue = $oldData->$whereField)) {
+            throw new NotFoundException('Error sort!');
         }
 
+        if ($oldData->$field < $object->$field) {
+            //down move
+            $count = -1;
+            $where = '`' . $field . '` > 1 AND `' . $field . '` <= ' . $object->$field;
+        } else {
+            //up move
+            $count = 1;
+            $where = '`' . $field . '` >= ' . $object->$field . ' AND `' . $field . '` < ' . $oldData->$field;
+        }
+        static::updateAllCounters(
+            [$field => $count],
+            $where  . ' AND `' . $whereField . '` = ' . $whereFieldValue
+        );
         $oldData->$field = $object->$field;
         $oldData->save();
     }
