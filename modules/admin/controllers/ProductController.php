@@ -17,10 +17,12 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\core\products\ProductSearch;
+use app\components\widgets\setPaginationNum\PaginationTrait;
 
 class ProductController extends BaseAdminController
 {
     use ControllerTrait;
+    use PaginationTrait;
 
     const PAGINATION_NAME = 'product_pagination';
 
@@ -91,14 +93,12 @@ class ProductController extends BaseAdminController
         if ($category_id) {
             $category = $this->service->getCategory($category_id);
             $searchModel = $this->search;
-            $pagination = $this->session->get(self::PAGINATION_NAME) ?  : 20;
+            $pagination = $this->setPagination();
             $dataProvider = $searchModel->search(yii::$app->request->queryParams, $category_id, $pagination);
-            $arrayPagination = [20 => 20, 30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90, 100 => 100];
         } else {
             $category = null;
             $searchModel = null;
             $dataProvider = null;
-            $arrayPagination = [];
             $pagination = null;
         }
 
@@ -108,7 +108,6 @@ class ProductController extends BaseAdminController
             'category' => $category,
             'parents' => $this->service->getLeavesCategories(),
             'product' =>  $this->service->index($category_id),
-            'arrayPagination' => $arrayPagination,
             'pagination' => $pagination
         ]);
     }
@@ -170,7 +169,6 @@ class ProductController extends BaseAdminController
         return $this->render('update', ['formModel' => $formModel]);
     }
 
-
     /**
      * @param int $id
      * @return string|\yii\web\Response
@@ -192,16 +190,6 @@ class ProductController extends BaseAdminController
 
         yii::$app->session->setFlash('error', 'Неизвестная ошибка при обновлении формы.');
         return $this->redirect(yii::$app->request->referrer);
-    }
-
-    /**
-     * @param int $pagination
-     */
-    public function actionChangePagination($pagination)
-    {
-        if ((int)$pagination) {
-            $this->session->set(self::PAGINATION_NAME, $pagination);
-        }
     }
 
 }
