@@ -54,6 +54,7 @@ class ProductSearch extends Model
     /**
      * @param array $params
      * @param int $category_id
+     * @param int $pagination
      * @return ActiveDataProvider
      */
     public function search($params, int $category_id, int $pagination)
