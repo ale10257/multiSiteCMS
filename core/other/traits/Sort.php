@@ -29,32 +29,34 @@ trait Sort
     }
 
     /**
-     * @param \stdClass $object
+     * @param \stdClass $newData
      * @param string $field
      * @param string $whereField
      */
-    public function changeSort(\stdClass $object, string $field, string $whereField)
+    public function changeSort(\stdClass $newData, string $field, string $whereField)
     {
-        $oldData = static::findOne($object->id);
+        $oldData = static::findOne($newData->id);
 
         if (!($oldData && $whereFieldValue = $oldData->$whereField)) {
             throw new NotFoundException('Error sort!');
         }
 
-        if ($oldData->$field < $object->$field) {
+        if ($oldData->$field < $newData->$field) {
             //down move
             $count = -1;
-            $where = '`' . $field . '` > 1 AND `' . $field . '` <= ' . $object->$field;
+            $where = '`' . $field . '` > ' . $oldData->$field . ' AND `' . $field . '` <= ' . $newData->$field;
         } else {
             //up move
             $count = 1;
-            $where = '`' . $field . '` >= ' . $object->$field . ' AND `' . $field . '` < ' . $oldData->$field;
+            $where = '`' . $field . '` >= ' . $newData->$field . ' AND `' . $field . '` < ' . $oldData->$field;
         }
+
         static::updateAllCounters(
             [$field => $count],
             $where  . ' AND `' . $whereField . '` = ' . $whereFieldValue
         );
-        $oldData->$field = $object->$field;
+
+        $oldData->$field = $newData->$field;
         $oldData->save();
     }
 }
