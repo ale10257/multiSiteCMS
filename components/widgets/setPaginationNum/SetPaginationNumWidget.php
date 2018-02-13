@@ -22,6 +22,9 @@ class SetPaginationNumWidget extends Widget
     /** @var int */
     public $pagination;
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -35,6 +38,9 @@ class SetPaginationNumWidget extends Widget
     });');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function run()
     {
         echo Html::beginForm(
