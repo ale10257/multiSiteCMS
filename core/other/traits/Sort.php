@@ -44,16 +44,16 @@ trait Sort
         if ($oldData->$field < $newData->$field) {
             //down move
             $count = -1;
-            $where = '`' . $field . '` > ' . $oldData->$field . ' AND `' . $field . '` <= ' . $newData->$field;
+            $where = ['and', ['>', $field, $oldData->$field], ['<=', $field, $newData->$field]];
         } else {
             //up move
             $count = 1;
-            $where = '`' . $field . '` >= ' . $newData->$field . ' AND `' . $field . '` < ' . $oldData->$field;
+            $where = ['and', ['>=', $field, $newData->$field], ['<', $field, $oldData->$field]];
         }
 
         static::updateAllCounters(
             [$field => $count],
-            $where  . ' AND `' . $whereField . '` = ' . $whereFieldValue
+            ['and', ['=', $whereField, $whereFieldValue], $where]
         );
 
         $oldData->$field = $newData->$field;
