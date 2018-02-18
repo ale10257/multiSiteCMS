@@ -1,13 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 26.12.17
- * Time: 18:36
- */
-
 namespace app\modules\admin\controllers;
-
 
 use app\components\helpers\FirstErrors;
 use app\core\galleries\GalleryImage;

@@ -31,18 +31,14 @@ trait Sort
     public function changeSort(\stdClass $newData, string $field, string $whereField)
     {
         $oldData = static::findOne($newData->id);
-
         if (!($oldData && $whereFieldValue = $oldData->$whereField)) {
             throw new NotFoundException('Error sort!');
         }
-
         $data = $this->getWhereSort($newData->$field, $oldData->$field, $field);
-
         static::updateAllCounters(
             [$field => $data['count']],
             ['and', ['=', $whereField, $whereFieldValue], $data['where']]
         );
-
         $oldData->$field = $newData->$field;
         $oldData->save();
     }
