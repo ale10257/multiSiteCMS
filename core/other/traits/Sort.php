@@ -47,6 +47,12 @@ trait Sort
         $oldData->save();
     }
 
+    /**
+     * @param int $newSortData
+     * @param int $oldSortData
+     * @param string $field
+     * @return array
+     */
     public function getWhereSort(int $newSortData, int $oldSortData, string $field)
     {
         if ($oldSortData < $newSortData) {
@@ -65,6 +71,12 @@ trait Sort
         ];
     }
 
+    /**
+     * @param string $field
+     * @param int $fieldValue
+     * @param string $whereField
+     * @param int $whereFieldValue
+     */
     public function deleteSortItem(string $field, int $fieldValue, string $whereField, int $whereFieldValue)
     {
         static::updateAllCounters(
