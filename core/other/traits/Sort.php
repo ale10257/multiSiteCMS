@@ -19,13 +19,8 @@ trait Sort
      */
     public function getNumLastElement($where, $field)
     {
-        if (!$sort = static::find()->where($where)->max($field)) {
-            $sort = 1;
-        } else {
-            $sort++;
-        }
-
-        return $sort;
+        $sort = static::find()->where($where)->max($field);
+        return $sort === null ? 1 : ++$sort;
     }
 
     /**
@@ -41,22 +36,40 @@ trait Sort
             throw new NotFoundException('Error sort!');
         }
 
-        if ($oldData->$field < $newData->$field) {
-            //down move
-            $count = -1;
-            $where = ['and', ['>', $field, $oldData->$field], ['<=', $field, $newData->$field]];
-        } else {
-            //up move
-            $count = 1;
-            $where = ['and', ['>=', $field, $newData->$field], ['<', $field, $oldData->$field]];
-        }
+        $data = $this->getWhereSort($newData->$field, $oldData->$field, $field);
 
         static::updateAllCounters(
-            [$field => $count],
-            ['and', ['=', $whereField, $whereFieldValue], $where]
+            [$field => $data['count']],
+            ['and', ['=', $whereField, $whereFieldValue], $data['where']]
         );
 
         $oldData->$field = $newData->$field;
         $oldData->save();
+    }
+
+    public function getWhereSort(int $newSortData, int $oldSortData, string $field)
+    {
+        if ($oldSortData < $newSortData) {
+            //down move
+            $count = -1;
+            $where = ['and', ['>', $field, $oldSortData], ['<=', $field, $newSortData]];
+        } else {
+            //up move
+            $count = 1;
+            $where = ['and', ['>=', $field, $newSortData], ['<', $field, $oldSortData]];
+        }
+
+        return [
+            'count' => $count,
+            'where' => $where
+        ];
+    }
+
+    public function deleteSortItem(string $field, int $fieldValue, string $whereField, int $whereFieldValue)
+    {
+        static::updateAllCounters(
+            [$field => -1],
+            ['and', ['>', $field, $fieldValue], ['=', $whereField, $whereFieldValue] ]
+        );
     }
 }

@@ -42,4 +42,16 @@ class ProductImageGallery extends BaseImageGallery
     public function sortImage($sort) {
         $this->repository->changeSort(json_decode($sort), 'sort', 'products_id');
     }
+
+    /**
+     * @param int $id
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function deleteImage(int $id) {
+        parent::deleteImage($id);
+        $this->repository->deleteSortItem('sort', $this->repository->sort, 'products_id', $this->repository->products_id);
+    }
 }

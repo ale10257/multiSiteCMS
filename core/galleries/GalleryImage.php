@@ -56,4 +56,16 @@ class GalleryImage extends BaseImageGallery
     public function sortImage($sort) {
         $this->repository->changeSort(json_decode($sort), 'sort', 'galleries_id');
     }
+
+    /**
+     * @param int $id
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function deleteImage(int $id) {
+        parent::deleteImage($id);
+        $this->repository->deleteSortItem('sort', $this->repository->sort, 'galleries_id', $this->repository->galleries_id);
+    }
 }

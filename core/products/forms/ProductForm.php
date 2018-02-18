@@ -32,6 +32,8 @@ class ProductForm extends Model
     public $active;
     /** @var int */
     public $sort;
+    /** @var array */
+    public $sortArray = [];
     /** @var boolean */
     public $new_prod;
     /** @var string */
@@ -52,8 +54,10 @@ class ProductForm extends Model
     public $uploaded_images = [];
     /** @var string */
     public $webDir;
+    /** @var string */
+    public $category;
     /** @var array */
-    public $categories;
+    public $categoryArray = [];
 
     /**
      * @inheritdoc
@@ -90,6 +94,7 @@ class ProductForm extends Model
             'code' => 'Артикул',
             'active' => 'Active',
             'new_prod' => 'Новинка',
+            'sort' => 'Сортировка',
             'any_images' => 'Загрузка картинок для продукта',
         ];
     }
@@ -112,4 +117,37 @@ class ProductForm extends Model
             'sort',
         ]);
     }
+
+    /**
+     * @param int|null $count
+     */
+    public function createNewCountArray($count) : void
+    {
+        $this->sort = 1;
+        $this->sortArray[1] = 'Добавить в начало списка';
+        if (!$count) {
+            return;
+        }
+        if ($count == 1) {
+            $this->sortArray[2] = 'Добавить в конец списка';
+            return;
+        }
+
+        $this->sortArray[$count + 1] = 'Добавить в конец списка';
+        $count--;
+        for ($i = 1; $i <= $count; $i++) {
+            $this->sortArray[$i + 1] = 'Добавить после ' . $i . '-го элемента';
+        }
+    }
+
+    /**
+     * @param int $count
+     */
+    public function createUpdateCountArray($count) : void
+    {
+        for ($i = 1; $i <= $count; $i++) {
+            $this->sortArray[$i] = 'Номер элемента в списке: ' . $i;
+        }
+    }
+
 }

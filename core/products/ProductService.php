@@ -106,8 +106,24 @@ class ProductService implements Service
     {
         $this->repository = $this->repository->getItem($id);
         $webDir = $this->repository->getWebDir();
+
         $oldCategory = $this->repository->categories_id;
-        $this->repository->insertValues($form);
+        $newCategory = $form->categories_id;
+
+        if ($oldCategory != $newCategory) {
+            $this->repository->deleteSortItem('sort', $this->repository->sort, 'categories_id', $this->repository->categories_id);
+            $form->sort = 1;
+            $this->repository->insertValues($form, true);
+        } else {
+            if ($form->sort != $this->repository->sort) {
+                $data = $this->repository->getWhereSort($form->sort, $this->repository->sort, 'sort');
+                $this->repository::updateAllCounters(
+                    ['sort' => $data['count']],
+                    ['and', ['=', 'categories_id', $this->repository->categories_id], $data['where']]
+                );
+            }
+            $this->repository->insertValues($form);
+        }
         $this->repository->saveItem();
 
         if ($images = $form->uploadAnyFile($webDir, 'any_images')) {
@@ -121,8 +137,6 @@ class ProductService implements Service
                 $sort++;
             }
         }
-
-        $newCategory = $this->repository->categories_id;
 
         if ($oldCategory != $newCategory) {
             ChangeDirectory::changeDirectory($webDir, $this->repository);
@@ -141,9 +155,9 @@ class ProductService implements Service
         $category = $this->getCategory($category_id);
         $form = $this->productForm;
         $form->categories_id = $category->id;
-        $categories = $this->cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_PRODUCT);
-        $form->categories = ArrayHelper::map($categories, 'id', 'name');
-
+        $form->category = $category->name;
+        $count = $this->repository->countProducts($category->id);
+        $form->createNewCountArray($count);
         return $form;
     }
 
@@ -157,21 +171,16 @@ class ProductService implements Service
         if (!$product = $this->repository::find()
             ->where(['id' => $id])
             ->with('category')
-            ->with([
-                'images' => function ($q) {
-                    /**@var \yii\db\ActiveQuery $q */
-                    $q->orderBy(['sort' => SORT_ASC]);
-                }
-            ])
+            ->with('images')
             ->one()) {
             throw new NotFoundHttpException();
         }
 
         $this->productForm->createUpdateForm($product);
-
         $categories = $this->cacheCategory->getLeavesCategory(CategoryRepository::RESERVED_TYPE_PRODUCT);
-        $this->productForm->categories = ArrayHelper::map($categories, 'id', 'name');
-
+        $this->productForm->categoryArray = ArrayHelper::map($categories, 'id', 'name');
+        $count = $this->repository->countProducts($product->categories_id);
+        $this->productForm->createUpdateCountArray($count);
         if ($product->images) {
             $this->productForm->webDir = $product->getWebDir();
             foreach ($product->images as $image) {
@@ -193,9 +202,10 @@ class ProductService implements Service
      */
     public function delete(int $id)
     {
-        $product = $this->repository->getItem($id);
-        $product->deleteItem();
-        RemoveDirectory::removeDirectory($product->getWebDir());
+        $this->repository = $this->repository->getItem($id);
+        $this->repository->deleteItem();
+        $this->repository->deleteSortItem('sort', $this->repository->sort, 'categories_id', $this->repository->categories_id);
+        RemoveDirectory::removeDirectory($this->repository->getWebDir());
     }
 
     /**

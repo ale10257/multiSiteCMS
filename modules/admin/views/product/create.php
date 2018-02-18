@@ -11,13 +11,8 @@ $this->params['breadcrumbs'][] = ['label' => 'Продукты', 'url' => ['inde
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="product-create">
-
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <?= $this->render('_form', [
-        'new' => true,
-        'images' => null,
+    <?= $this->render('_newForm', [
         'formModel' => $formModel,
     ]) ?>
-
 </div>

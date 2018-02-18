@@ -46,7 +46,7 @@ class ProductRepository extends BaseRepository
 
     /** @var OrderProductForm */
     public $form;
-    /** @var DataPathImage[]|DataPathImage  */
+    /** @var DataPathImage[]|DataPathImage */
     public $imagesGallery;
 
     /**
@@ -74,7 +74,14 @@ class ProductRepository extends BaseRepository
     public function insertValues($form, bool $sort = false)
     {
         if ($sort) {
-            $form->sort = $this->getNumLastElement(['categories_id' => $form->categories_id], 'sort');
+            if ($count = $this->countProducts($form->categories_id)) {
+                if ($form->sort <= $count) {
+                    static::updateAllCounters(
+                        ['sort' => 1],
+                        ['and', ['=', 'categories_id', $form->categories_id], ['>=', 'sort', $form->sort]]
+                    );
+                }
+            }
         }
 
         InsertValuesHelper::insertValues($this, $form, [
@@ -117,7 +124,7 @@ class ProductRepository extends BaseRepository
      */
     public function getImages()
     {
-        return $this->hasMany(ProductImagesRepository::className(), ['products_id' => 'id']);
+        return $this->hasMany(ProductImagesRepository::className(), ['products_id' => 'id'])->orderBy(['sort' => SORT_ASC]);
     }
 
     /**
@@ -127,6 +134,15 @@ class ProductRepository extends BaseRepository
     public static function getCategoryForId($category_id)
     {
         return CategoryRepository::findOne($category_id);
+    }
+
+    /**
+     * @param string $categories_id
+     * @return int|string
+     */
+    public function countProducts(string $categories_id)
+    {
+        return static::find()->where(['categories_id' => $categories_id])->count();
     }
 
     public function getWebDir()

@@ -14,8 +14,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="product-update">
     <h2><?= Html::encode($this->title) ?></h2>
     <?= $this->render('_form', [
-        'new' => false,
         'formModel' => $formModel,
     ]) ?>
-
 </div>

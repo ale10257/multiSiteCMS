@@ -8,7 +8,7 @@ $(function () {
             $('.del-img').click(function (e) {
                 e.preventDefault();
                 $.post(this.href);
-                $(this).parents('.item-gallery-admin').fadeOut(500);
+                $(this).parents('.item-gallery-admin-wrap').fadeOut(200).remove();
             });
         });
         url = item.data('sort');
