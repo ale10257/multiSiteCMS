@@ -124,6 +124,7 @@ class ProductService implements Service
             }
             $this->repository->insertValues($form);
         }
+
         $this->repository->saveItem();
 
         if ($images = $form->uploadAnyFile($webDir, 'any_images')) {
