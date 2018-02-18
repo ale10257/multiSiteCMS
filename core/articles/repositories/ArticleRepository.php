@@ -54,7 +54,7 @@ class ArticleRepository extends BaseRepository
     public function behaviors()
     {
         return [
-            ['class' => TimestampBehavior::className()],
+            ['class' => TimestampBehavior::class],
         ];
     }
 
@@ -96,7 +96,7 @@ class ArticleRepository extends BaseRepository
      */
     public function getCategory()
     {
-        return $this->hasOne(CategoryRepository::className(), ['id' => 'categories_id']);
+        return $this->hasOne(CategoryRepository::class, ['id' => 'categories_id']);
     }
 
     /**
@@ -104,7 +104,7 @@ class ArticleRepository extends BaseRepository
      */
     public function getImages()
     {
-        return $this->hasMany(ArticleImagesRepository::className(), ['articles_id' => 'id']);
+        return $this->hasMany(ArticleImagesRepository::class, ['articles_id' => 'id'])->orderBy(['sort' => SORT_ASC]);
     }
 
     /**

@@ -68,7 +68,7 @@ class OrderRepository extends BaseRepository
     public function behaviors()
     {
         return [
-            'class' => TimestampBehavior::className()
+            'class' => TimestampBehavior::class
         ];
     }
 
@@ -91,7 +91,7 @@ class OrderRepository extends BaseRepository
      */
     public function getOrderProducts()
     {
-        return $this->hasMany(OrderProductRepository::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderProductRepository::class, ['order_id' => 'id']);
     }
 
     /**
@@ -99,7 +99,7 @@ class OrderRepository extends BaseRepository
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**

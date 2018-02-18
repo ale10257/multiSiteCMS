@@ -117,14 +117,14 @@ class CategoryRepository extends BaseRepository implements Repository
     {
         return [
             [
-                'class' => TimestampBehavior::className()
+                'class' => TimestampBehavior::class
             ],
             [
-                'class' => NestedSetsBehavior::className(),
+                'class' => NestedSetsBehavior::class,
                 'treeAttribute' => 'tree',
             ],
             [
-                'class' => ChangeTreeBehavior::className(),
+                'class' => ChangeTreeBehavior::class,
                 'rootSite' => SITE_ROOT_NAME,
             ],
         ];
@@ -162,7 +162,7 @@ class CategoryRepository extends BaseRepository implements Repository
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::className(), ['categories_id' => 'id']);
+        return $this->hasMany(Product::class, ['categories_id' => 'id']);
     }
 
     /**
@@ -170,7 +170,7 @@ class CategoryRepository extends BaseRepository implements Repository
      */
     public function getArticles()
     {
-        return $this->hasMany(Article::className(), ['categories_id' => 'id']);
+        return $this->hasMany(Article::class, ['categories_id' => 'id']);
     }
 
     /**

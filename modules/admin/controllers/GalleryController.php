@@ -122,7 +122,6 @@ class GalleryController extends BaseAdminController
                 $this->session->setFlash('error', FirstErrors::get($formModel));
                 return $this->redirect(yii::$app->request->referrer);
             }
-
             try {
                 $this->service->update($formModel, $id);
                 $this->session->setFlash('success', 'Данные сохранены успешно!');

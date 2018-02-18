@@ -124,7 +124,7 @@ class User extends ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
     }
 
@@ -140,7 +140,7 @@ class User extends ActiveRecord
      */
     public function getRegUser()
     {
-        return $this->hasOne(UserRegRepository::className(), ['users_id' => 'id']);
+        return $this->hasOne(UserRegRepository::class, ['users_id' => 'id']);
     }
 
     /**

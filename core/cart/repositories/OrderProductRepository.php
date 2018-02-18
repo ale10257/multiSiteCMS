@@ -66,7 +66,7 @@ class OrderProductRepository extends BaseRepository
      */
     public function getOrder()
     {
-        return $this->hasOne(OrderProductRepository::className(), ['id' => 'order_id']);
+        return $this->hasOne(OrderProductRepository::class, ['id' => 'order_id']);
     }
 
     /**
@@ -74,6 +74,6 @@ class OrderProductRepository extends BaseRepository
      */
     public function getProduct()
     {
-        return $this->hasOne(ProductRepository::className(), ['id' => 'product_id']);
+        return $this->hasOne(ProductRepository::class, ['id' => 'product_id']);
     }
 }

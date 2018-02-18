@@ -57,12 +57,7 @@ class GetProduct
 
         $products = ProductRepository::find()
             ->where(['categories_id' => $category->id, 'active' => 1])
-            ->with([
-                'images' => function ($q) {
-                    /** @var \yii\db\ActiveQuery $q */
-                    $q->orderBy(['sort' => SORT_ASC]);
-                }
-            ])
+            ->with('images')
             ->orderBy(['sort' => SORT_ASC])
             ->all();
 
@@ -106,12 +101,7 @@ class GetProduct
             ->where(['id' => $id_alias])
             ->orWhere(['alias' => $id_alias])
             ->andWhere(['active' => 1])
-            ->with([
-                'images' => function ($q) {
-                    /** @var \yii\db\ActiveQuery $q */
-                    $q->orderBy(['sort' => SORT_ASC]);
-                }
-            ])->one();
+            ->with('images')->one();
 
         if (!$product->images) {
             throw new NotFoundHttpException();

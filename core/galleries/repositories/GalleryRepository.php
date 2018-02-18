@@ -75,11 +75,11 @@ class GalleryRepository extends BaseRepository
     {
         return [
             [
-                'class' => NestedSetsBehavior::className(),
+                'class' => NestedSetsBehavior::class,
                 'treeAttribute' => 'tree',
             ],
             [
-                'class' => ChangeTreeBehavior::className(),
+                'class' => ChangeTreeBehavior::class,
                 'rootSite' => SITE_ROOT_NAME,
             ],
         ];
@@ -111,7 +111,7 @@ class GalleryRepository extends BaseRepository
      */
     public function getImages()
     {
-        return $this->hasMany(GalleryImageRepository::className(), ['galleries_id' => 'id']);
+        return $this->hasMany(GalleryImageRepository::class, ['galleries_id' => 'id'])->orderBy(['sort' => SORT_ASC]);
     }
 
     public function getWebDir()

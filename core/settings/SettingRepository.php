@@ -85,11 +85,11 @@ class SettingRepository extends BaseRepository
     {
         return [
             [
-                'class' => NestedSetsBehavior::className(),
+                'class' => NestedSetsBehavior::class,
                 'treeAttribute' => 'tree',
             ],
             [
-                'class' => ChangeTreeBehavior::className(),
+                'class' => ChangeTreeBehavior::class,
                 'rootSite' => SITE_ROOT_NAME,
             ],
         ];

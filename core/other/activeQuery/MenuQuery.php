@@ -15,7 +15,7 @@ class MenuQuery extends ActiveQuery
 {
     public function behaviors() {
         return [
-            NestedSetsQueryBehavior::className(),
+            NestedSetsQueryBehavior::class,
         ];
     }
 }

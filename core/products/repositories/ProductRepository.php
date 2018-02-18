@@ -63,7 +63,7 @@ class ProductRepository extends BaseRepository
     public function behaviors()
     {
         return [
-            ['class' => TimestampBehavior::className()],
+            ['class' => TimestampBehavior::class],
         ];
     }
 
@@ -116,7 +116,7 @@ class ProductRepository extends BaseRepository
      */
     public function getCategory()
     {
-        return $this->hasOne(CategoryRepository::className(), ['id' => 'categories_id']);
+        return $this->hasOne(CategoryRepository::class, ['id' => 'categories_id']);
     }
 
     /**
@@ -124,7 +124,7 @@ class ProductRepository extends BaseRepository
      */
     public function getImages()
     {
-        return $this->hasMany(ProductImagesRepository::className(), ['products_id' => 'id'])->orderBy(['sort' => SORT_ASC]);
+        return $this->hasMany(ProductImagesRepository::class, ['products_id' => 'id'])->orderBy(['sort' => SORT_ASC]);
     }
 
     /**

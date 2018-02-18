@@ -52,7 +52,7 @@ class AccessRepository extends BaseRepository
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'users_id']);
+        return $this->hasOne(User::class, ['id' => 'users_id']);
     }
 
     /**

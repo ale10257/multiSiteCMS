@@ -55,7 +55,7 @@ class ProductImagesRepository extends BaseRepository
      */
     public function getProduct()
     {
-        return $this->hasOne(ProductRepository::className(), ['id' => 'products_id']);
+        return $this->hasOne(ProductRepository::class, ['id' => 'products_id']);
     }
 
     public function getWebDir()

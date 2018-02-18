@@ -60,7 +60,7 @@ class GalleryImageRepository extends BaseRepository
      */
     public function getGallery()
     {
-        return $this->hasOne(GalleryRepository::className(), ['id' => 'galleries_id']);
+        return $this->hasOne(GalleryRepository::class, ['id' => 'galleries_id']);
     }
 
     public function getWebDir()

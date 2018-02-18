@@ -141,12 +141,7 @@ class ArticleService
         if (!$article = $this->articleRepository::find()
             ->where(['id' => $id])
             ->with('category')
-            ->with([
-                'images' => function ($q) {
-                    /**@var \yii\db\ActiveQuery $q */
-                    $q->orderBy(['sort' => SORT_ASC]);
-                }
-            ])
+            ->with('images')
             ->one()) {
             throw new NotFoundHttpException();
         }

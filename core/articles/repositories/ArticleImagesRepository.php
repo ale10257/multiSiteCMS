@@ -60,7 +60,7 @@ class ArticleImagesRepository extends BaseRepository
      */
     public function getArticle()
     {
-        return $this->hasOne(ArticleRepository::className(), ['id' => 'articles_id']);
+        return $this->hasOne(ArticleRepository::class, ['id' => 'articles_id']);
     }
 
     /**

@@ -52,12 +52,7 @@ class ArticleGetService
             $query->where(['alias' => $alias]);
         }
 
-        $article = $query->andWhere(['active' => 1])->with([
-            'images' => function ($q) {
-                /** @var \yii\db\ActiveQuery $q */
-                $q->orderBy(['sort' => SORT_ASC]);
-            }
-        ])->one();
+        $article = $query->andWhere(['active' => 1])->with('images')->one();
 
         if (!$article) {
             throw new NotFoundHttpException();

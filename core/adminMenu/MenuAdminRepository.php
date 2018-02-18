@@ -74,11 +74,11 @@ class MenuAdminRepository extends BaseRepository
     {
         return [
             [
-                'class' => NestedSetsBehavior::className(),
+                'class' => NestedSetsBehavior::class,
                 'treeAttribute' => 'tree',
             ],
             [
-                'class' => ChangeTreeBehavior::className(),
+                'class' => ChangeTreeBehavior::class,
                 'rootSite' => self::ROOT_MENU_ADMIN,
             ]
         ];

@@ -26,12 +26,7 @@ class ProductSearchActiveOnly extends Model
     {
         $query = Product::find()
             ->where(['categories_id' => $category_id, 'active' => 1])
-            ->with([
-                'images' => function ($q) {
-                    /** @var \yii\db\ActiveQuery $q */
-                    $q->orderBy(['sort' => SORT_ASC]);
-                }
-            ])
+            ->with('images')
             ->with('category');
 
         $dataProvider = new ActiveDataProvider([
