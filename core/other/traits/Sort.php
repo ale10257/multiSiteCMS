@@ -20,7 +20,7 @@ trait Sort
     public function getNumLastElement($where, $field)
     {
         $sort = static::find()->where($where)->max($field);
-        return $sort === null ? 1 : ++$sort;
+        return !$sort ? 1 : ++$sort;
     }
 
     /**
