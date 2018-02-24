@@ -36,22 +36,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             'action' => Url::to(['index'])
                         ]);
                         ?>
-                        <?php
-                        try {
-                            echo $form->field($product, 'categories_id')->widget(Select2::class, [
-                                'language' => 'ru',
-                                'options' => ['placeholder' => 'Выберите категорию'],
-                                'data' => ArrayHelper::map($parents, 'id', 'name'),
-                                'pluginEvents' => [
-                                    "change" => 'function() {
+                        <?= $form->field($product, 'categories_id')->widget(Select2::class, [
+                            'language' => 'ru',
+                            'options' => ['placeholder' => 'Выберите категорию'],
+                            'data' => ArrayHelper::map($parents, 'id', 'name'),
+                            'pluginEvents' => [
+                                "change" => 'function() {
                                         var form = $(this).parents("form");
                                         location.href = form.attr("action") + "?category_id=" + $(this).val();
                                 }',
-                                ]
-                            ]);
-                        } catch (Exception $e) {
-                            echo $e->getMessage();
-                        } ?>
+                            ]
+                        ]);
+                        ?>
                         <?php $form::end() ?>
                     </div>
                 </div>
