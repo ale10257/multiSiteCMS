@@ -79,106 +79,102 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?= Html::a('Добавить продукт', ['create', 'category_id' => $category->id],
                                     ['class' => 'btn btn-success']) ?>
                             </p>
-                            <?php try {
-                                echo GridView::widget([
-                                    'dataProvider' => $dataProvider,
-                                    'filterModel' => $searchModel,
-                                    'tableOptions' => ['class' => 'sortable-table', 'data-url' => Url::to(['sort'])],
-                                    'rowOptions' => function ($model) {
-                                        return ['data-id' => $model->id, 'class' => 'sortable-tr'];
-                                    },
-                                    'columns' => [
-                                        ['class' => 'yii\grid\SerialColumn'],
-                                        [
-                                            'attribute' => 'images',
-                                            'label' => '',
-                                            'format' => 'raw',
-                                            'value' => function ($model) {
-                                                /**
-                                                 * @var $model \app\core\products\repositories\ProductRepository
-                                                 */
-                                                if (!empty($model->images[0])) {
-                                                    $web_dir = GetWebDir::getWebDir([
-                                                        $model->category->type_category,
-                                                        $model->category->id,
-                                                        $model->id
-                                                    ]);
-                                                    return Html::img($web_dir . $model->images[0]->name,
-                                                        ['style' => 'width: 120px; height: auto;']);
-                                                }
-                                                return 'Нет картинки';
+                            <?= GridView::widget([
+                                'dataProvider' => $dataProvider,
+                                'filterModel' => $searchModel,
+                                'tableOptions' => ['class' => 'sortable-table', 'data-url' => Url::to(['sort'])],
+                                'rowOptions' => function ($model) {
+                                    return ['data-id' => $model->id, 'class' => 'sortable-tr'];
+                                },
+                                'columns' => [
+                                    ['class' => 'yii\grid\SerialColumn'],
+                                    [
+                                        'attribute' => 'images',
+                                        'label' => '',
+                                        'format' => 'raw',
+                                        'value' => function ($model) {
+                                            /**
+                                             * @var $model \app\core\products\repositories\ProductRepository
+                                             */
+                                            if (!empty($model->images[0])) {
+                                                $web_dir = GetWebDir::getWebDir([
+                                                    $model->category->type_category,
+                                                    $model->category->id,
+                                                    $model->id
+                                                ]);
+                                                return Html::img($web_dir . $model->images[0]->name,
+                                                    ['style' => 'width: 120px; height: auto;']);
                                             }
-                                        ],
-                                        [
-                                            'attribute' => 'name',
-                                            'label' => 'Имя продукта',
-                                            'format' => 'raw',
-                                            'value' => function ($model) {
-                                                /**
-                                                 * $formModel \app\core\products\repositories\ProductRepository
-                                                 */
-                                                return Html::a($model->name, ['update', 'id' => $model->id]);
-                                            },
-                                        ],
-                                        'code:ntext:Артикул',
-                                        'price:integer:Цена',
-                                        [
-                                            'attribute' => 'active',
-                                            'format' => 'raw',
-                                            'value' => function ($model) {
-                                                /**
-                                                 * $formModel \app\core\products\repositories\ProductRepository
-                                                 */
-                                                if ($model->active) {
-                                                    $style_active = '';
-                                                    $style_no_active = ' hide-btn';
-                                                } else {
-                                                    $style_active = ' hide-btn';
-                                                    $style_no_active = '';
-                                                }
-                                                $url = Url::to([
-                                                    '/admin/product/change-active',
-                                                    'id' => $model->id,
-                                                    'status' => $model->active
-                                                ]);
-                                                $active_btn = Html::a('Active', $url, [
-                                                    'class' => 'btn btn-success btn-active' . $style_active,
-                                                    'data-pjax' => 0
-                                                ]);
-                                                $no_active_btn = Html::a('No active', $url, [
-                                                    'class' => 'btn btn-danger btn-active' . $style_no_active,
-                                                    'data-pjax' => 0
-                                                ]);
-                                                return $active_btn . $no_active_btn;
-                                            },
-                                            'filter' => [0 => 'No active', 1 => 'Active']
-                                        ],
-                                        [
-                                            'attribute' => 'new_prod',
-                                            'filter' => [0 => 'Не новинка', 1 => 'Новинка'],
-                                            'format' => 'raw',
-                                            'label' => 'Новинка',
-                                            'value' => function ($model) {
-                                                /**
-                                                 * @var $model \app\core\products\repositories\ProductRepository
-                                                 */
-                                                $str = null;
-                                                if ($model->new_prod) {
-                                                    $str = Html::tag('button', 'New', ['class' => 'btn btn-danger']);
-                                                }
-                                                return $str;
-                                            }
-                                        ],
-                                        [
-                                            'class' => 'yii\grid\ActionColumn',
-                                            'template' => '{update} {delete}'
-                                        ],
+                                            return 'Нет картинки';
+                                        }
                                     ],
-                                ]);
-                            } catch (Exception $e) {
-                                echo $e->getMessage();
-                            } ?>
-
+                                    [
+                                        'attribute' => 'name',
+                                        'label' => 'Имя продукта',
+                                        'format' => 'raw',
+                                        'value' => function ($model) {
+                                            /**
+                                             * $formModel \app\core\products\repositories\ProductRepository
+                                             */
+                                            return Html::a($model->name, ['update', 'id' => $model->id]);
+                                        },
+                                    ],
+                                    'code:ntext:Артикул',
+                                    'price:integer:Цена',
+                                    [
+                                        'attribute' => 'active',
+                                        'format' => 'raw',
+                                        'value' => function ($model) {
+                                            /**
+                                             * $formModel \app\core\products\repositories\ProductRepository
+                                             */
+                                            if ($model->active) {
+                                                $style_active = '';
+                                                $style_no_active = ' hide-btn';
+                                            } else {
+                                                $style_active = ' hide-btn';
+                                                $style_no_active = '';
+                                            }
+                                            $url = Url::to([
+                                                '/admin/product/change-active',
+                                                'id' => $model->id,
+                                                'status' => $model->active
+                                            ]);
+                                            $active_btn = Html::a('Active', $url, [
+                                                'class' => 'btn btn-success btn-active' . $style_active,
+                                                'data-pjax' => 0
+                                            ]);
+                                            $no_active_btn = Html::a('No active', $url, [
+                                                'class' => 'btn btn-danger btn-active' . $style_no_active,
+                                                'data-pjax' => 0
+                                            ]);
+                                            return $active_btn . $no_active_btn;
+                                        },
+                                        'filter' => [0 => 'No active', 1 => 'Active']
+                                    ],
+                                    [
+                                        'attribute' => 'new_prod',
+                                        'filter' => [0 => 'Не новинка', 1 => 'Новинка'],
+                                        'format' => 'raw',
+                                        'label' => 'Новинка',
+                                        'value' => function ($model) {
+                                            /**
+                                             * @var $model \app\core\products\repositories\ProductRepository
+                                             */
+                                            $str = null;
+                                            if ($model->new_prod) {
+                                                $str = Html::tag('button', 'New', ['class' => 'btn btn-danger']);
+                                            }
+                                            return $str;
+                                        }
+                                    ],
+                                    [
+                                        'class' => 'yii\grid\ActionColumn',
+                                        'template' => '{update} {delete}'
+                                    ],
+                                ],
+                            ])
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -190,5 +186,3 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php else : ?>
     <h2>Не создано ни одной категории для продуктов</h2>
 <?php endif ?>
-
-
